@@ -14,7 +14,7 @@ class Columns:
     #default columns for groups
     COL_GRP_QUANTITY = 'Quantity'
     
-    #all available (from KiCAD) columns
+    #all available columns
     _COLUMNS_ALL = [
                COL_DESCRIPTION,
                COL_PART,
@@ -36,7 +36,7 @@ class Columns:
                 COL_FP
                 ]
                 
-    _COLUMNS_GROUPED = _COLUMNS_DEFAULT + [
+    _COLUMNS_GROUPED = [
                 COL_GRP_QUANTITY,
                 ]
     
@@ -50,6 +50,8 @@ class Columns:
 
         #make a copy of the supplied columns
         self.columns = [col for col in cols]
+        
+        self._checkDefaultColumns()
 
     def _hasColumn(self, title):
 
@@ -60,6 +62,13 @@ class Columns:
                 return True
 
         return False
+        
+    def _checkDefaultColumns(self):
+        
+        #prepend any default columns that don't exist
+        for c in self._COLUMNS_DEFAULT[::-1]:
+            if c not in self.columns:
+                self.columns = [c] + self.columns
 
     """
     Remove a column from the list. Specify either the heading or the index
