@@ -10,7 +10,7 @@ def Debug(*arg):
 
 sys.path.append(os.path.dirname(sys.argv[0]))
 
-from KiBOM.columns import Columns
+from KiBOM.columns import ColumnList
 
 #import bomfunk_netlist_reader
 
@@ -18,13 +18,13 @@ class KiBOMColumnList(wx.CheckListBox):
     def __init__(self, parent):
         wx.CheckListBox.__init__(self, parent)
         
-        self.InitColumns(Columns._COLUMNS_DEFAULT)
-        
-    def InitColumns(self, cols):
+    def SetColumns(self, columnList):
     
         self.Clear()
         
-        self.AppendItems(cols)
+        for i,col in enumerate(columnList.columns):
+            self.Append(col.title, None)
+            self.Check(i,check=col.visible)
         
 
 class KiBOMTable(wx.grid.Grid):
@@ -44,7 +44,9 @@ class KiBOMTable(wx.grid.Grid):
     """
     Perform a complete refresh of the columns
     """
-    def SetColumns(self, columns):
+    def SetColumns(self, columnList):
+        
+        columns = columnList.VisibleColumns()
         
         #add in any required rows
         if self.GetNumberCols() < len(columns):
@@ -54,21 +56,21 @@ class KiBOMTable(wx.grid.Grid):
         if self.GetNumberCols() > len(columns):
             self.DeleteCols(self.GetNumberCols() - len(columns))
         
-        for i,h in enumerate(columns):
-            self.SetColLabelValue(i,h)
+        for i,col in enumerate(columns):
+            self.SetColLabelValue(i,col.title)
 
 class KiBOMFrame(wx.Frame):
     
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent,title=title)
         
-        self.columns = Columns()
+        self.columns = ColumnList()
         
         self.panel = wx.Panel(self)
         
         self.table = KiBOMTable(self.panel)
         
-        self.table.SetColumns(self.columns.columns)
+        self.table.SetColumns(self.columns)
         
         #Vertical sizer that separates the "export options" (lower) from the main table and selectors
         self.hSizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -93,6 +95,8 @@ class KiBOMFrame(wx.Frame):
         
         self.colList = KiBOMColumnList(self.panel)
         self.colListSizer.Add(self.colList)
+        
+        self.colList.SetColumns(self.columns)
         
         #buttons to move/add/delete columns
         self.colButtons = wx.BoxSizer(wx.HORIZONTAL)

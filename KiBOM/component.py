@@ -1,4 +1,4 @@
-from columns import Columns
+from columns import ColumnList
 
 import units
 
@@ -160,8 +160,8 @@ class ComponentGroup():
     """
     def __init__(self):
         self.components = []
-        self.fields = dict.fromkeys(Columns._COLUMNS_GROUPED)    #columns loaded from KiCAD
-        self.csvFields = dict.fromkeys(Columns._COLUMNS_GROUPED) #columns loaded from .csv file
+        self.fields = dict.fromkeys(ColumnList._COLUMNS_GROUPED)    #columns loaded from KiCAD
+        self.csvFields = dict.fromkeys(ColumnList._COLUMNS_GROUPED) #columns loaded from .csv file
         
     def getField(self, field):
         if not field in self.fields.keys(): return ""
