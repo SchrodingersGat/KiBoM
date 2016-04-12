@@ -14,7 +14,7 @@ class Columns:
     #default columns for groups
     COL_GRP_QUANTITY = 'Quantity'
     
-    #all available columns
+    #all available (from KiCAD) columns
     _COLUMNS_ALL = [
                COL_DESCRIPTION,
                COL_PART,
@@ -36,9 +36,10 @@ class Columns:
                 COL_FP
                 ]
                 
-    _COLUMNS_GROUPED = [
+    _COLUMNS_GROUPED = _COLUMNS_DEFAULT + [
                 COL_GRP_QUANTITY,
                 ]
+    
     def __str__(self):
         return " ".join(self.columns)
 
