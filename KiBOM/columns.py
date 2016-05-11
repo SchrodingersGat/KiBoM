@@ -55,7 +55,7 @@ class ColumnList:
                    
     #default columns
     #these columns are 'immutable'
-    _COLUMNS_DEFAULT = [
+    _COLUMNS_PROTECTED = [
                 Column.COL_DESCRIPTION,
                 Column.COL_PART,
                 Column.COL_REFERENCE,
@@ -74,7 +74,7 @@ class ColumnList:
     def __repr__(self):
         return self.__str__()
                 
-    def __init__(self, cols=_COLUMNS_DEFAULT):
+    def __init__(self, cols=_COLUMNS_ALL):
 
         self.columns = []
 

@@ -78,11 +78,7 @@ ALIASES = [
     ["l, l_small", "inductor"]
     ]
 
-DNF = ["dnf", "do not fit", "nofit", "no stuff", "nostuff", "noload", "do not load"]
-
 #-----</Configure>---------------------------------------------------------------
-
-
 
 class xmlElement():
     """xml element which can represent all nodes of the netlist tree.  It can be

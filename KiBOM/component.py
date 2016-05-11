@@ -1,8 +1,10 @@
-from columns import ColumnList
+from columns import ColumnList, Column
 
 import units
 
 from sort import natural_sort
+
+DNF = ["dnf", "do not fit", "nofit", "no stuff", "nostuff", "noload", "do not load"]
 
 class Component():
     """Class for a component, aka 'comp' in the xml netlist file.
@@ -178,7 +180,7 @@ class ComponentGroup():
         return str(self.csvFields[field])
 
     def getHarmonizedField(self,field):
-
+    
         #for protected fields, source from KiCAD
         if field in CSV_PROTECTED:
             return self.getField(field)
@@ -249,7 +251,7 @@ class ComponentGroup():
     #update a given field, based on some rules and such
     def updateField(self, field, fieldData):
         
-        if field in CSV_PROTECTED: return
+        if field in ColumnList._COLUMNS_PROTECTED: return
 
         if (field == None or field == ""): return
         elif fieldData == "" or fieldData == None:
@@ -262,9 +264,9 @@ class ComponentGroup():
             print("Conflict:",self.fields[field],",",fieldData)
             self.fields[field] += " " + fieldData
         
-    def updateFields(self):
+    def updateFields(self, fields = ColumnList._COLUMNS_ALL):
     
-        for f in CSV_DEFAULT:
+        for f in fields:
             
             #get info from each field
             for c in self.components:
@@ -272,19 +274,14 @@ class ComponentGroup():
                 self.updateField(f, c.getField(f))
                      
         #update 'global' fields
-        self.fields["Reference"] = self.getRefs()
-
-        self.fields["Quantity"] = self.getCount()
-
-        self.fields["Value"] = self.components[0].getValue()
-
-        self.fields["Part"] = self.components[0].getPartName()
-
-        self.fields["Description"] = self.components[0].getDescription()
-
-        self.fields["Datasheet"] = self.components[0].getDatasheet()
-
-        self.fields["Footprint"] = self.components[0].getFootprint().split(":")[-1]
+        self.fields[Column.COL_REFERENCE] = self.getRefs()
+        self.fields[Column.COL_GRP_QUANTITY] = self.getCount()
+        self.fields[Column.COL_VALUE] = self.components[0].getValue()
+        self.fields[Column.COL_PART] = self.components[0].getPartName()
+        self.fields[Column.COL_DESCRIPTION] = self.components[0].getDescription()
+        self.fields[Column.COL_DATASHEET] = self.components[0].getDatasheet()
+        self.fields[Column.COL_FP] = self.components[0].getFootprint().split(":")[-1]
+        self.fields[Column.COL_FP_LIB] = self.components[0].getFootprint().split(":")[0]
 
     #return a dict of the CSV data based on the supplied columns
     def getCSVRow(self, columns):

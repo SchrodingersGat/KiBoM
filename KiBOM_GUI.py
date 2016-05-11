@@ -8,7 +8,9 @@ import wx.grid
 def Debug(*arg):
     pass
 
-sys.path.append(os.path.dirname(sys.argv[0]))
+here = os.path.abspath(os.path.dirname(sys.argv[0]))
+    
+sys.path.append(here)
 
 from KiBOM.columns import ColumnList
 
@@ -64,6 +66,8 @@ class KiBOMFrame(wx.Frame):
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent,title=title)
         
+        wx.Image.AddHandler(wx.PNGHandler());
+        
         self.columns = ColumnList()
         
         self.panel = wx.Panel(self)
@@ -101,15 +105,25 @@ class KiBOMFrame(wx.Frame):
         #buttons to move/add/delete columns
         self.colButtons = wx.BoxSizer(wx.HORIZONTAL)
         
-        self.moveColUp = wx.Button(self.panel, label="Up")
-        self.moveColDown = wx.Button(self.panel, label="Down")
-        self.newCol = wx.Button(self.panel, label="Add")
-        self.delCol = wx.Button(self.panel, label="Del")
+        upImage = wx.Bitmap(here + "/bitmap/up.png", wx.BITMAP_TYPE_ANY)
+        self.moveUp = wx.BitmapButton(self.panel, bitmap=upImage, size=upImage.GetSize())
+#        self.moveUp.SetTip("Move the selected column up")
+        
+        downImage = wx.Bitmap(here + "/bitmap/down.png", wx.BITMAP_TYPE_ANY)
+        self.moveDown = wx.BitmapButton(self.panel, bitmap=downImage, size=downImage.GetSize())
+#        self.moveDown.setToolTip("Move the selected column down")
+        
+        newImage = wx.Bitmap(here + "/bitmap/add.png", wx.BITMAP_TYPE_ANY)
+        self.newCol = wx.BitmapButton(self.panel, bitmap=newImage, size=newImage.GetSize())
+#        self.newCol.setToolTip("Add a new data column")
+        
+        #delImage = wx.Bitmap("bitmap/del.png", wx.BITMAP_TYPE_ANY)
+        #self.delCol = wx.BitmapButton(self.panel, bitmap=delImage, size=delImage.GetSize())
         
         #add the buttons
-        self.colButtons.Add(self.moveColUp)
-        self.colButtons.Add(self.moveColDown)
-        self.colButtons.Add(self.delCol)
+        self.colButtons.Add(self.moveUp)
+        self.colButtons.Add(self.moveDown)
+        #self.colButtons.Add(self.delCol)
         self.colButtons.Add(self.newCol)
         
         self.colListSizer.Add(self.colButtons)
