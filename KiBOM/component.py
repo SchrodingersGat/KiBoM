@@ -1,4 +1,4 @@
-from columns import ColumnList, Column
+from columns import ColumnList
 
 import units
 
@@ -58,7 +58,7 @@ class Component():
         """Equlivalency operator, remember this can be easily overloaded"""
 
         #special case for connectors, as the "Value" is the description of the connector (and is somewhat meaningless)
-        if "connector" in self.getDescription().lower():
+        if "conn" in self.getDescription().lower():
             #ignore "value"
             valueResult = True
         else:
@@ -162,49 +162,13 @@ class ComponentGroup():
     """
     def __init__(self):
         self.components = []
-        self.fields = dict.fromkeys(ColumnList._COLUMNS_GROUPED)    #columns loaded from KiCAD
-        self.csvFields = dict.fromkeys(ColumnList._COLUMNS_GROUPED) #columns loaded from .csv file
+        self.fields = dict.fromkeys(ColumnList._COLUMNS_PROTECTED)    #columns loaded from KiCAD
+        self.csvFields = dict.fromkeys(ColumnList._COLUMNS_DEFAULT) #columns loaded from .csv file
         
     def getField(self, field):
         if not field in self.fields.keys(): return ""
         if not self.fields[field]: return ""
         return str(self.fields[field])
-        
-    def getCSVField(self, field):
-    
-        #ignore protected fields
-        if field in CSV_PROTECTED: return ""
-    
-        if not field in self.csvFields.keys(): return ""
-        if not self.csvFields[field]: return ""
-        return str(self.csvFields[field])
-
-    def getHarmonizedField(self,field):
-    
-        #for protected fields, source from KiCAD
-        if field in CSV_PROTECTED:
-            return self.getField(field)
-
-        #if there is kicad data, that takes preference
-        if not self.getField(field) == "":
-            return self.getField(field)
-
-        elif not self.getCSVField(field) == "":
-            return self.getCSVField(field)
-        else:
-            return ""
-        
-        
-    def compareCSVLine(self, line):
-        """
-        Compare a line (dict) and see if it matches this component group
-        """
-        for field in CSV_MATCH:
-            if not field in line.keys(): return False
-            if not field in self.fields.keys(): return False
-            if not line[field] == self.fields[field]: return False
-            
-        return True
         
     def getCount(self):
         for c in self.components:
@@ -251,12 +215,14 @@ class ComponentGroup():
     #update a given field, based on some rules and such
     def updateField(self, field, fieldData):
         
+        #protected fields cannot be overwritten
         if field in ColumnList._COLUMNS_PROTECTED: return
 
         if (field == None or field == ""): return
         elif fieldData == "" or fieldData == None:
             return
-        elif (not field in self.fields.keys()) or (self.fields[field] == None) or (self.fields[field] == ""):
+        
+        if (not field in self.fields.keys()) or (self.fields[field] == None) or (self.fields[field] == ""):
             self.fields[field] = fieldData
         elif fieldData.lower() in self.fields[field].lower():
             return
@@ -264,36 +230,35 @@ class ComponentGroup():
             print("Conflict:",self.fields[field],",",fieldData)
             self.fields[field] += " " + fieldData
         
-    def updateFields(self, fields = ColumnList._COLUMNS_ALL):
+    def updateFields(self):
     
-        for f in fields:
+        for c in self.components:
+            for f in c.getFieldNames():
             
-            #get info from each field
-            for c in self.components:
-                
+                #these columns are handled explicitly below
+                if f in ColumnList._COLUMNS_PROTECTED:
+                    continue
+                    
                 self.updateField(f, c.getField(f))
                      
         #update 'global' fields
-        self.fields[Column.COL_REFERENCE] = self.getRefs()
-        self.fields[Column.COL_GRP_QUANTITY] = self.getCount()
-        self.fields[Column.COL_VALUE] = self.components[0].getValue()
-        self.fields[Column.COL_PART] = self.components[0].getPartName()
-        self.fields[Column.COL_DESCRIPTION] = self.components[0].getDescription()
-        self.fields[Column.COL_DATASHEET] = self.components[0].getDatasheet()
-        self.fields[Column.COL_FP] = self.components[0].getFootprint().split(":")[-1]
-        self.fields[Column.COL_FP_LIB] = self.components[0].getFootprint().split(":")[0]
-
-    #return a dict of the CSV data based on the supplied columns
-    def getCSVRow(self, columns):
-        row = [self.getCSVField(key) for key in columns]
-        return row
+        self.fields[ColumnList.COL_REFERENCE] = self.getRefs()
+        self.fields[ColumnList.COL_GRP_QUANTITY] = self.getCount()
+        self.fields[ColumnList.COL_VALUE] = self.components[0].getValue()
+        self.fields[ColumnList.COL_PART] = self.components[0].getPartName()
+        self.fields[ColumnList.COL_PART_LIB] = self.components[0].getLibName()
+        self.fields[ColumnList.COL_DESCRIPTION] = self.components[0].getDescription()
+        self.fields[ColumnList.COL_DATASHEET] = self.components[0].getDatasheet()
+        
+        if len(self.components[0].getFootprint().split(":")) >= 2:
+            self.fields[ColumnList.COL_FP] = self.components[0].getFootprint().split(":")[-1]
+            self.fields[ColumnList.COL_FP_LIB] = self.components[0].getFootprint().split(":")[0]
+        else:
+            self.fields[ColumnList.COL_FP] = ""
+            self.fields[ColumnList.COL_FP_LIB] = ""
 
     #return a dict of the KiCAD data based on the supplied columns
-    def getKicadRow(self, columns):
+    def getRow(self, columns):
         row = [self.getField(key) for key in columns]
         #print(row)
         return row
-
-    #return a dict of harmonized data based on the supplied columns
-    def getHarmonizedRow(self,columns):
-        return [self.getHarmonizedField(key) for key in columns]
