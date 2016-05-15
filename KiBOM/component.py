@@ -24,7 +24,7 @@ class Component():
         #simple string comparison
         if self.getValue().lower() == other.getValue().lower(): return True
 
-        #otherwise, perform a more complicate value comparison
+        #otherwise, perform a more complicated value comparison
         if units.compareValues(self.getValue(), other.getValue()): return True
 
         #no match, return False

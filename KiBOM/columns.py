@@ -45,11 +45,10 @@ class ColumnList:
     _COLUMNS_ALL = [
                Column.COL_DESCRIPTION,
                Column.COL_PART,
-               Column.COL_PART_LIB,
                Column.COL_REFERENCE,
                Column.COL_VALUE,
                Column.COL_FP,
-               Column.COL_FP_LIB,
+               Column.COL_GRP_QUANTITY,
                Column.COL_DATASHEET
                ]
                    
