@@ -57,13 +57,14 @@ Output file format selection is set by the output filename. e.g. "bom.html" will
 
 ### Configuration File
 BoM generation options can be configured (on a per-project basis) by editing the *bom.ini* file in the PCB project directory. This file is generated the first time that the KiBoM script is run, and allows configuration of the following options.
-* Number Rows: Add row numbers to the BoM output
-* Ignore DNF: Component groups marked as 'DNF' (do not fit) will be excluded from the BoM output
-* Group Connectors: If this option is set, connector comparison based on the 'Value' field is ignored. This allows multiple connectors which are named for their function (e.g. "Power", "ICP" etc) can be grouped together.
-* Ignore Columns: A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
-* Exclude Component Values: A list of regular expressions to ignore components based on their value
-* Exclude Component References: A list of regular expressions to ignore components based on their reference 
-* Exclude Component Footprints: A list of regular expressions to ignore components based on their footprint
+* *ignore_dnf*: Component groups marked as 'DNF' (do not fit) will be excluded from the BoM output
+* *number_rows*: Add row numbers to the BoM output
+* *group_connectors*: If this option is set, connector comparison based on the 'Value' field is ignored. This allows multiple connectors which are named for their function (e.g. "Power", "ICP" etc) can be grouped together.
+* *IGNORE_COLUMNS*: A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
+* *EXCLUDE_COMPONENT_VALUES*: A list of regular expressions to ignore components based on their value
+* *EXCLUDE_COMPONENT_REFS*: A list of regular expressions to ignore components based on their reference 
+* *EXCLUDE_COMPONENT_FP*: A list of regular expressions to ignore components based on their footprint
+* *COMPONENT_ALIASES*: A list of space-separated values which allows multiple schematic symbol visualisations to be consolidated.
 
 Example configuration file (.ini format)
 ![alt tag](example/options.png?raw=True "Configuration")
