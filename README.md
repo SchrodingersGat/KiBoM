@@ -15,13 +15,9 @@ BoM options are user-configurable in a per-project configuration file.
 
 To be useful for ordering components, the BoM output from a KiCad project should be organized into sensible component groups. KiBom groups components based on the following factors:
 
-- Part name: (e.g. 'R' for resistors, 'C' for capacitors, or longer part names such as 'MAX232')
-
-*note: parts such as {'R','r_small'} (which are different symbol representations for the same component) can also be grouped together*
-
-- Footprint: Compoments must have the same footprint to be grouped together
-
-- Value: Components must have the same value to be grouped together 
+* Part name: (e.g. 'R' for resistors, 'C' for capacitors, or longer part names such as 'MAX232') *note: parts such as {'R','r_small'} (which are different symbol representations for the same component) can also be grouped together*
+* Value: Components must have the same value to be grouped together 
+* Footprint: Components must have the same footprint to be grouped together *(this option can be enabled/disabled in the bom.ini configuration file)*
 
 ### Intelligent Value Matching
 
