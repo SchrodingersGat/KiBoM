@@ -17,7 +17,7 @@ To be useful for ordering components, the BoM output from a KiCad project should
 
 - Part name: (e.g. 'R' for resistors, 'C' for capacitors, or longer part names such as 'MAX232')
 
-*note: parts such as {'R','r_small'} can also be grouped together*
+*note: parts such as {'R','r_small'} (which are different symbol representations for the same component) can also be grouped together*
 
 - Footprint: Compoments must have the same footprint to be grouped together
 
