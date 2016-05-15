@@ -59,7 +59,7 @@ BoM generation options can be configured (on a per-project basis) by editing the
 * *test_regex*: If this option is set, each component group row is test against a list of (user configurable) regular expressions. If any matches are found, that row is excluded from the output BoM file.
 * *IGNORE_COLUMNS*: A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
 * *COMPONENT_ALIASES*: A list of space-separated values which allows multiple schematic symbol visualisations to be consolidated.
-* *REGEXCLUDE_<COLUMN_NAME>*: A list of regular expressions to ignore components based on the value in a given column.
+* *REGEXCLUDE_COLUMN_NAME: A list of regular expressions to ignore components based on the value in a given column.
 
 Example configuration file (.ini format) *default values shown*
 ![alt tag](example/ini.png?raw=True "Configuration")
