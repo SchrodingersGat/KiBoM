@@ -80,11 +80,11 @@ class BomPref:
         
         cf.add_section(self.SECTION_GENERAL)
         cf.set(self.SECTION_GENERAL, "; General BoM options here")
-        cf.set(self.SECTION_GENERAL, "; If ignore_dnf option is set to 1, rows that are not to be fitted on the PCB will not be written to the BoM file")
+        cf.set(self.SECTION_GENERAL, "; If {opt} option is set to 1, rows that are not to be fitted on the PCB will not be written to the BoM file".format(opt=self.OPT_IGNORE_DNF))
         cf.set(self.SECTION_GENERAL, self.OPT_IGNORE_DNF, 1 if self.ignoreDNF else 0)
-        cf.set(self.SECTION_GENERAL, "; If number_rows option is set to 1, each row in the BoM will be prepended with an incrementing row number")
+        cf.set(self.SECTION_GENERAL, "; If {opt} option is set to 1, each row in the BoM will be prepended with an incrementing row number".format(opt=self.OPT_NUMBER_ROWS))
         cf.set(self.SECTION_GENERAL, self.OPT_NUMBER_ROWS, 1 if self.numberRows else 0)
-        cf.set(self.SECTION_GENERAL, "; If group_connectors option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector")
+        cf.set(self.SECTION_GENERAL, "; If {opt} option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
         cf.set(self.SECTION_GENERAL, self.OPT_GROUP_CONN, 1 if self.groupConnectors else 0)
         
         cf.add_section(self.SECTION_IGNORE)

@@ -59,11 +59,14 @@ Output file format selection is set by the output filename. e.g. "bom.html" will
 BoM generation options can be configured (on a per-project basis) by editing the *bom.ini* file in the PCB project directory. This file is generated the first time that the KiBoM script is run, and allows configuration of the following options.
 * Number Rows: Add row numbers to the BoM output
 * Ignore DNF: Component groups marked as 'DNF' (do not fit) will be excluded from the BoM output
-* Ignore Columns: A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
 * Group Connectors: If this option is set, connector comparison based on the 'Value' field is ignored. This allows multiple connectors which are named for their function (e.g. "Power", "ICP" etc) can be grouped together.
+* Ignore Columns: A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
+* Exclude Component Values: A list of regular expressions to ignore components based on their value
+* Exclude Component References: A list of regular expressions to ignore components based on their reference 
+* Exclude Component Footprints: A list of regular expressions to ignore components based on their footprint
 
 Example configuration file (.ini format)
-![alt tag](example/config.png?raw=True "Configuration")
+![alt tag](example/ini.png?raw=True "Configuration")
 
 ## Example
 
