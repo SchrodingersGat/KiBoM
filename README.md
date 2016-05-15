@@ -66,7 +66,7 @@ BoM generation options can be configured (on a per-project basis) by editing the
 * Exclude Component Footprints: A list of regular expressions to ignore components based on their footprint
 
 Example configuration file (.ini format)
-![alt tag](example/ini.png?raw=True "Configuration")
+![alt tag](example/options.png?raw=True "Configuration")
 
 ## Example
 
