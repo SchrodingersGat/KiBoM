@@ -61,6 +61,9 @@ BoM generation options can be configured (on a per-project basis) by editing the
 * Ignore DNF: Component groups marked as 'DNF' (do not fit) will be excluded from the BoM output
 * Ignore Columns: A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
 
+Example configuration file (.ini format)
+![alt tag](example/config.png?raw=True "Configuration")
+
 ## Example - HTML Output
 
 A simple schematic is shown below. Here a number of resistors, capacitors, and one IC have been added to demonstrate the BoM output capability. Some of the components have custom fields added ('Vendor', 'Rating', 'Notes')
@@ -69,23 +72,23 @@ A simple schematic is shown below. Here a number of resistors, capacitors, and o
 
 Here, a number of logical groups can be seen:
 
-** R1 R2 **
+**R1 R2**
 Resistors R1 and R2 have the same value (470 Ohm) even though the value is expressed differently.
 Resistors R1 and R2 have the same footprint
 
-** R3 R4 **
+**R3 R4**
 Resistors R3 and R4 have the same value and the same footprint
 
-** R5 **
+**R5**
 While R5 has the same value as R3 and R4, it is in a different footprint and thus cannot be placed in the same group.
 
-** C1 C2 **
+**C1 C2**
 C1 and C2 have the same value and footprint
 
-** C3 C4 **
+**C3 C4**
 C3 and C4 have the same value and footprint
 
-** C5 **
+**C5**
 C5 has a different footprint to C3 and C4, and thus is grouped separately
 
 A HTML BoM file is generated as follows:
