@@ -19,9 +19,11 @@ def WriteXML(filename, groups, net, headings, prefs):
         return False
         
     xml = ElementTree.Element('KiCAD_BOM', attrib = {
-            'source' : net.getSource(),
-            'version' : net.getVersion(),
-            'date' : net.getDate(),
+            'Schematic_Source' : net.getSource(),
+            'Schematic_Version' : net.getVersion(),
+            'Schematic_Date' : net.getSheetDate(),
+            'BOM_Date' : net.getDate(),
+            'KiCad_Version' : net.getTool(),
             'groups' : str(len(groups)),
             'components' : str(sum([group.getCount() for group in groups]))
     })
