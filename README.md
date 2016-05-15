@@ -63,7 +63,7 @@ BoM generation options can be configured (on a per-project basis) by editing the
 
 ## Example - HTML Output
 
-A simple schematic is shown below. Here a number of resistors, capacitors, and one IC have been added to demonstrate the BoM output capability.
+A simple schematic is shown below. Here a number of resistors, capacitors, and one IC have been added to demonstrate the BoM output capability. Some of the components have custom fields added ('Vendor', 'Rating', 'Notes')
 
 ![alt tag](example/schem.png?raw=True "Schematic")
 
