@@ -23,8 +23,9 @@ class BomPref:
     OPT_NUMBER_ROWS = "number_rows"
     OPT_GROUP_CONN = "group_connectors"
     OPT_USE_REGEX = "test_regex"
+    OPT_COMP_FP = "compare_footprints"
     
-    #list of columns which we can use reg-ex on
+    #list of columns which we can use regex on
     COL_REG_EX = [
         ColumnList.COL_REFERENCE,
         ColumnList.COL_DESCRIPTION,
@@ -44,6 +45,7 @@ class BomPref:
         self.numberRows = True #add row-numbers to BoM output
         self.groupConnectors = True #group connectors and ignore component value
         self.useRegex = True #Test various columns with regex
+        self.compareFootprints = True #test footprints when comparing components
         
         #default reference exclusions
         self.excluded_references = [
@@ -117,6 +119,8 @@ class BomPref:
                     self.groupConnectors = cf.get(self.SECTION_GENERAL, self.OPT_GROUP_CONN) == "1"
                 if cf.has_option(self.SECTION_GENERAL, self.OPT_USE_REGEX):
                     self.useRegex = cf.get(self.SECTION_GENERAL, self.OPT_USE_REGEX) == "1"
+                if cf.has_option(self.SECTION_GENERAL, self.OPT_COMP_FP):
+                    self.compareFootprints = cf.get(self.SECTION_GENERAL, self.OPT_COMP_FP) == "1"
                     
             #read out ignored-rows
             if self.SECTION_IGNORE in cf.sections():
@@ -150,6 +154,8 @@ class BomPref:
         cf.set(self.SECTION_GENERAL, self.OPT_GROUP_CONN, 1 if self.groupConnectors else 0)
         cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
         cf.set(self.SECTION_GENERAL, self.OPT_USE_REGEX, 1 if self.useRegex else 0)
+        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, two components must have the same footprint to be grouped together. If {opt} is not set, then footprint comparison is ignored.".format(opt=self.OPT_COMP_FP))
+        cf.set(self.SECTION_GENERAL, self.OPT_COMP_FP, 1 if self.compareFootprints else 0)
         
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")

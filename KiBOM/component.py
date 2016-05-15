@@ -69,7 +69,12 @@ class Component():
             if "conn" in self.getDescription().lower():
                 valueResult = True
 
-        return valueResult and self.compareFootprint(other) and self.compareLibName(other) and self.comparePartName(other) and self.isFitted() == other.isFitted()
+        if self.prefs.compareFootprints:
+            fpResult = self.compareFootprint(other)
+        else:
+            fpResult = True
+            
+        return valueResult and fpResult and self.compareLibName(other) and self.comparePartName(other) and self.isFitted() == other.isFitted()
 
     def setLibPart(self, part):
         self.libpart = part
