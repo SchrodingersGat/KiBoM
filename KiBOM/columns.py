@@ -17,9 +17,11 @@ class ColumnList:
     _COLUMNS_DEFAULT = [
                COL_DESCRIPTION,
                COL_PART,
+               COL_PART_LIB,
                COL_REFERENCE,
                COL_VALUE,
                COL_FP,
+               COL_FP_LIB,
                COL_GRP_QUANTITY,
                COL_DATASHEET
                ]

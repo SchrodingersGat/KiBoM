@@ -167,8 +167,7 @@ class ComponentGroup():
     """
     def __init__(self, prefs=None):
         self.components = []
-        self.fields = dict.fromkeys(ColumnList._COLUMNS_PROTECTED)    #columns loaded from KiCAD
-        self.csvFields = dict.fromkeys(ColumnList._COLUMNS_DEFAULT) #columns loaded from .csv file
+        self.fields = dict.fromkeys(ColumnList._COLUMNS_DEFAULT)    #columns loaded from KiCAD
         
         if not prefs:
             prefs = BomPref()
