@@ -64,7 +64,7 @@ BoM generation options can be configured (on a per-project basis) by editing the
 Example configuration file (.ini format)
 ![alt tag](example/config.png?raw=True "Configuration")
 
-## Example - HTML Output
+## Example
 
 A simple schematic is shown below. Here a number of resistors, capacitors, and one IC have been added to demonstrate the BoM output capability. Some of the components have custom fields added ('Vendor', 'Rating', 'Notes')
 
@@ -102,9 +102,48 @@ To add the BoM script, the Command Line options should be configured as follows:
 
 Hit the "Generate" button, and the output window should show that the BoM generation was successful.
 
+### HTML Output
 The output HTML file is generated as follows:
 
 ![alt tag](example/html.png?raw=True "HTML")
 
 Here the components are correctly grouped, with links to datasheets where appropriate, and fields color-coded.
+
+### CSV Output
+A CSV file output can be generated simply by changing the file extension
+
+    Component,Description,Part,References,Value,Footprint,Quantity,Datasheet,Rating,Vendor,Notes
+    1,Unpolarized capacitor,C,C1 C2,0.1uF,C_0805,2,,,,
+    2,Unpolarized capacitor,C,C3 C5,2.2uF,C_0805,2,,,,
+    3,Unpolarized capacitor,C,C4,2.2uF,C_0603,1,,100V X7R,,
+    4,"Connector, single row, 01x09",CONN_01X09,P2,Comms,JST_XH_S09B-XH-A_09x2.50mm_Angled,1,,,,
+    5,"Connector, single row, 01x09",CONN_01X09,P1,Power,JST_XH_S09B-XH-A_09x2.50mm_Angled,1,,,,
+    6,Resistor,R,R3 R4,100,R_0805,2,,,,
+    7,Resistor,R,R5,100,R_0603,1,,0.5W 0.5%,,
+    8,Resistor,R,R1 R2,470R,R_0805,2,,,Digikey,
+    9,"Dual RS232 driver/receiver, 5V supply, 120kb/s, 0C-70C",MAX232,U1,MAX232,DIP-16_W7.62mm,1 (DNF),http://www.ti.com/lit/ds/symlink/max232.pdf,,,Do not fit
+
+    Component Count:,13
+    Component Groups:,9
+    Schematic Version:,A.1
+    Schematic Date:,2016-05-15
+    BoM Date:,15-May-16 5:27:07 PM
+    Schematic Source:,C:/bom_test/Bom_Test.sch
+    KiCad Version:,"Eeschema (2016-05-06 BZR 6776, Git 63decd7)-product"
+
+### XML Output
+An XML file output can be generated simply by chaning the file extension
+
+    <?xml version="1.0" ?>
+    <KiCAD_BOM BOM_Date="15-May-16 5:27:03 PM" KiCad_Version="Eeschema (2016-05-06 BZR 6776, Git 63decd7)-product" Schematic_Date="2016-05-15" Schematic_Source="C:/bom_test/Bom_Test.sch" Schematic_Version="A.1" components="13" groups="9">
+        <group Datasheet="" Description="Unpolarized capacitor" Footprint="C_0805" Notes="" Part="C" Quantity="2" Rating="" References="C1 C2" Value="0.1uF" Vendor=""/>
+        <group Datasheet="" Description="Unpolarized capacitor" Footprint="C_0805" Notes="" Part="C" Quantity="2" Rating="" References="C3 C5" Value="2.2uF" Vendor=""/>
+        <group Datasheet="" Description="Unpolarized capacitor" Footprint="C_0603" Notes="" Part="C" Quantity="1" Rating="100V X7R" References="C4" Value="2.2uF" Vendor=""/>
+        <group Datasheet="" Description="Connector, single row, 01x09" Footprint="JST_XH_S09B-XH-A_09x2.50mm_Angled" Notes="" Part="CONN_01X09" Quantity="1" Rating="" References="P2" Value="Comms" Vendor=""/>
+        <group Datasheet="" Description="Connector, single row, 01x09" Footprint="JST_XH_S09B-XH-A_09x2.50mm_Angled" Notes="" Part="CONN_01X09" Quantity="1" Rating="" References="P1" Value="Power" Vendor=""/>
+        <group Datasheet="" Description="Resistor" Footprint="R_0805" Notes="" Part="R" Quantity="2" Rating="" References="R3 R4" Value="100" Vendor=""/>
+        <group Datasheet="" Description="Resistor" Footprint="R_0603" Notes="" Part="R" Quantity="1" Rating="0.5W 0.5%" References="R5" Value="100" Vendor=""/>
+        <group Datasheet="" Description="Resistor" Footprint="R_0805" Notes="" Part="R" Quantity="2" Rating="" References="R1 R2" Value="470R" Vendor="Digikey"/>
+        <group Datasheet="http://www.ti.com/lit/ds/symlink/max232.pdf" Description="Dual RS232 driver/receiver, 5V supply, 120kb/s, 0C-70C" Footprint="DIP-16_W7.62mm" Notes="Do not fit" Part="MAX232" Quantity="1 (DNF)" Rating="" References="U1" Value="MAX232" Vendor=""/>
+    </KiCAD_BOM>
 
