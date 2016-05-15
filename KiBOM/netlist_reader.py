@@ -529,7 +529,7 @@ class netlist():
             g.updateFields()
 
         #sort the groups
-        #first priority is the Type of component (e.g. R, U,
+        #first priority is the Type of component (e.g. R?, U?, L?)
         groups = sorted(groups, key=lambda g: [g.components[0].getPrefix(), g.components[0].getValue()])
                 
         return groups

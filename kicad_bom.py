@@ -1,4 +1,3 @@
-
 from __future__ import print_function
 
 import re
@@ -16,6 +15,7 @@ sys.path.append(here)
 from KiBOM.columns import ColumnList
 from KiBOM.netlist_reader import *
 from KiBOM.bom_writer import *
+from KiBOM.preferences import BomPref
 
 #import bomfunk_netlist_reader
 #import bomfunk_csv
@@ -71,6 +71,20 @@ else:
 print("Input File: " + input_file)
 print("Output File: " + output_file)
 
+#preferences
+ignore = []
+ignoreDNF = False
+numberRows = True
+
+#Look for a '.bom' preference file
+pref_file = os.path.join(os.path.dirname(input_file) , ".bom")
+pref = BomPref()
+
+pref.Read(pref_file)
+
+#write preference file back out (first run will generate a file with default preferences)
+pref.Write(pref_file)
+
 #individual components
 components = []
 
@@ -86,15 +100,16 @@ components = net.getInterestingComponents()
 #group the components
 groups = net.groupComponents(components)
 
-if ext in [".csv",".tsv",".txt"]:
-    if WriteCSV(output_file, groups, net.getSource(), net.getVersion(), net.getDate()):
-        print("Success! Wrote components to " + output_file)
-    else:
-        print("Error writing to " + output_file)
-        
-elif ext == ".xml":
-    WriteXML(output_file, groups, net.getSource(), net.getVersion(), net.getDate())
+columns = ColumnList()
 
-elif ext in ['.htm','.html']:
-    WriteHTML(output_file, groups, net)
+for g in groups:
+    for f in g.fields:
+        columns.AddColumn(f)
+
+#Finally, write the BoM out to file
+result = WriteBoM(output_file, groups, net, columns.columns, pref)
     
+if result:
+    sys.exit(0)
+else:
+    sys.exit(-1)
