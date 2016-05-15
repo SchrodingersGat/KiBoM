@@ -6,8 +6,6 @@ import sys
 import os
 import shutil
 
-DELIMITER = ","
-
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 sys.path.append(here)
@@ -17,25 +15,9 @@ from KiBOM.netlist_reader import *
 from KiBOM.bom_writer import *
 from KiBOM.preferences import BomPref
 
-#import bomfunk_netlist_reader
-#import bomfunk_csv
-#from bomfunk_csv import CSV_DEFAULT as COLUMNS
-
-global DEBUG
-DEBUG = True
-
-def debug(msg):
-    global DEBUG
-    if DEBUG == True:
-        print(msg)
-
 def close(*arg):
     print(*arg)
     sys.exit(0)
-
-def error(*arg):
-    print(*arg)
-    sys.exit(-1)
     
 if len(sys.argv) < 2:
     close("No input file supplied")
@@ -78,8 +60,9 @@ numberRows = True
 
 #Look for a '.bom' preference file
 pref_file = os.path.join(os.path.dirname(input_file) , ".bom")
-pref = BomPref()
 
+#read preferences from file. If file does not exists, default preferences will be used
+pref = BomPref()
 pref.Read(pref_file, verbose=True)
 
 #write preference file back out (first run will generate a file with default preferences)
@@ -102,6 +85,7 @@ groups = net.groupComponents(components)
 
 columns = ColumnList()
 
+#read out all available fields
 for g in groups:
     for f in g.fields:
         columns.AddColumn(f)
