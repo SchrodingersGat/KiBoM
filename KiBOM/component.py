@@ -1,5 +1,7 @@
 from columns import ColumnList
 
+from preferences import BomPref
+
 import units
 
 from sort import natural_sort
@@ -12,9 +14,14 @@ class Component():
     with accessors.  The xmlElement is held in field 'element'.
     """
 
-    def __init__(self, xml_element):
+    def __init__(self, xml_element, prefs=None):
         self.element = xml_element
         self.libpart = None
+        
+        if not prefs:
+            prefs = BomPref()
+            
+        self.prefs = prefs
 
         # Set to true when this component is included in a component group
         self.grouped = False
@@ -58,6 +65,11 @@ class Component():
         """Equlivalency operator, remember this can be easily overloaded"""
 
         valueResult = self.compareValue(other)
+
+        #if connector comparison is overridden, set valueResult to True
+        if self.prefs.groupConnectors:
+            if "conn" in self.getDescription().lower():
+                valueResult = True
 
         return valueResult and self.compareFootprint(other) and self.compareLibName(other) and self.comparePartName(other) and self.isFitted() == other.isFitted()
 
@@ -155,10 +167,15 @@ class ComponentGroup():
     """
     Initialize the group with no components, and default fields
     """
-    def __init__(self):
+    def __init__(self, prefs=None):
         self.components = []
         self.fields = dict.fromkeys(ColumnList._COLUMNS_PROTECTED)    #columns loaded from KiCAD
         self.csvFields = dict.fromkeys(ColumnList._COLUMNS_DEFAULT) #columns loaded from .csv file
+        
+        if not prefs:
+            prefs = BomPref()
+            
+        self.prefs = prefs
         
     def getField(self, field):
         if not field in self.fields.keys(): return ""

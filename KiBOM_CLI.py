@@ -59,11 +59,11 @@ ignoreDNF = False
 numberRows = True
 
 #Look for a '.bom' preference file
-pref_file = os.path.join(os.path.dirname(input_file) , ".bom")
+pref_file = os.path.join(os.path.dirname(input_file) , "bom.ini")
 
 #read preferences from file. If file does not exists, default preferences will be used
 pref = BomPref()
-pref.Read(pref_file, verbose=True)
+pref.Read(pref_file)
 
 #write preference file back out (first run will generate a file with default preferences)
 pref.Write(pref_file)
@@ -75,7 +75,7 @@ components = []
 groups = []
 
 #read out the netlist
-net = netlist(input_file)
+net = netlist(input_file, prefs = pref)
 
 #extract the components
 components = net.getInterestingComponents()

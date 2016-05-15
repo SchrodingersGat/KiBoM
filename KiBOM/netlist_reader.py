@@ -24,50 +24,7 @@ import pdb
 from component import Component, ComponentGroup
 from sort import natural_sort
 
-#-----<Configure>----------------------------------------------------------------
-
-# excluded_fields is a list of regular expressions.  If any one matches a field
-# from either a component or a libpart, then that will not be included as a
-# column in the BOM.  Otherwise all columns from all used libparts and components
-# will be unionized and will appear.  Some fields are impossible to blacklist, such
-# as Ref, Value, Footprint, and Datasheet.  Additionally Qty and Item are supplied
-# unconditionally as columns, and may not be removed.
-excluded_fields = [
-    #'Price@1000'
-    ]
-
-
-# You may exlude components from the BOM by either:
-#
-# 1) adding a custom field named "Installed" to your components and filling it
-# with a value of "NU" (Normally Uninstalled).
-# See netlist.getInterestingComponents(), or
-#
-# 2) blacklisting it in any of the three following lists:
-
-
-# regular expressions which match component 'Reference' fields of components that
-# are to be excluded from the BOM.
-excluded_references = [
-    'TP[0-9]+'              # all test points
-    ]
-
-
-# regular expressions which match component 'Value' fields of components that
-# are to be excluded from the BOM.
-excluded_values = [
-    'MOUNTHOLE',
-    'SCOPETEST',
-    'MOUNT_HOLE',
-    'SOLDER_BRIDGE.*'
-    ]
-
-
-# regular expressions which match component 'Footprint' fields of components that
-# are to be excluded from the BOM.
-excluded_footprints = [
-    #'MOUNTHOLE'
-    ]
+from preferences import BomPref
 
 # When comparing part names, components will match if they are both elements of the
 # same set defined here
@@ -318,7 +275,7 @@ class netlist():
     scripts
 
     """
-    def __init__(self, fname=""):
+    def __init__(self, fname="", prefs=None):
         """Initialiser for the genericNetlist class
 
         Keywords:
@@ -335,6 +292,11 @@ class netlist():
         self.tree = []
 
         self._curr_element = None
+        
+        if not prefs:
+            prefs = BomPref() #default values
+            
+        self.prefs = prefs
 
         # component blacklist regexs, made from exluded_* above.
         self.excluded_references = []
@@ -359,7 +321,7 @@ class netlist():
 
         # If this element is a component, add it to the components list
         if self._curr_element.name == "comp":
-            self.components.append(Component(self._curr_element))
+            self.components.append(Component(self._curr_element, prefs=self.prefs))
 
         # Assign the design element
         if self._curr_element.name == "design":
@@ -449,13 +411,13 @@ class netlist():
         del self.excluded_values[:]
         del self.excluded_footprints[:]
 
-        for rex in excluded_references:
+        for rex in self.prefs.excluded_references:
             self.excluded_references.append( re.compile( rex ) )
 
-        for rex in excluded_values:
+        for rex in self.prefs.excluded_values:
             self.excluded_values.append( re.compile( rex ) )
 
-        for rex in excluded_footprints:
+        for rex in self.prefs.excluded_footprints:
             self.excluded_footprints.append( re.compile( rex ) )
 
         # the subset of components to return, considered as "interesting".
@@ -495,20 +457,8 @@ class netlist():
 
         return ret
 
-
-    def groupComponents(self, components = None):
-        """Return a list of component lists. Components are grouped together
-        when the value, library and part identifiers match.
-		
-		ALSO THE FOOTPRINTS MUST MATCH YOU DINGBAT
-
-        Keywords:
-        components -- is a list of components, typically an interesting subset
-        of all components, or None.  If None, then all components are looked at.
-        """
-        if not components:
-            components = self.components
-
+    def groupComponents(self, components):
+    
         groups = []
         
         """
