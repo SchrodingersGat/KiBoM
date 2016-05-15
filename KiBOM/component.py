@@ -54,7 +54,7 @@ class Component():
         if pn1 == pn2: return True
 
         #compare part aliases e.g. "c" to "c_small"
-        for alias in ALIASES:
+        for alias in self.prefs.aliases:
             if pn1 in alias and pn2 in alias:
                 return True
 

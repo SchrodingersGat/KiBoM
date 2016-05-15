@@ -26,15 +26,6 @@ from sort import natural_sort
 
 from preferences import BomPref
 
-# When comparing part names, components will match if they are both elements of the
-# same set defined here
-ALIASES = [
-    ["c", "c_small", "cap", "capacitor"],
-    ["r", "r_small", "res", "resistor"],
-    ["sw", "switch"],
-    ["l, l_small", "inductor"]
-    ]
-
 #-----</Configure>---------------------------------------------------------------
 
 class xmlElement():

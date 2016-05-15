@@ -15,6 +15,7 @@ class BomPref:
     SECTION_EXCLUDE_VALUES = "EXCLUDE_COMPONENT_VALUES"
     SECTION_EXCLUDE_REFS = "EXCLUDE_COMPONENT_REFS"
     SECTION_EXCLUDE_FP = "EXCLUDE_COMPONENT_FP"
+    SECTION_ALIASES = "COMPONENT_ALIASES"
     
     OPT_IGNORE_DNF = "ignore_dnf"
     OPT_NUMBER_ROWS = "number_rows"
@@ -46,6 +47,14 @@ class BomPref:
         #default footprint exclusions
         self.excluded_footprints = [
             ]
+            
+        #default component groupings
+        self.aliases = [
+            ["c", "c_small", "cap", "capacitor"],
+            ["r", "r_small", "res", "resistor"],
+            ["sw", "switch"],
+            ["l", "l_small", "inductor"]
+            ]
         
     #read KiBOM preferences from file
     def Read(self, file, verbose=False):
@@ -71,6 +80,23 @@ class BomPref:
             #read out ignored-rows
             if self.SECTION_IGNORE in cf.sections():
                 self.ignore = [i for i in cf.options(self.SECTION_IGNORE)]
+                
+            #read out excluded values
+            if self.SECTION_EXCLUDE_VALUES in cf.sections():
+                self.excludedValues = [e for e in cf.options(self.SECTION_EXCLUDE_VALUES)]
+                
+            #read out excluded values
+            if self.SECTION_EXCLUDE_REFS in cf.sections():
+                self.excludedValues = [e for e in cf.options(self.SECTION_EXCLUDE_REFS)]
+                
+            #read out excluded values
+            if self.SECTION_EXCLUDE_FP in cf.sections():
+                self.excludedValues = [e for e in cf.options(self.SECTION_EXCLUDE_FP)]
+                
+            #read out component aliases
+            if self.SECTION_ALIASES in cf.sections():
+                self.aliases = [a.split(" ") for a in cf.options(self.SECTION_ALIASES)]
+                
             
     #write KiBOM preferences to file
     def Write(self, file):
@@ -111,6 +137,13 @@ class BomPref:
         cf.set(self.SECTION_EXCLUDE_FP, "; Any components with footprints that match any of these reg-ex strings will be ignored")
         for e in self.excluded_footprints:
             cf.set(self.SECTION_EXCLUDE_FP, e)
+            
+        cf.add_section(self.SECTION_ALIASES)
+        cf.set(self.SECTION_ALIASES, "; A series of values which are considered to be equivalent for the part name")
+        cf.set(self.SECTION_ALIASES, "; Each line represents a space-separated list of equivalent component name values")
+        cf.set(self.SECTION_ALIASES, "; e.g. 'c c_small cap' will ensure the equivalent capacitor symbols can be grouped together")
+        for a in self.aliases:
+            cf.set(self.SECTION_ALIASES, " ".join(a))
             
         with open(file, 'wb') as configfile:
             cf.write(configfile)
