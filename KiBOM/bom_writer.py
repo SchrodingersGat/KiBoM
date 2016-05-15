@@ -1,7 +1,11 @@
-import csv
+from csv_writer import WriteCSV
+from xml_writer import WriteXML
+from html_writer import WriteHTML
+
 import columns
 from component import *
 from xml.etree import ElementTree
+from preferences import BomPref
 
 import os, shutil
 
@@ -13,189 +17,59 @@ def TmpFileCopy(filename):
     if os.path.exists(filename) and os.path.isfile(filename):
         shutil.copyfile(filename, filename + ".tmp")
         
-def link(text):
-    text = str(text)
-    for t in ["http","https","ftp","www"]:
-        if text.startswith(t):
-            return '<a href="{t}">{t}</a>'.format(t=text)
-            
-    return text
-        
-def WriteXML(filename, groups, source, version, date, headings = columns.ColumnList._COLUMNS_ALL, ignore=[], ignoreDNF = False):
+"""
+Write BoM to file
+filename = output file path
+groups = [list of ComponentGroup groups]
+headings = [list of headings to display in the BoM file]
+prefs = BomPref object
+"""
+def WriteBoM(filename, groups, net, headings = columns.ColumnList._COLUMNS_DEFAULT, prefs=None):
     
     filename = os.path.abspath(filename)
     
-    if not filename.endswith(".xml"):
-        return False
-        
-    headings = [h for h in headings if h not in ignore]
-        
-    try:
-        TmpFileCopy(filename)
-            
-        xml = ElementTree.Element('"KiCAD Bom"', attrib = {
-                '"source"' : source,
-                '"version"' : version,
-                '"date"' : date,
-                '"groups"' : str(len(groups)),
-                '"components"' : str(sum([group.getCount() for group in groups]))
-        })
-        
-        for group in groups:
-            row = group.getKicadRow(headings)
-            
-            attrib = {}
-            
-            for i,h in enumerate(headings):
-                attrib['"' + h + '"'] = row[i]
-                
-            sub = ElementTree.SubElement(xml, "group", attrib=attrib)
-        
-        #write the document
-        tree = ElementTree.ElementTree(xml)
-        
-        tree.write(filename)
-            
-        return True
-        
-    except BaseException as e:
-        print(str(e))
-        return False
-        
-    return True
+    #no preferences supplied, use defaults
+    if not prefs:
+        prefs = BomPref()
     
-def WriteHTML(filename, groups, net, headings = columns.ColumnList._COLUMNS_ALL, ignore=[], ignoreDNF=False, numberRows=True):
-
-    filename = os.path.abspath(filename)
+    #remove any headings that appear in the ignore[] list
+    headings = [h for h in headings if not h.lower() in [i.lower() for i in prefs.ignore]]
     
-    headings = [h for h in headings if not h in ignore]
+    #make a temporary copy of the output file
+    TmpFileCopy(filename)
     
-    try:
-        TmpFileCopy(filename)
-        
-        with open(filename,"w") as html:
-            
-            #header
-            html.write("<html>\n")
-            html.write("<body>\n")
-            
-            #PCB info
-            html.write("<h2>PCB Information</h2>\n")
-            html.write("<br>Source File: {source}\n".format(source=net.getSource()))
-            html.write("<br>Date: {date}\n".format(date=net.getDate()))
-            html.write("<br>Version: {version}\n".format(version=net.getVersion()))
-            html.write("<br>\n")
-            html.write("<h2>Component Groups</h2>\n")
-            
-            #component groups
-            html.write('<table border="1">\n')
-            
-            #row titles:
-            html.write("<tr>\n")
-            if numberRows:
-                html.write("\t<th></th>\n")
-            for h in headings:
-                html.write("\t<th>{h}</th>\n".format(h=h))
-            html.write("</tr>\n")
-            
-            rowCount = 0
-            
-            for i,group in enumerate(groups):
-            
-                if ignoreDNF and not group.isFitted(): continue
-                
-                row = group.getKicadRow(headings)
-                
-                rowCount += 1
-                
-                if numberRows:
-                    row = [rowCount] + row
-                    
-                html.write("<tr>\n")
-                
-                for r in row:
-                    html.write("\t<td>{val}</td>\n".format(val=link(r)))
-                    
-            
-                html.write("</tr>\n")
-                
-            html.write("</table>\n")
-            
-            html.write("</body></html>")
-            
-            
-    except BaseException as e:
-        print(str(e))
-        return False
-        
-    return True
+    #if no extension is given, assume .csv (and append!)
     
-        
-        
-
-def WriteCSV(filename, groups, source, version, date, headings = columns.ColumnList._COLUMNS_ALL, ignore=[], ignoreDNF=False, numberRows=True):
+    if len(filename.split('.')) < 2:
+        filename += ".csv"
     
-    filename = os.path.abspath(filename)
+    ext = filename.split('.')[-1].lower()
     
-    #delimeter is assumed from file extension
-    if filename.endswith(".csv"):
-        delimiter = ","
-    elif filename.endswith(".tsv") or filename.endswith(".txt"):
-        delimiter = "\t"
+    result = False
+    
+    #CSV file writing
+    if ext in ["csv","csv","txt"]:
+        if WriteCSV(filename, groups, net, headings, prefs):
+            print("CSV Output -> {fn}".format(fn=filename))
+            result = True
+        else:
+            print("Error writing CSV output")
+            
+    elif ext in ["htm","html"]:
+        if WriteHTML(filename, groups, net, headings, prefs):
+            print("HTML Output -> {fn}".format(fn=filename))
+            result = True
+        else:
+            print("Error writing HTML output")
+            
+    elif ext in ["xml"]:
+        if WriteXML(filename, groups, net, headings, prefs):
+            print("XML Output -> {fn}".format(fn=filename))
+            result = True
+        else:
+            print("Error writing XML output")
+            
     else:
-        return False
-        
-    headings = [h for h in headings if h not in ignore] #copy across the headings
-    
-    try:
-        #make a copy of the file
-        TmpFileCopy(filename)
-        
-        with open(filename, "w") as f:
-        
-            writer = csv.writer(f, delimiter=delimiter, lineterminator="\n")
+        print("Unsupported file extension: {ext}".format(ext=ext))
             
-            if numberRows:
-                writer.writerow(["Component"] + headings)
-            else:
-                writer.writerow(headings)
-                
-            count = 0
-            rowCount = 1
-            
-            for i, group in enumerate(groups):
-                if ignoreDNF and not group.isFitted(): continue
-                
-                row = group.getKicadRow(headings)
-                
-                if numberRows:
-                    row = [rowCount] + row
-                    
-                writer.writerow(row)
-                
-                try:
-                    count += group.getCount()
-                except:
-                    pass
-                    
-                rowCount += 1
-                
-            #blank rows
-            for i in range(5):
-                writer.writerow([])
-                
-            writer.writerow(["Component Count:",componentCount])
-            writer.writerow(["Component Groups:",len(groups)])
-            writer.writerow(["Source:",source])
-            writer.writerow(["Version:",version])
-            writer.writerow(["Date:",date])
-            
-        return True
- 
- 
-    except BaseException as e:
-        print(str(e))
-        return False
-        
-    return True
-    
+    return result
