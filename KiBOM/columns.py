@@ -1,7 +1,7 @@
 class ColumnList:
 
     #default columns (immutable)
-    COL_REFERENCE = 'Reference'
+    COL_REFERENCE = 'References'
     COL_DESCRIPTION = 'Description'
     COL_VALUE = 'Value'
     COL_FP = 'Footprint'
