@@ -18,41 +18,34 @@ def WriteXML(filename, groups, net, headings, prefs):
     if not filename.endswith(".xml"):
         return False
         
-    try:
-        xml = ElementTree.Element('KiCAD_BOM', attrib = {
-                'source' : net.getSource(),
-                'version' : net.getVersion(),
-                'date' : net.getDate(),
-                'groups' : str(len(groups)),
-                'components' : str(sum([group.getCount() for group in groups]))
-        })
+    xml = ElementTree.Element('KiCAD_BOM', attrib = {
+            'source' : net.getSource(),
+            'version' : net.getVersion(),
+            'date' : net.getDate(),
+            'groups' : str(len(groups)),
+            'components' : str(sum([group.getCount() for group in groups]))
+    })
+    
+    for group in groups:
+        if prefs.ignoreDNF and not group.isFitted():
+            continue
+        row = group.getRow(headings)
         
-        for group in groups:
-            if prefs.ignoreDNF and not group.isFitted():
-                continue
-            row = group.getRow(headings)
-            
-            attrib = {}
-            
-            for i,h in enumerate(headings):
-                h = h.replace(' ','_') #replace spaces, xml no likey
-                h = h.replace('"','')
-                h = h.replace("'",'')
-                
-                attrib[h] = row[i]
-                
-            sub = ElementTree.SubElement(xml, "group", attrib=attrib)
+        attrib = {}
         
-        with open(filename,"w") as output:
-            out = ElementTree.tostring(xml, 'utf-8')
+        for i,h in enumerate(headings):
+            h = h.replace(' ','_') #replace spaces, xml no likey
+            h = h.replace('"','')
+            h = h.replace("'",'')
             
-            output.write(minidom.parseString(out).toprettyxml(indent="\t"))
+            attrib[h] = row[i]
             
-        return True
+        sub = ElementTree.SubElement(xml, "group", attrib=attrib)
+    
+    with open(filename,"w") as output:
+        out = ElementTree.tostring(xml, 'utf-8')
         
-    except BaseException as e:
-        print(str(e))
-        return False
+        output.write(minidom.parseString(out).toprettyxml(indent="\t"))
         
     return True
     
