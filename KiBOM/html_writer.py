@@ -93,7 +93,7 @@ def WriteHTML(filename, groups, net, headings, prefs):
             html.write("<tr>\n")
             
             if prefs.numberRows:
-                html.write("\t<td>{n}</td>".format(n=rowCount))
+                html.write('\t<td align="center">{n}</td>'.format(n=rowCount))
                 
             for n, r in enumerate(row):
                 bg = bgColor(headings[n])
