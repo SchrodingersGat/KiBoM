@@ -37,9 +37,9 @@ The following default fields are extracted and can be added to the output BoM fi
 * References - List of part references included in a particular group
 * Quantity - Number of components included in a particular group
 * Part - Part name as per the schematic symbol
-* Part Lib - Part library for the symbol **(default - not output to BoM file)**
+* Part Lib - Part library for the symbol *(default - not output to BoM file)*
 * Footprint - Part footprint
-* Footprint Lib - Part footprint library **(default - not output to BoM file)**
+* Footprint Lib - Part footprint library *(default - not output to BoM file)*
 * Datasheet - Component datasheet extracted either from user-included data, or from part library
 
 **User Fields**
@@ -52,3 +52,9 @@ Multiple BoM output formats are supported:
 * TXT (Text file output with tab separated values)
 * XML
 * HTML
+
+### Configuration File
+BoM generation options can be configured (on a per-project basis) by editing the *.bom* file in the PCB project directory. This file is generated the first time that the KiBoM script is run, and allows configuration of the following options.
+* Number Rows: Add row numbers to the BoM output
+* Ignore DNF: Component groups marked as 'DNF' (do not fit) will be excluded from the BoM output
+* Ignore Columns: A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
