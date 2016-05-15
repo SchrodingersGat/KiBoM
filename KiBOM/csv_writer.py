@@ -24,53 +24,44 @@ def WriteCSV(filename, groups, net, headings, prefs):
         delimiter = "\t"
     else:
         return False
+        
+    with open(filename, "w") as f:
     
-    try:
+        writer = csv.writer(f, delimiter=delimiter, lineterminator="\n")
         
-        with open(filename, "w") as f:
+        if prefs.numberRows:
+            writer.writerow(["Component"] + headings)
+        else:
+            writer.writerow(headings)
+            
+        count = 0
+        rowCount = 1
         
-            writer = csv.writer(f, delimiter=delimiter, lineterminator="\n")
+        for i, group in enumerate(groups):
+            if prefs.ignoreDNF and not group.isFitted(): continue
+            
+            row = group.getRow(headings)
             
             if prefs.numberRows:
-                writer.writerow(["Component"] + headings)
-            else:
-                writer.writerow(headings)
+                row = [rowCount] + row
                 
-            count = 0
-            rowCount = 1
+            writer.writerow(row)
             
-            for i, group in enumerate(groups):
-                if prefs.ignoreDNF and not group.isFitted(): continue
+            try:
+                count += group.getCount()
+            except:
+                pass
                 
-                row = group.getRow(headings)
-                
-                if prefs.numberRows:
-                    row = [rowCount] + row
-                    
-                writer.writerow(row)
-                
-                try:
-                    count += group.getCount()
-                except:
-                    pass
-                    
-                rowCount += 1
-                
-            #blank rows
-            for i in range(5):
-                writer.writerow([])
-                
-            writer.writerow(["Component Count:",sum([g.getCount() for g in groups])])
-            writer.writerow(["Component Groups:",len(groups)])
-            writer.writerow(["Source:",net.getSource()])
-            writer.writerow(["Version:",net.getVersion()])
-            writer.writerow(["Date:",net.getDate()])
+            rowCount += 1
             
-        return True
- 
- 
-    except BaseException as e:
-        print(str(e))
-        return False
+        #blank rows
+        for i in range(5):
+            writer.writerow([])
+            
+        writer.writerow(["Component Count:",sum([g.getCount() for g in groups])])
+        writer.writerow(["Component Groups:",len(groups)])
+        writer.writerow(["Source:",net.getSource()])
+        writer.writerow(["Version:",net.getVersion()])
+        writer.writerow(["Date:",net.getDate()])
         
     return True
