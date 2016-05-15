@@ -288,12 +288,7 @@ class netlist():
             prefs = BomPref() #default values
             
         self.prefs = prefs
-
-        # component blacklist regexs, made from exluded_* above.
-        self.excluded_references = []
-        self.excluded_values = []
-        self.excluded_footprints = []
-
+        
         if fname != "":
             self.load(fname)
 
@@ -390,58 +385,9 @@ class netlist():
         return sheet.get("rev")
 
     def getInterestingComponents(self):
-        """Return a subset of all components, those that should show up in the BOM.
-        Omit those that should not, by consulting the blacklists:
-        excluded_values, excluded_refs, and excluded_footprints, which hold one
-        or more regular expressions.  If any of the the regular expressions match
-        the corresponding field's value in a component, then the component is exluded.
-        """
-
-        # pre-compile all the regex expressions:
-        del self.excluded_references[:]
-        del self.excluded_values[:]
-        del self.excluded_footprints[:]
-
-        for rex in self.prefs.excluded_references:
-            self.excluded_references.append( re.compile( rex ) )
-
-        for rex in self.prefs.excluded_values:
-            self.excluded_values.append( re.compile( rex ) )
-
-        for rex in self.prefs.excluded_footprints:
-            self.excluded_footprints.append( re.compile( rex ) )
-
-        # the subset of components to return, considered as "interesting".
-        ret = []
-
-        # run each component thru a series of tests, if it passes all, then add it
-        # to the interesting list 'ret'.
-        for c in self.components:
-            exclude = False
-            if not exclude:
-                for refs in self.excluded_references:
-                    if refs.match(c.getRef()):
-                        exclude = True
-                        break;
-            if not exclude:
-                for vals in self.excluded_values:
-                    if vals.match(c.getValue()):
-                        exclude = True
-                        break;
-            if not exclude:
-                for mods in self.excluded_footprints:
-                    if mods.match(c.getFootprint()):
-                        exclude = True
-                        break;
-
-            if not exclude:
-                # This is a fairly personal way to flag DNS (Do Not Stuff).  NU for
-                # me means Normally Uninstalled.  You can 'or in' another expression here.
-                if c.getField( "Installed" ) == 'NU':
-                    exclude = True
-
-            if not exclude:
-                ret.append(c)
+        
+        #copy out the components
+        ret = [c for c in self.components]
 
         # Sort first by ref as this makes for easier to read BOM's
         ret.sort(key=lambda g: g.getRef())
@@ -452,9 +398,7 @@ class netlist():
     
         groups = []
         
-        """
-        Iterate through each component, and test whether a group for these already exists
-        """
+        # Iterate through each component, and test whether a group for these already exists
         for c in components:
             found = False
             
@@ -465,7 +409,7 @@ class netlist():
                     break
             
             if not found:
-                g = ComponentGroup()
+                g = ComponentGroup(prefs=self.prefs) #pass down the preferences
                 g.addComponent(c)
                 groups.append(g)
             
@@ -473,6 +417,10 @@ class netlist():
         for g in groups:
             g.sortComponents()
             g.updateFields()
+            
+        if self.prefs.useRegex:
+            #remove any that don't match regex
+            groups = [g for g in groups if g.testRegex()]
 
         #sort the groups
         #first priority is the Type of component (e.g. R?, U?, L?)

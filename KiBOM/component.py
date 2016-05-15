@@ -1,10 +1,8 @@
 from columns import ColumnList
-
 from preferences import BomPref
-
 import units
-
 from sort import natural_sort
+import re
 
 DNF = ["dnf", "do not fit", "nofit", "no stuff", "nostuff", "noload", "do not load"]
 
@@ -268,6 +266,37 @@ class ComponentGroup():
         else:
             self.fields[ColumnList.COL_FP] = ""
             self.fields[ColumnList.COL_FP_LIB] = ""
+            
+    #run test against all available regex exclusions in the preference file
+    #return True if none match (i.e. this group is OK)
+    #retunr False if any match
+    def testRegex(self):
+        
+        for key in self.prefs.regex.keys():
+            reg = self.prefs.regex[key]
+            if not type(reg) in [str, list]: continue #regex must be a string, or a list of strings
+            #does this group have a column that matches this regex?
+            if not self.getField(key): continue
+            
+            #list of regex to compare against
+            if type(reg) is str:
+                regex = [reg]
+            else:
+                regex = reg
+                
+            #test each regex
+            for r in regex:
+                field = self.getField(key)
+                if re.search(r, field, flags=re.IGNORECASE) is not None:
+                    print("'{col}' value '{val}' matched regex '{reg}'".format(
+                        col = key,
+                        val = self.getField(key),
+                        reg = r
+                        ))
+                    return False
+                    
+        return True
+                
 
     #return a dict of the KiCAD data based on the supplied columns
     def getRow(self, columns):
