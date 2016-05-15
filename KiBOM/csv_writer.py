@@ -60,8 +60,10 @@ def WriteCSV(filename, groups, net, headings, prefs):
             
         writer.writerow(["Component Count:",sum([g.getCount() for g in groups])])
         writer.writerow(["Component Groups:",len(groups)])
-        writer.writerow(["Source:",net.getSource()])
-        writer.writerow(["Version:",net.getVersion()])
-        writer.writerow(["Date:",net.getDate()])
+        writer.writerow(["Schematic Version:",net.getVersion()])
+        writer.writerow(["Schematic Date:",net.getSheetDate()])
+        writer.writerow(["BoM Date:",net.getDate()])
+        writer.writerow(["Schematic Source:",net.getSource()])
+        writer.writerow(["KiCad Version:",net.getTool()])
         
     return True
