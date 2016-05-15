@@ -57,12 +57,7 @@ class Component():
     def __eq__(self, other):
         """Equlivalency operator, remember this can be easily overloaded"""
 
-        #special case for connectors, as the "Value" is the description of the connector (and is somewhat meaningless)
-        if "conn" in self.getDescription().lower():
-            #ignore "value"
-            valueResult = True
-        else:
-            valueResult = self.compareValue(other)
+        valueResult = self.compareValue(other)
 
         return valueResult and self.compareFootprint(other) and self.compareLibName(other) and self.comparePartName(other) and self.isFitted() == other.isFitted()
 
@@ -171,8 +166,6 @@ class ComponentGroup():
         return str(self.fields[field])
         
     def getCount(self):
-        for c in self.components:
-            if not c.isFitted(): return "0"
         return len(self.components)
 
     #Test if a given component fits in this group
@@ -243,7 +236,9 @@ class ComponentGroup():
                      
         #update 'global' fields
         self.fields[ColumnList.COL_REFERENCE] = self.getRefs()
-        self.fields[ColumnList.COL_GRP_QUANTITY] = self.getCount()
+        self.fields[ColumnList.COL_GRP_QUANTITY] = "{n}{dnf}".format(
+            n = self.getCount(),
+            dnf = " (DNF)" if not self.isFitted() else "")
         self.fields[ColumnList.COL_VALUE] = self.components[0].getValue()
         self.fields[ColumnList.COL_PART] = self.components[0].getPartName()
         self.fields[ColumnList.COL_PART_LIB] = self.components[0].getLibName()
