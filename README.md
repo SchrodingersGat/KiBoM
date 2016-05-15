@@ -137,7 +137,7 @@ A CSV file output can be generated simply by changing the file extension
     KiCad Version:,"Eeschema (2016-05-06 BZR 6776, Git 63decd7)-product"
 
 ### XML Output
-An XML file output can be generated simply by chaning the file extension
+An XML file output can be generated simply by changing the file extension
 
     <?xml version="1.0" ?>
     <KiCAD_BOM BOM_Date="15-May-16 5:27:03 PM" KiCad_Version="Eeschema (2016-05-06 BZR 6776, Git 63decd7)-product" Schematic_Date="2016-05-15" Schematic_Source="C:/bom_test/Bom_Test.sch" Schematic_Version="A.1" components="13" groups="9">
