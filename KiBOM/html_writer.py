@@ -49,11 +49,15 @@ def WriteHTML(filename, groups, net, headings, prefs):
         
         #PCB info
         html.write("<h2>KiBoM PCB Bill of Materials</h2>\n")
-        html.write("<br>Source File: {source}\n".format(source=net.getSource()))
-        html.write("<br>Date: {date}\n".format(date=net.getDate()))
-        html.write("<br>Schematic Version: {version}\n".format(version=net.getVersion()))
-        html.write("<br>Total Components: {n}\n".format(n = sum([g.getCount() for g in groups])))
-        html.write("<br>Component Groups: {n}\n".format(n=len(groups)))
+        html.write('<table border="1">\n')
+        html.write("<tr><td>Source File</td><td>{source}</td></tr>\n".format(source=net.getSource()))
+        html.write("<tr><td>BoM Date</td><td>{date}</td></tr>\n".format(date=net.getDate()))
+        html.write("<tr><td>Schematic Version</td><td>{version}</td></tr>\n".format(version=net.getVersion()))
+        html.write("<tr><td>Schematic Date</td><td>{date}</td></tr>\n".format(date=net.getSheetDate()))
+        html.write("<tr><td>KiCad Version</td><td>{version}</td></tr>\n".format(version=net.getTool()))
+        html.write("<tr><td>Total Components</td><td>{n}</td></tr>\n".format(n = sum([g.getCount() for g in groups])))
+        html.write("<tr><td>Component Groups</td><td>{n}</td></tr>\n".format(n=len(groups)))
+        html.write("</table>\n")
         html.write("<br>\n")
         html.write("<h2>Component Groups</h2>\n")
         html.write('<p style="background-color: {bg}">Kicad Fields (default)</p>\n'.format(bg=BG_KICAD))
@@ -89,7 +93,7 @@ def WriteHTML(filename, groups, net, headings, prefs):
             html.write("<tr>\n")
             
             if prefs.numberRows:
-                html.write("\t<td>{n}</td>\n".format(n=rowCount))
+                html.write("\t<td>{n}</td>".format(n=rowCount))
                 
             for n, r in enumerate(row):
                 bg = bgColor(headings[n])
