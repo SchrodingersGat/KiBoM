@@ -154,7 +154,7 @@ class BomPref:
         cf.set(self.SECTION_GENERAL, self.OPT_GROUP_CONN, 1 if self.groupConnectors else 0)
         cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
         cf.set(self.SECTION_GENERAL, self.OPT_USE_REGEX, 1 if self.useRegex else 0)
-        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, two components must have the same footprint to be grouped together. If {opt} is not set, then footprint comparison is ignored.".format(opt=self.OPT_COMP_FP))
+        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, two components must have the same footprint to be grouped together. If '{opt}' is not set, then footprint comparison is ignored.".format(opt=self.OPT_COMP_FP))
         cf.set(self.SECTION_GENERAL, self.OPT_COMP_FP, 1 if self.compareFootprints else 0)
         
         cf.add_section(self.SECTION_IGNORE)
