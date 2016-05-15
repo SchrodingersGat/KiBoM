@@ -80,7 +80,7 @@ numberRows = True
 pref_file = os.path.join(os.path.dirname(input_file) , ".bom")
 pref = BomPref()
 
-pref.Read(pref_file)
+pref.Read(pref_file, verbose=True)
 
 #write preference file back out (first run will generate a file with default preferences)
 pref.Write(pref_file)

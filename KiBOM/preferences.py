@@ -25,7 +25,7 @@ class BomPref:
         self.numberRows = True #add row-numbers to BoM output
         
     #read KiBOM preferences from file
-    def Read(self, file):
+    def Read(self, file, verbose=False):
         file = os.path.abspath(file)
         if not os.path.exists(file) or not os.path.isfile(file):
             print("{f} is not a valid file!".format(f=file))
@@ -46,6 +46,14 @@ class BomPref:
             #read out ignored-rows
             if self.SECTION_IGNORE in cf.sections():
                 self.ignore = [i for i in cf.options(self.SECTION_IGNORE)]
+            
+        if verbose:
+            print("Preferences:")
+            print(self.OPT_IGNORE_DNF + ' = ' + str(self.ignoreDNF))
+            print(self.OPT_NUMBER_ROWS + ' = ' + str(self.numberRows))
+            
+            for i in self.ignore:
+                print("Ignoring column '" + i + "'")
             
     #write KiBOM preferences to file
     def Write(self, file):
