@@ -35,13 +35,12 @@ def WriteBoM(filename, groups, net, headings = columns.ColumnList._COLUMNS_DEFAU
     #remove any headings that appear in the ignore[] list
     headings = [h for h in headings if not h.lower() in [i.lower() for i in prefs.ignore]]
     
-    #make a temporary copy of the output file
-    TmpFileCopy(filename)
-    
     #if no extension is given, assume .csv (and append!)
-    
     if len(filename.split('.')) < 2:
         filename += ".csv"
+        
+    #make a temporary copy of the output file
+    TmpFileCopy(filename)
     
     ext = filename.split('.')[-1].lower()
     
