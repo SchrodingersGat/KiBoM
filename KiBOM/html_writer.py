@@ -1,3 +1,4 @@
+
 import columns
 from component import *
 import os
@@ -19,7 +20,7 @@ def bgColor(col):
         return BG_USER
     
 def link(text):
-    text = str(text)
+    text = u''.join((text)).encode('utf-8').strip()
     for t in ["http","https","ftp","www"]:
         if text.startswith(t):
             return '<a href="{t}">{t}</a>'.format(t=text)

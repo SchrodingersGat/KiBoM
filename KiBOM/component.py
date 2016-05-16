@@ -182,7 +182,7 @@ class ComponentGroup():
     def getField(self, field):
         if not field in self.fields.keys(): return ""
         if not self.fields[field]: return ""
-        return str(self.fields[field])
+        return u''.join((self.fields[field]))
         
     def getCount(self):
         return len(self.components)
