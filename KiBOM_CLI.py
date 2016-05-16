@@ -90,6 +90,10 @@ for g in groups:
     for f in g.fields:
         columns.AddColumn(f)
 
+if pref.buildNumber < 1:
+    columns.RemoveColumn(ColumnList.COL_GRP_BUILD_QUANTITY)
+    print("Removing:",ColumnList.COL_GRP_BUILD_QUANTITY)
+        
 #Finally, write the BoM out to file
 result = WriteBoM(output_file, groups, net, columns.columns, pref)
     
