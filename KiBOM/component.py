@@ -255,9 +255,12 @@ class ComponentGroup():
                      
         #update 'global' fields
         self.fields[ColumnList.COL_REFERENCE] = self.getRefs()
+        
+        q = self.getCount()
         self.fields[ColumnList.COL_GRP_QUANTITY] = "{n}{dnf}".format(
-            n = self.getCount(),
+            n=q,
             dnf = " (DNF)" if not self.isFitted() else "")
+        self.fields[ColumnList.COL_GRP_BUILD_QUANTITY] = str(q * self.prefs.buildNumber) if self.isFitted() else "0"
         self.fields[ColumnList.COL_VALUE] = self.components[0].getValue()
         self.fields[ColumnList.COL_PART] = self.components[0].getPartName()
         self.fields[ColumnList.COL_PART_LIB] = self.components[0].getLibName()
@@ -303,7 +306,18 @@ class ComponentGroup():
                 
 
     #return a dict of the KiCAD data based on the supplied columns
+    #NOW WITH UNICODE SUPPORT!
     def getRow(self, columns):
-        row = [self.getField(key) for key in columns]
-        #print(row)
+        row = []
+        for key in columns:
+            val = self.getField(key)
+            
+            if val is None:
+                val = ""
+            else:
+                val = u'' + val
+                val = val.encode('utf-8')
+                
+            row.append(val)
+            
         return row

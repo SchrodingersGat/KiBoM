@@ -1,3 +1,5 @@
+# _*_ coding:latin-1 _*_
+
 import csv
 import columns
 from component import *
@@ -25,6 +27,11 @@ def WriteCSV(filename, groups, net, headings, prefs):
     else:
         return False
         
+    nGroups = len(groups)
+    nTotal = sum([g.getCount() for g in groups])
+    nFitted = sum([g.getCount() for g in groups if g.isFitted()])
+    nBuild = nFitted * prefs.buildNumber
+        
     with open(filename, "w") as f:
     
         writer = csv.writer(f, delimiter=delimiter, lineterminator="\n")
@@ -43,8 +50,10 @@ def WriteCSV(filename, groups, net, headings, prefs):
             row = group.getRow(headings)
             
             if prefs.numberRows:
-                row = [rowCount] + row
+                row = [str(rowCount)] + row
                 
+            #deal with unicode characters
+            #row = [el.decode('latin-1') for el in row]
             writer.writerow(row)
             
             try:
@@ -58,8 +67,12 @@ def WriteCSV(filename, groups, net, headings, prefs):
         for i in range(5):
             writer.writerow([])
             
-        writer.writerow(["Component Count:",sum([g.getCount() for g in groups])])
-        writer.writerow(["Component Groups:",len(groups)])
+        writer.writerow(["Component Groups:",nGroups])
+        writer.writerow(["Component Count:",nTotal])
+        writer.writerow(["Fitted Components:", nFitted])
+        if prefs.buildNumber > 0:
+            writer.writerow(["Number of PCBs:",prefs.buildNumber])
+            writer.writerow(["Total components:", nBuild])
         writer.writerow(["Schematic Version:",net.getVersion()])
         writer.writerow(["Schematic Date:",net.getSheetDate()])
         writer.writerow(["BoM Date:",net.getDate()])

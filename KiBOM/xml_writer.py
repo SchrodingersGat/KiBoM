@@ -18,19 +18,32 @@ def WriteXML(filename, groups, net, headings, prefs):
     if not filename.endswith(".xml"):
         return False
         
-    xml = ElementTree.Element('KiCAD_BOM', attrib = {
-            'Schematic_Source' : net.getSource(),
-            'Schematic_Version' : net.getVersion(),
-            'Schematic_Date' : net.getSheetDate(),
-            'BOM_Date' : net.getDate(),
-            'KiCad_Version' : net.getTool(),
-            'groups' : str(len(groups)),
-            'components' : str(sum([group.getCount() for group in groups]))
-    })
+    nGroups = len(groups)
+    nTotal = sum([g.getCount() for g in groups])
+    nFitted = sum([g.getCount() for g in groups if g.isFitted()])
+    nBuild = nFitted * prefs.buildNumber
+        
+    attrib = {}
+    
+    attrib['Schematic_Source'] = net.getSource()
+    attrib['Schematic_Version'] = net.getVersion()
+    attrib['Schematic_Date'] = net.getSheetDate()
+    attrib['BOM_Date'] = net.getDate()
+    attrib['KiCad_Version'] = net.getTool()
+    attrib['Component_Groups'] = str(nGroups)
+    attrib['Component_Count'] = str(nTotal)
+    attrib['Fitted_Components'] = str(nFitted)
+    
+    if prefs.buildNumber > 0:
+        attrib['Number_of_PCBs'] = str(prefs.buildNumber)
+        attrib['Total_Components'] = str(nBuild)
+       
+    xml = ElementTree.Element('KiCAD_BOM', attrib = attrib, encoding='utf-8')
     
     for group in groups:
         if prefs.ignoreDNF and not group.isFitted():
             continue
+            
         row = group.getRow(headings)
         
         attrib = {}
@@ -40,13 +53,12 @@ def WriteXML(filename, groups, net, headings, prefs):
             h = h.replace('"','')
             h = h.replace("'",'')
             
-            attrib[h] = row[i]
+            attrib[h] = str(row[i]).decode('ascii',errors='ignore')
             
         sub = ElementTree.SubElement(xml, "group", attrib=attrib)
     
     with open(filename,"w") as output:
-        out = ElementTree.tostring(xml, 'utf-8')
-        
+        out = ElementTree.tostring(xml, encoding="utf-8")
         output.write(minidom.parseString(out).toprettyxml(indent="\t"))
         
     return True
