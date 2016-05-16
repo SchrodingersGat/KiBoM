@@ -97,6 +97,13 @@ class BomPref:
     def columnToGroup(self, col):
         return "REGEXCLUDE_" + col.upper().replace(" ","_")
         
+    #check an option within the SECTION_GENERAL group
+    def checkOption(self, parser, opt, default=False):
+        if parser.has_option(self.SECTION_GENERAL, opt):
+            return parser.get(self.SECTION_GENERAL, opt).lower() in ["1","true","yes"]
+        else:
+            return default
+            
     #read KiBOM preferences from file
     def Read(self, file, verbose=False):
         file = os.path.abspath(file)
@@ -111,16 +118,11 @@ class BomPref:
             
             #read general options
             if self.SECTION_GENERAL in cf.sections():
-                if cf.has_option(self.SECTION_GENERAL, self.OPT_IGNORE_DNF):
-                    self.ignoreDNF = cf.get(self.SECTION_GENERAL, self.OPT_IGNORE_DNF) == "1"
-                if cf.has_option(self.SECTION_GENERAL, self.OPT_NUMBER_ROWS):
-                    self.numberRows = cf.get(self.SECTION_GENERAL, self.OPT_NUMBER_ROWS) == "1"
-                if cf.has_option(self.SECTION_GENERAL, self.OPT_GROUP_CONN):
-                    self.groupConnectors = cf.get(self.SECTION_GENERAL, self.OPT_GROUP_CONN) == "1"
-                if cf.has_option(self.SECTION_GENERAL, self.OPT_USE_REGEX):
-                    self.useRegex = cf.get(self.SECTION_GENERAL, self.OPT_USE_REGEX) == "1"
-                if cf.has_option(self.SECTION_GENERAL, self.OPT_COMP_FP):
-                    self.compareFootprints = cf.get(self.SECTION_GENERAL, self.OPT_COMP_FP) == "1"
+                self.ignoreDNF =  self.checkOption(cf, self.OPT_IGNORE_DNF, default=True)
+                self.numberRows = self.checkOption(cf, self.OPT_NUMBER_ROWS, default=True)
+                self.groupConnectors = self.checkOption(cf, self.OPT_GROUP_CONN, default=True)
+                self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
+                self.compareFootprints = self.checkOption(cf, self.OPT_COMP_FP, default=True)
                     
             #read out ignored-rows
             if self.SECTION_IGNORE in cf.sections():
@@ -136,7 +138,14 @@ class BomPref:
                 if section in cf.sections():
                     self.regex[key] = [r for r in cf.options(section)]
             
-                
+            
+    #add an option to the SECTION_GENRAL group
+    def addOption(self, parser, opt, value, comment=None):
+        if comment:
+            if not comment.startswith(";"):
+                comment = "; " + comment
+            parser.set(self.SECTION_GENERAL, comment)
+        parser.set(self.SECTION_GENERAL, opt, "1" if value else "0")
             
     #write KiBOM preferences to file
     def Write(self, file):
@@ -146,16 +155,11 @@ class BomPref:
         
         cf.add_section(self.SECTION_GENERAL)
         cf.set(self.SECTION_GENERAL, "; General BoM options here")
-        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, rows that are not to be fitted on the PCB will not be written to the BoM file".format(opt=self.OPT_IGNORE_DNF))
-        cf.set(self.SECTION_GENERAL, self.OPT_IGNORE_DNF, 1 if self.ignoreDNF else 0)
-        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, each row in the BoM will be prepended with an incrementing row number".format(opt=self.OPT_NUMBER_ROWS))
-        cf.set(self.SECTION_GENERAL, self.OPT_NUMBER_ROWS, 1 if self.numberRows else 0)
-        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
-        cf.set(self.SECTION_GENERAL, self.OPT_GROUP_CONN, 1 if self.groupConnectors else 0)
-        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
-        cf.set(self.SECTION_GENERAL, self.OPT_USE_REGEX, 1 if self.useRegex else 0)
-        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, two components must have the same footprint to be grouped together. If '{opt}' is not set, then footprint comparison is ignored.".format(opt=self.OPT_COMP_FP))
-        cf.set(self.SECTION_GENERAL, self.OPT_COMP_FP, 1 if self.compareFootprints else 0)
+        self.addOption(cf, self.OPT_IGNORE_DNF, self.ignoreDNF, comment="If '{opt}' option is set to 1, rows that are not to be fitted on the PCB will not be written to the BoM file".format(opt=self.OPT_IGNORE_DNF))
+        self.addOption(cf, self.OPT_NUMBER_ROWS, self.numberRows, comment="If '{opt}' option is set to 1, each row in the BoM will be prepended with an incrementing row number".format(opt=self.OPT_NUMBER_ROWS))
+        self.addOption(cf, self.OPT_GROUP_CONN, self.groupConnectors, comment="If '{opt}' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
+        self.addOption(cf, self.OPT_USE_REGEX, self.useRegex, comment="If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
+        self.addOption(cf, self.OPT_COMP_FP, self.compareFootprints, comment="If '{opt}' option is set to 1, two components must have the same footprint to be grouped together. If '{opt}' is not set, then footprint comparison is ignored.".format(opt=self.OPT_COMP_FP))
         
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")
