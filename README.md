@@ -127,7 +127,9 @@ Hit the "Generate" button, and the output window should show that the BoM genera
 ### HTML Output
 The output HTML file is generated as follows:
 
-![alt tag](example/html_eg.png?raw=True "HTML")
+![alt tag](example/html_eg.png?raw=True "HTML Gen")
+
+![alt tag](example/html.png?raw=True "HTML Output")
 
 Here the components are correctly grouped, with links to datasheets where appropriate, and fields color-coded.
 
