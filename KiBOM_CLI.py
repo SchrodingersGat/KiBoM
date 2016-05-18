@@ -6,6 +6,8 @@ import sys
 import os
 import shutil
 
+import argparse
+
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 sys.path.append(here)
@@ -15,58 +17,77 @@ from KiBOM.netlist_reader import *
 from KiBOM.bom_writer import *
 from KiBOM.preferences import BomPref
 
+verbose = False
+
 def close(*arg):
     print(*arg)
     sys.exit(0)
     
-if len(sys.argv) < 2:
-    close("No input file supplied")
+def say(*arg):
+    if verbose:
+        print(*arg)
     
-input_file = sys.argv[1].replace("\\",os.path.sep).replace("/",os.path.sep)
+parser = argparse.ArgumentParser(description="KiBOM Bill of Materials generator script")
 
-input_file = os.path.abspath(input_file)
+parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running from within KiCad')
+parser.add_argument("--output", "-o", help='BoM output file name.\nUse "%%O" when running from within KiCad to use the default output name (csv file).\nFor e.g. HTML output, use "%%O.html"\r\nIf output file is unspecified, default output filename (csv format) will be used', default=None)
+
+parser.add_argument("-v", "--verbose", help="Enable verbose output", action='count')
+parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
+
+args = parser.parse_args()
     
+input_file = args.netlist
+
 if not input_file.endswith(".xml"):
-    close("Supplied file is not .xml")
-
-#work out an output file
-ext = ".csv"
-
-if len(sys.argv) < 3:
-    #no output file supplied, assume .csv
-    output_file = input_file.replace(".xml",".csv")
-else:
-    output_file = sys.argv[2].replace("\\",os.path.sep).replace("/",os.path.sep)
+    close("{i} is not a valid xml file".format(i=input_file))
     
-    valid = False
+verbose = args.verbose is not None
     
-    for e in [".xml",".csv",".txt",".tsv",".html"]:
-        if output_file.endswith(e):
-            valid = True
-            ext = e
-            break
-    if not valid:
-        output_file += ext
-        
-    output_file = os.path.abspath(output_file)
-    
-print("Input File: " + input_file)
-print("Output File: " + output_file)
+input_file = os.path.abspath(input_file)
 
-#preferences
-ignore = []
-ignoreDNF = False
-numberRows = True
+say("Input:",input_file)
 
-#Look for a '.bom' preference file
-pref_file = os.path.join(os.path.dirname(input_file) , "bom.ini")
+output_file = args.output
+
+if output_file is None:
+    output_file = input_file.replace(".xml","_bom.csv")
+   
+#enfore a proper extension
+valid = False
+extensions = [".xml",".csv",".txt",".tsv",".html"]
+for e in extensions:
+    if output_file.endswith(e):
+        valid = True
+        break
+if not valid:
+    close("Extension must be one of",extensions)
+   
+output_file = os.path.abspath(output_file)
+
+say("Output:",output_file)
+   
+#look for a config file!
+#bom.ini by default
+config_file = os.path.abspath(os.path.join(os.path.dirname(input_file), "bom.ini"))
+
+#user can overwrite with a specific config file
+if args.cfg:
+    config_file = args.cfg
 
 #read preferences from file. If file does not exists, default preferences will be used
 pref = BomPref()
-pref.Read(pref_file)
+
+#verbosity options
+pref.verbose = verbose
+
+if os.path.exists(config_file):
+    pref.Read(config_file)
+    say("Config:",config_file)
 
 #write preference file back out (first run will generate a file with default preferences)
-pref.Write(pref_file)
+if not os.path.exists("bom.ini"):
+    pref.Write("bom.ini")
 
 #individual components
 components = []
@@ -92,7 +113,7 @@ for g in groups:
 
 if pref.buildNumber < 1:
     columns.RemoveColumn(ColumnList.COL_GRP_BUILD_QUANTITY)
-    print("Removing:",ColumnList.COL_GRP_BUILD_QUANTITY)
+    say("Removing:",ColumnList.COL_GRP_BUILD_QUANTITY)
         
 #Finally, write the BoM out to file
 result = WriteBoM(output_file, groups, net, columns.columns, pref)

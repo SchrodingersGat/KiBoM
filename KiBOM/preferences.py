@@ -49,6 +49,7 @@ class BomPref:
         self.useRegex = True #Test various columns with regex
         self.compareFootprints = True #test footprints when comparing components
         self.buildNumber = 0
+        self.verbose = False #by default, is not verbose
         
         #default reference exclusions
         self.excluded_references = [
@@ -74,7 +75,9 @@ class BomPref:
             ["c", "c_small", "cap", "capacitor"],
             ["r", "r_small", "res", "resistor"],
             ["sw", "switch"],
-            ["l", "l_small", "inductor"]
+            ["l", "l_small", "inductor"],
+            ["zener","zenersmall"],
+            ["d","diode","d_small"]
             ]
             
         #dictionary of possible regex expressions for ignoring component row(s)
