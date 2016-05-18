@@ -11,6 +11,7 @@ import argparse
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 sys.path.append(here)
+sys.path.append(os.path.join(here,"KiBOM"))
 
 from KiBOM.columns import ColumnList
 from KiBOM.netlist_reader import *
