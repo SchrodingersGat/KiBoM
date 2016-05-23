@@ -12,6 +12,14 @@ class ColumnList:
     
     #default columns for groups
     COL_GRP_QUANTITY = 'Quantity'
+    COL_GRP_TOTAL_COST = 'Total Cost' #Total cost based on quantity
+    COL_GRP_BUILD_QUANTITY = 'Build Quantity'
+    
+    #generated columns
+    _COLUMNS_GEN = [
+                COL_GRP_QUANTITY,
+                COL_GRP_BUILD_QUANTITY,
+                ]
 
     #default columns
     _COLUMNS_DEFAULT = [
@@ -23,6 +31,7 @@ class ColumnList:
                COL_FP,
                COL_FP_LIB,
                COL_GRP_QUANTITY,
+               COL_GRP_BUILD_QUANTITY,
                COL_DATASHEET
                ]
                    
@@ -71,7 +80,7 @@ class ColumnList:
     def RemoveColumnByName(self, name):
 
         #first check if this is in an immutable colum
-        if name in self._COLUMNS_DEFAULT:
+        if name in self._COLUMNS_PROTECTED:
             return
 
         #column does not exist, return

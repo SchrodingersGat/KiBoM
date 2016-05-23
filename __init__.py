@@ -1,3 +1,2 @@
-
-import sys
-sys.path.append(".")
+import KiBOM
+from KiBOM import *

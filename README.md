@@ -9,6 +9,26 @@ KiBoM intelligently groups components based on multiple factors, and can generat
 
 BoM options are user-configurable in a per-project configuration file.
 
+## Usage
+
+The *KiBOM_CLI* script can be run directly from KiCad or from the command line. For command help, run the script with the *-h* flag e.g. 
+
+    python KiBOM_CLI.py -h
+    
+![alt tag](example/help.png?raw=True "Command Line")
+
+**netlist** The netlist must be provided to the script. When running from KiCAD use "%I"
+
+**--output / -o** If provided, this is the path to the BoM output. If not provided, the script will use the same name as the input file, with the suffix "_bom.csv"
+
+**--cfg** If provided, this is the BOM config file that will be used. If not provided, options will be loaded from "bom.ini"
+
+**--verbose / -v** Enable extra debugging information
+
+To run from KiCad, simply add the same command line in the *Bill of Materials* script window. e.g. to generate a HTML output:
+
+![alt tag](example/html_eg.png?raw=True "HTML Example")
+
 ## Features
 
 ### Intelligent Component Grouping
@@ -107,7 +127,9 @@ Hit the "Generate" button, and the output window should show that the BoM genera
 ### HTML Output
 The output HTML file is generated as follows:
 
-![alt tag](example/html.png?raw=True "HTML")
+![alt tag](example/html_eg.png?raw=True "HTML Gen")
+
+![alt tag](example/html.png?raw=True "HTML Output")
 
 Here the components are correctly grouped, with links to datasheets where appropriate, and fields color-coded.
 

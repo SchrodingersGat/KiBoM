@@ -18,12 +18,15 @@ class BomPref:
     SECTION_EXCLUDE_PART = "EXCLUDE_COMPONENT_PART"
     SECTION_EXCLUDE_DESC = "EXCLUDE_COMPONENT_DESC"
     SECTION_ALIASES = "COMPONENT_ALIASES"
+    SECTION_CONFIGURATIONS = "PCB_CONFIGURATIONS"
     
     OPT_IGNORE_DNF = "ignore_dnf"
     OPT_NUMBER_ROWS = "number_rows"
     OPT_GROUP_CONN = "group_connectors"
     OPT_USE_REGEX = "test_regex"
     OPT_COMP_FP = "compare_footprints"
+    OPT_INC_PRICE = "calculate_price"
+    OPT_BUILD_NUMBER = 'build_quantity'
     
     #list of columns which we can use regex on
     COL_REG_EX = [
@@ -46,6 +49,9 @@ class BomPref:
         self.groupConnectors = True #group connectors and ignore component value
         self.useRegex = True #Test various columns with regex
         self.compareFootprints = True #test footprints when comparing components
+        self.buildNumber = 0
+        self.verbose = False #by default, is not verbose
+        self.configurations = [] #list of various configurations
         
         #default reference exclusions
         self.excluded_references = [
@@ -71,7 +77,9 @@ class BomPref:
             ["c", "c_small", "cap", "capacitor"],
             ["r", "r_small", "res", "resistor"],
             ["sw", "switch"],
-            ["l", "l_small", "inductor"]
+            ["l", "l_small", "inductor"],
+            ["zener","zenersmall"],
+            ["d","diode","d_small"]
             ]
             
         #dictionary of possible regex expressions for ignoring component row(s)
@@ -97,6 +105,13 @@ class BomPref:
     def columnToGroup(self, col):
         return "REGEXCLUDE_" + col.upper().replace(" ","_")
         
+    #check an option within the SECTION_GENERAL group
+    def checkOption(self, parser, opt, default=False):
+        if parser.has_option(self.SECTION_GENERAL, opt):
+            return parser.get(self.SECTION_GENERAL, opt).lower() in ["1","true","yes"]
+        else:
+            return default
+            
     #read KiBOM preferences from file
     def Read(self, file, verbose=False):
         file = os.path.abspath(file)
@@ -111,16 +126,23 @@ class BomPref:
             
             #read general options
             if self.SECTION_GENERAL in cf.sections():
-                if cf.has_option(self.SECTION_GENERAL, self.OPT_IGNORE_DNF):
-                    self.ignoreDNF = cf.get(self.SECTION_GENERAL, self.OPT_IGNORE_DNF) == "1"
-                if cf.has_option(self.SECTION_GENERAL, self.OPT_NUMBER_ROWS):
-                    self.numberRows = cf.get(self.SECTION_GENERAL, self.OPT_NUMBER_ROWS) == "1"
-                if cf.has_option(self.SECTION_GENERAL, self.OPT_GROUP_CONN):
-                    self.groupConnectors = cf.get(self.SECTION_GENERAL, self.OPT_GROUP_CONN) == "1"
-                if cf.has_option(self.SECTION_GENERAL, self.OPT_USE_REGEX):
-                    self.useRegex = cf.get(self.SECTION_GENERAL, self.OPT_USE_REGEX) == "1"
-                if cf.has_option(self.SECTION_GENERAL, self.OPT_COMP_FP):
-                    self.compareFootprints = cf.get(self.SECTION_GENERAL, self.OPT_COMP_FP) == "1"
+                self.ignoreDNF =  self.checkOption(cf, self.OPT_IGNORE_DNF, default=True)
+                self.numberRows = self.checkOption(cf, self.OPT_NUMBER_ROWS, default=True)
+                self.groupConnectors = self.checkOption(cf, self.OPT_GROUP_CONN, default=True)
+                self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
+                self.compareFootprints = self.checkOption(cf, self.OPT_COMP_FP, default=True)
+                    
+                if cf.has_option(self.SECTION_GENERAL, self.OPT_BUILD_NUMBER):
+                    try:
+                        self.buildNumber = int(cf.get(self.SECTION_GENERAL, self.OPT_BUILD_NUMBER))
+                        if self.buildNumber < 1:
+                            self.buildNumber = 0
+                    except:
+                        pass
+                        
+            #read out configurations
+            if self.SECTION_CONFIGURATIONS in cf.sections():
+                self.configurations = [i for i in cf.options(self.SECTION_CONFIGURATIONS)]
                     
             #read out ignored-rows
             if self.SECTION_IGNORE in cf.sections():
@@ -136,7 +158,14 @@ class BomPref:
                 if section in cf.sections():
                     self.regex[key] = [r for r in cf.options(section)]
             
-                
+            
+    #add an option to the SECTION_GENRAL group
+    def addOption(self, parser, opt, value, comment=None):
+        if comment:
+            if not comment.startswith(";"):
+                comment = "; " + comment
+            parser.set(self.SECTION_GENERAL, comment)
+        parser.set(self.SECTION_GENERAL, opt, "1" if value else "0")
             
     #write KiBOM preferences to file
     def Write(self, file):
@@ -146,16 +175,12 @@ class BomPref:
         
         cf.add_section(self.SECTION_GENERAL)
         cf.set(self.SECTION_GENERAL, "; General BoM options here")
-        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, rows that are not to be fitted on the PCB will not be written to the BoM file".format(opt=self.OPT_IGNORE_DNF))
-        cf.set(self.SECTION_GENERAL, self.OPT_IGNORE_DNF, 1 if self.ignoreDNF else 0)
-        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, each row in the BoM will be prepended with an incrementing row number".format(opt=self.OPT_NUMBER_ROWS))
-        cf.set(self.SECTION_GENERAL, self.OPT_NUMBER_ROWS, 1 if self.numberRows else 0)
-        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
-        cf.set(self.SECTION_GENERAL, self.OPT_GROUP_CONN, 1 if self.groupConnectors else 0)
-        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
-        cf.set(self.SECTION_GENERAL, self.OPT_USE_REGEX, 1 if self.useRegex else 0)
-        cf.set(self.SECTION_GENERAL, "; If '{opt}' option is set to 1, two components must have the same footprint to be grouped together. If '{opt}' is not set, then footprint comparison is ignored.".format(opt=self.OPT_COMP_FP))
-        cf.set(self.SECTION_GENERAL, self.OPT_COMP_FP, 1 if self.compareFootprints else 0)
+        self.addOption(cf, self.OPT_IGNORE_DNF, self.ignoreDNF, comment="If '{opt}' option is set to 1, rows that are not to be fitted on the PCB will not be written to the BoM file".format(opt=self.OPT_IGNORE_DNF))
+        self.addOption(cf, self.OPT_NUMBER_ROWS, self.numberRows, comment="If '{opt}' option is set to 1, each row in the BoM will be prepended with an incrementing row number".format(opt=self.OPT_NUMBER_ROWS))
+        self.addOption(cf, self.OPT_GROUP_CONN, self.groupConnectors, comment="If '{opt}' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
+        self.addOption(cf, self.OPT_USE_REGEX, self.useRegex, comment="If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
+        self.addOption(cf, self.OPT_COMP_FP, self.compareFootprints, comment="If '{opt}' option is set to 1, two components must have the same footprint to be grouped together. If '{opt}' is not set, then footprint comparison is ignored.".format(opt=self.OPT_COMP_FP))
+        self.addOption(cf, self.OPT_BUILD_NUMBER, self.buildNumber, comment="; '{opt}' is the number of boards to build, which is used to calculate total parts quantity. If this is set to zero (0) then it is ignored".format(opt=self.OPT_BUILD_NUMBER))
         
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")
@@ -163,6 +188,11 @@ class BomPref:
         
         for i in self.ignore:
             cf.set(self.SECTION_IGNORE, i)
+            
+        cf.add_section(self.SECTION_CONFIGURATIONS)
+        cf.set(self.SECTION_CONFIGURATION, '; List of PCB configuration parameters')
+        for i in self.configurations:
+            cf.set(self.SECTION_CONFIGURATIONS, i)
             
         cf.add_section(self.SECTION_ALIASES)
         cf.set(self.SECTION_ALIASES, "; A series of values which are considered to be equivalent for the part name")

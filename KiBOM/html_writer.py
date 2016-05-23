@@ -1,3 +1,4 @@
+
 import columns
 from component import *
 import os
@@ -9,7 +10,7 @@ BG_USER = "#E6F9FF"
 #return a background color for a given column title
 def bgColor(col):
     #auto-generated columns
-    if col == ColumnList.COL_GRP_QUANTITY:
+    if col in ColumnList._COLUMNS_GEN:
         return BG_GEN
     #kicad protected columns
     elif col in ColumnList._COLUMNS_PROTECTED:
@@ -19,7 +20,7 @@ def bgColor(col):
         return BG_USER
     
 def link(text):
-    text = str(text)
+
     for t in ["http","https","ftp","www"]:
         if text.startswith(t):
             return '<a href="{t}">{t}</a>'.format(t=text)
@@ -41,11 +42,20 @@ def WriteHTML(filename, groups, net, headings, prefs):
         print("{fn} is not a valid html file".format(fn=filename))
         return False
         
+    nGroups = len(groups)
+    nTotal = sum([g.getCount() for g in groups])
+    nFitted = sum([g.getCount() for g in groups if g.isFitted()])
+    nBuild = nFitted * prefs.buildNumber
+    
     with open(filename,"w") as html:
         
         #header
         html.write("<html>\n")
+        html.write("<head>\n")
+        html.write('\t<meta charset="ISO-8859-1">\n') #UTF-8 encoding for unicode support
+        html.write("</head>\n")
         html.write("<body>\n")
+        
         
         #PCB info
         html.write("<h2>KiBoM PCB Bill of Materials</h2>\n")
@@ -55,8 +65,12 @@ def WriteHTML(filename, groups, net, headings, prefs):
         html.write("<tr><td>Schematic Version</td><td>{version}</td></tr>\n".format(version=net.getVersion()))
         html.write("<tr><td>Schematic Date</td><td>{date}</td></tr>\n".format(date=net.getSheetDate()))
         html.write("<tr><td>KiCad Version</td><td>{version}</td></tr>\n".format(version=net.getTool()))
-        html.write("<tr><td>Total Components</td><td>{n}</td></tr>\n".format(n = sum([g.getCount() for g in groups])))
-        html.write("<tr><td>Component Groups</td><td>{n}</td></tr>\n".format(n=len(groups)))
+        html.write("<tr><td>Component Groups</td><td>{n}</td></tr>\n".format(n=nGroups))
+        html.write("<tr><td>Component Count (per PCB)</td><td>{n}</td></tr>\n".format(n=nTotal))
+        html.write("<tr><td>Fitted Components (per PCB)</td><td>{n}</td></tr>\n".format(n=nFitted))
+        if prefs.buildNumber > 0:
+            html.write("<tr><td>Number of PCBs</td><td>{n}</td></tr>\n".format(n=prefs.buildNumber))
+            html.write("<tr><td>Total Component Count<br>(for {n} PCBs)</td><td>{t}</td></tr>\n".format(n=prefs.buildNumber, t=nBuild))
         html.write("</table>\n")
         html.write("<br>\n")
         html.write("<h2>Component Groups</h2>\n")
@@ -93,7 +107,7 @@ def WriteHTML(filename, groups, net, headings, prefs):
             html.write("<tr>\n")
             
             if prefs.numberRows:
-                html.write('\t<td align="center">{n}</td>'.format(n=rowCount))
+                html.write('\t<td align="center">{n}</td>\n'.format(n=rowCount))
                 
             for n, r in enumerate(row):
                 bg = bgColor(headings[n])
