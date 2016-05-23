@@ -18,6 +18,7 @@ class BomPref:
     SECTION_EXCLUDE_PART = "EXCLUDE_COMPONENT_PART"
     SECTION_EXCLUDE_DESC = "EXCLUDE_COMPONENT_DESC"
     SECTION_ALIASES = "COMPONENT_ALIASES"
+    SECTION_CONFIGURATIONS = "PCB_CONFIGURATIONS"
     
     OPT_IGNORE_DNF = "ignore_dnf"
     OPT_NUMBER_ROWS = "number_rows"
@@ -25,7 +26,7 @@ class BomPref:
     OPT_USE_REGEX = "test_regex"
     OPT_COMP_FP = "compare_footprints"
     OPT_INC_PRICE = "calculate_price"
-    OPT_BUILD_NUMBER = 'build_quantity' 
+    OPT_BUILD_NUMBER = 'build_quantity'
     
     #list of columns which we can use regex on
     COL_REG_EX = [
@@ -50,6 +51,7 @@ class BomPref:
         self.compareFootprints = True #test footprints when comparing components
         self.buildNumber = 0
         self.verbose = False #by default, is not verbose
+        self.configurations = [] #list of various configurations
         
         #default reference exclusions
         self.excluded_references = [
@@ -137,6 +139,10 @@ class BomPref:
                             self.buildNumber = 0
                     except:
                         pass
+                        
+            #read out configurations
+            if self.SECTION_CONFIGURATIONS in cf.sections():
+                self.configurations = [i for i in cf.options(self.SECTION_CONFIGURATIONS)]
                     
             #read out ignored-rows
             if self.SECTION_IGNORE in cf.sections():
@@ -174,8 +180,7 @@ class BomPref:
         self.addOption(cf, self.OPT_GROUP_CONN, self.groupConnectors, comment="If '{opt}' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
         self.addOption(cf, self.OPT_USE_REGEX, self.useRegex, comment="If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
         self.addOption(cf, self.OPT_COMP_FP, self.compareFootprints, comment="If '{opt}' option is set to 1, two components must have the same footprint to be grouped together. If '{opt}' is not set, then footprint comparison is ignored.".format(opt=self.OPT_COMP_FP))
-        cf.set(self.SECTION_GENERAL, "; '{opt}' is the number of boards to build, which is used to calculate total parts quantity. If this is set to zero (0) then it is ignored".format(opt=self.OPT_BUILD_NUMBER))
-        cf.set(self.SECTION_GENERAL, self.OPT_BUILD_NUMBER, str(self.buildNumber))
+        self.addOption(cf, self.OPT_BUILD_NUMBER, self.buildNumber, comment="; '{opt}' is the number of boards to build, which is used to calculate total parts quantity. If this is set to zero (0) then it is ignored".format(opt=self.OPT_BUILD_NUMBER))
         
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")
@@ -183,6 +188,11 @@ class BomPref:
         
         for i in self.ignore:
             cf.set(self.SECTION_IGNORE, i)
+            
+        cf.add_section(self.SECTION_CONFIGURATIONS)
+        cf.set(self.SECTION_CONFIGURATION, '; List of PCB configuration parameters')
+        for i in self.configurations:
+            cf.set(self.SECTION_CONFIGURATIONS, i)
             
         cf.add_section(self.SECTION_ALIASES)
         cf.set(self.SECTION_ALIASES, "; A series of values which are considered to be equivalent for the part name")

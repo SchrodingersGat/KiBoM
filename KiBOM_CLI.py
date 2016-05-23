@@ -70,8 +70,9 @@ say("Output:",output_file)
    
 #look for a config file!
 #bom.ini by default
-config_file = os.path.abspath(os.path.join(os.path.dirname(input_file), "bom.ini"))
+ini = os.path.abspath(os.path.join(os.path.dirname(input_file), "bom.ini"))
 
+config_file = ini #default value
 #user can overwrite with a specific config file
 if args.cfg:
     config_file = args.cfg
@@ -87,8 +88,9 @@ if os.path.exists(config_file):
     say("Config:",config_file)
 
 #write preference file back out (first run will generate a file with default preferences)
-if not os.path.exists("bom.ini"):
-    pref.Write("bom.ini")
+if not os.path.exists(ini):
+    pref.Write(ini)
+    say("Writing preferences file bom.ini")
 
 #individual components
 components = []
