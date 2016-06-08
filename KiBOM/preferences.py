@@ -190,7 +190,7 @@ class BomPref:
             cf.set(self.SECTION_IGNORE, i)
             
         cf.add_section(self.SECTION_CONFIGURATIONS)
-        cf.set(self.SECTION_CONFIGURATION, '; List of PCB configuration parameters')
+        cf.set(self.SECTION_CONFIGURATIONS, '; List of PCB configuration parameters')
         for i in self.configurations:
             cf.set(self.SECTION_CONFIGURATIONS, i)
             
