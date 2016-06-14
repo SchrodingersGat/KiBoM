@@ -6,6 +6,7 @@ import os
 BG_GEN = "#E6FFEE"
 BG_KICAD = "#FFE6B3"
 BG_USER = "#E6F9FF"
+BG_EMPTY = "#FF8080"
     
 #return a background color for a given column title
 def bgColor(col):
@@ -58,24 +59,26 @@ def WriteHTML(filename, groups, net, headings, prefs):
         
         
         #PCB info
-        html.write("<h2>KiBoM PCB Bill of Materials</h2>\n")
-        html.write('<table border="1">\n')
-        html.write("<tr><td>Source File</td><td>{source}</td></tr>\n".format(source=net.getSource()))
-        html.write("<tr><td>BoM Date</td><td>{date}</td></tr>\n".format(date=net.getDate()))
-        html.write("<tr><td>Schematic Version</td><td>{version}</td></tr>\n".format(version=net.getVersion()))
-        html.write("<tr><td>Schematic Date</td><td>{date}</td></tr>\n".format(date=net.getSheetDate()))
-        html.write("<tr><td>KiCad Version</td><td>{version}</td></tr>\n".format(version=net.getTool()))
-        html.write("<tr><td>Component Groups</td><td>{n}</td></tr>\n".format(n=nGroups))
-        html.write("<tr><td>Component Count (per PCB)</td><td>{n}</td></tr>\n".format(n=nTotal))
-        html.write("<tr><td>Fitted Components (per PCB)</td><td>{n}</td></tr>\n".format(n=nFitted))
-        html.write("<tr><td>Number of PCBs</td><td>{n}</td></tr>\n".format(n=prefs.boards))
-        html.write("<tr><td>Total Component Count<br>(for {n} PCBs)</td><td>{t}</td></tr>\n".format(n=prefs.boards, t=nBuild))
-        html.write("</table>\n")
-        html.write("<br>\n")
-        html.write("<h2>Component Groups</h2>\n")
-        html.write('<p style="background-color: {bg}">Kicad Fields (default)</p>\n'.format(bg=BG_KICAD))
-        html.write('<p style="background-color: {bg}">Generated Fields</p>\n'.format(bg=BG_GEN))
-        html.write('<p style="background-color: {bg}">User Fields</p>\n'.format(bg=BG_USER))
+        if not prefs.hideHeaders:
+            html.write("<h2>KiBoM PCB Bill of Materials</h2>\n")
+            html.write('<table border="1">\n')
+            html.write("<tr><td>Source File</td><td>{source}</td></tr>\n".format(source=net.getSource()))
+            html.write("<tr><td>BoM Date</td><td>{date}</td></tr>\n".format(date=net.getDate()))
+            html.write("<tr><td>Schematic Version</td><td>{version}</td></tr>\n".format(version=net.getVersion()))
+            html.write("<tr><td>Schematic Date</td><td>{date}</td></tr>\n".format(date=net.getSheetDate()))
+            html.write("<tr><td>KiCad Version</td><td>{version}</td></tr>\n".format(version=net.getTool()))
+            html.write("<tr><td>Component Groups</td><td>{n}</td></tr>\n".format(n=nGroups))
+            html.write("<tr><td>Component Count (per PCB)</td><td>{n}</td></tr>\n".format(n=nTotal))
+            html.write("<tr><td>Fitted Components (per PCB)</td><td>{n}</td></tr>\n".format(n=nFitted))
+            html.write("<tr><td>Number of PCBs</td><td>{n}</td></tr>\n".format(n=prefs.boards))
+            html.write("<tr><td>Total Component Count<br>(for {n} PCBs)</td><td>{t}</td></tr>\n".format(n=prefs.boards, t=nBuild))
+            html.write("</table>\n")
+            html.write("<br>\n")
+            html.write("<h2>Component Groups</h2>\n")
+            html.write('<p style="background-color: {bg}">Kicad Fields (default)</p>\n'.format(bg=BG_KICAD))
+            html.write('<p style="background-color: {bg}">Generated Fields</p>\n'.format(bg=BG_GEN))
+            html.write('<p style="background-color: {bg}">User Fields</p>\n'.format(bg=BG_USER))
+            html.write('<p style="background-color: {bg}">Empty Fields</p>\n'.format(bg=BG_EMPTY))
         
         #component groups
         html.write('<table border="1">\n')
@@ -109,7 +112,11 @@ def WriteHTML(filename, groups, net, headings, prefs):
                 html.write('\t<td align="center">{n}</td>\n'.format(n=rowCount))
                 
             for n, r in enumerate(row):
-                bg = bgColor(headings[n])
+                
+                if len(r) == 0:
+                    bg = BG_EMPTY
+                else:
+                    bg = bgColor(headings[n])
                 
                 html.write('\t<td align="center"{bg}>{val}</td>\n'.format(bg=' bgcolor={c}'.format(c=bg) if bg else '', val=link(r)))
                 

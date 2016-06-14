@@ -49,6 +49,7 @@ class BomPref:
         self.useRegex = True #Test various columns with regex
         self.compareFootprints = True #test footprints when comparing components
         self.boards = 1
+        self.hideHeaders = False
         self.verbose = False #by default, is not verbose
         self.configurations = [] #list of various configurations
             

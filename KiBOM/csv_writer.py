@@ -36,10 +36,11 @@ def WriteCSV(filename, groups, net, headings, prefs):
     
         writer = csv.writer(f, delimiter=delimiter, lineterminator="\n")
         
-        if prefs.numberRows:
-            writer.writerow(["Component"] + headings)
-        else:
-            writer.writerow(headings)
+        if not prefs.hideHeaders:
+            if prefs.numberRows:
+                writer.writerow(["Component"] + headings)
+            else:
+                writer.writerow(headings)
             
         count = 0
         rowCount = 1
@@ -63,19 +64,20 @@ def WriteCSV(filename, groups, net, headings, prefs):
                 
             rowCount += 1
             
-        #blank rows
-        for i in range(5):
-            writer.writerow([])
-            
-        writer.writerow(["Component Groups:",nGroups])
-        writer.writerow(["Component Count:",nTotal])
-        writer.writerow(["Fitted Components:", nFitted])
-        writer.writerow(["Number of PCBs:",prefs.boards])
-        writer.writerow(["Total components:", nBuild])
-        writer.writerow(["Schematic Version:",net.getVersion()])
-        writer.writerow(["Schematic Date:",net.getSheetDate()])
-        writer.writerow(["BoM Date:",net.getDate()])
-        writer.writerow(["Schematic Source:",net.getSource()])
-        writer.writerow(["KiCad Version:",net.getTool()])
+        if not prefs.hideHeaders:
+            #blank rows
+            for i in range(5):
+                writer.writerow([])
+                
+            writer.writerow(["Component Groups:",nGroups])
+            writer.writerow(["Component Count:",nTotal])
+            writer.writerow(["Fitted Components:", nFitted])
+            writer.writerow(["Number of PCBs:",prefs.boards])
+            writer.writerow(["Total components:", nBuild])
+            writer.writerow(["Schematic Version:",net.getVersion()])
+            writer.writerow(["Schematic Date:",net.getSheetDate()])
+            writer.writerow(["BoM Date:",net.getDate()])
+            writer.writerow(["Schematic Source:",net.getSource()])
+            writer.writerow(["KiCad Version:",net.getTool()])
         
     return True
