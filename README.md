@@ -15,15 +15,24 @@ The *KiBOM_CLI* script can be run directly from KiCad or from the command line. 
 
     python KiBOM_CLI.py -h
     
-![alt tag](example/help.png?raw=True "Command Line")
+![alt tag](example/usage.png?raw=True "Command Line")
 
 **netlist** The netlist must be provided to the script. When running from KiCAD use "%I"
 
-**--output / -o** If provided, this is the path to the BoM output. If not provided, the script will use the same name as the input file, with the suffix "_bom.csv"
+**output** This is the path to the BoM output. When running from KiCad, usage "%O" for the default option
+
+* If a suffix is not specified, CSV output format will be used
+* HTML output can be specified within KiCad as: "%O.html" or "%O_BOM.html" (etc)
+* XML output can be specified within KiCad as: "%O.xml" (etc)
+
+**-b --boards** Specify number of boards for calculating part quantities
+
+**-v --verbose** Enable extra debugging information
+
+**-n --noheader** Do not generate extra header information within the file. (HTML and CSV output only)
 
 **--cfg** If provided, this is the BOM config file that will be used. If not provided, options will be loaded from "bom.ini"
 
-**--verbose / -v** Enable extra debugging information
 
 To run from KiCad, simply add the same command line in the *Bill of Materials* script window. e.g. to generate a HTML output:
 
