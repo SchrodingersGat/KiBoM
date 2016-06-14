@@ -260,7 +260,7 @@ class ComponentGroup():
         self.fields[ColumnList.COL_GRP_QUANTITY] = "{n}{dnf}".format(
             n=q,
             dnf = " (DNF)" if not self.isFitted() else "")
-        self.fields[ColumnList.COL_GRP_BUILD_QUANTITY] = str(q * self.prefs.buildNumber) if self.isFitted() else "0"
+        self.fields[ColumnList.COL_GRP_BUILD_QUANTITY] = str(q * self.prefs.boards) if self.isFitted() else "0"
         self.fields[ColumnList.COL_VALUE] = self.components[0].getValue()
         self.fields[ColumnList.COL_PART] = self.components[0].getPartName()
         self.fields[ColumnList.COL_PART_LIB] = self.components[0].getLibName()

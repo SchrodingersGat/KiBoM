@@ -30,7 +30,7 @@ def WriteCSV(filename, groups, net, headings, prefs):
     nGroups = len(groups)
     nTotal = sum([g.getCount() for g in groups])
     nFitted = sum([g.getCount() for g in groups if g.isFitted()])
-    nBuild = nFitted * prefs.buildNumber
+    nBuild = nFitted * prefs.boards
         
     with open(filename, "w") as f:
     
@@ -70,9 +70,8 @@ def WriteCSV(filename, groups, net, headings, prefs):
         writer.writerow(["Component Groups:",nGroups])
         writer.writerow(["Component Count:",nTotal])
         writer.writerow(["Fitted Components:", nFitted])
-        if prefs.buildNumber > 0:
-            writer.writerow(["Number of PCBs:",prefs.buildNumber])
-            writer.writerow(["Total components:", nBuild])
+        writer.writerow(["Number of PCBs:",prefs.boards])
+        writer.writerow(["Total components:", nBuild])
         writer.writerow(["Schematic Version:",net.getVersion()])
         writer.writerow(["Schematic Date:",net.getSheetDate()])
         writer.writerow(["BoM Date:",net.getDate()])

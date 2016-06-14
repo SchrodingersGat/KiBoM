@@ -11,7 +11,7 @@ class ColumnList:
     COL_DATASHEET = 'Datasheet'
     
     #default columns for groups
-    COL_GRP_QUANTITY = 'Quantity'
+    COL_GRP_QUANTITY = 'Quantity Per PCB'
     COL_GRP_TOTAL_COST = 'Total Cost' #Total cost based on quantity
     COL_GRP_BUILD_QUANTITY = 'Build Quantity'
     

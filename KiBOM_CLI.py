@@ -32,7 +32,7 @@ parser = argparse.ArgumentParser(description="KiBOM Bill of Materials generator 
 
 parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running from within KiCad')
 parser.add_argument("--output", "-o", help='BoM output file name.\nUse "%%O" when running from within KiCad to use the default output name (csv file).\nFor e.g. HTML output, use "%%O.html"\r\nIf output file is unspecified, default output filename (csv format) will be used', default=None)
-
+parser.add_argument("--boards", "-b", help="Number of boards to build (default = 1)", type=int, default=1)
 parser.add_argument("-v", "--verbose", help="Enable verbose output", action='count')
 parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
 
@@ -80,8 +80,9 @@ if args.cfg:
 #read preferences from file. If file does not exists, default preferences will be used
 pref = BomPref()
 
-#verbosity options
+#pass various command-line options through
 pref.verbose = verbose
+pref.boards = args.boards
 
 if os.path.exists(config_file):
     pref.Read(config_file)
@@ -114,7 +115,7 @@ for g in groups:
     for f in g.fields:
         columns.AddColumn(f)
 
-if pref.buildNumber < 1:
+if pref.boards <= 1:
     columns.RemoveColumn(ColumnList.COL_GRP_BUILD_QUANTITY)
     say("Removing:",ColumnList.COL_GRP_BUILD_QUANTITY)
         

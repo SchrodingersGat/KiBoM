@@ -21,7 +21,7 @@ def WriteXML(filename, groups, net, headings, prefs):
     nGroups = len(groups)
     nTotal = sum([g.getCount() for g in groups])
     nFitted = sum([g.getCount() for g in groups if g.isFitted()])
-    nBuild = nFitted * prefs.buildNumber
+    nBuild = nFitted * prefs.boards
         
     attrib = {}
     
@@ -34,9 +34,8 @@ def WriteXML(filename, groups, net, headings, prefs):
     attrib['Component_Count'] = str(nTotal)
     attrib['Fitted_Components'] = str(nFitted)
     
-    if prefs.buildNumber > 0:
-        attrib['Number_of_PCBs'] = str(prefs.buildNumber)
-        attrib['Total_Components'] = str(nBuild)
+    attrib['Number_of_PCBs'] = str(prefs.boards)
+    attrib['Total_Components'] = str(nBuild)
        
     xml = ElementTree.Element('KiCAD_BOM', attrib = attrib, encoding='utf-8')
     

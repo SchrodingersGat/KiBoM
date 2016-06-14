@@ -45,7 +45,7 @@ def WriteHTML(filename, groups, net, headings, prefs):
     nGroups = len(groups)
     nTotal = sum([g.getCount() for g in groups])
     nFitted = sum([g.getCount() for g in groups if g.isFitted()])
-    nBuild = nFitted * prefs.buildNumber
+    nBuild = nFitted * prefs.boards
     
     with open(filename,"w") as html:
         
@@ -68,9 +68,8 @@ def WriteHTML(filename, groups, net, headings, prefs):
         html.write("<tr><td>Component Groups</td><td>{n}</td></tr>\n".format(n=nGroups))
         html.write("<tr><td>Component Count (per PCB)</td><td>{n}</td></tr>\n".format(n=nTotal))
         html.write("<tr><td>Fitted Components (per PCB)</td><td>{n}</td></tr>\n".format(n=nFitted))
-        if prefs.buildNumber > 0:
-            html.write("<tr><td>Number of PCBs</td><td>{n}</td></tr>\n".format(n=prefs.buildNumber))
-            html.write("<tr><td>Total Component Count<br>(for {n} PCBs)</td><td>{t}</td></tr>\n".format(n=prefs.buildNumber, t=nBuild))
+        html.write("<tr><td>Number of PCBs</td><td>{n}</td></tr>\n".format(n=prefs.boards))
+        html.write("<tr><td>Total Component Count<br>(for {n} PCBs)</td><td>{t}</td></tr>\n".format(n=prefs.boards, t=nBuild))
         html.write("</table>\n")
         html.write("<br>\n")
         html.write("<h2>Component Groups</h2>\n")
