@@ -36,7 +36,7 @@ The *KiBOM_CLI* script can be run directly from KiCad or from the command line. 
 
 To run from KiCad, simply add the same command line in the *Bill of Materials* script window. e.g. to generate a HTML output:
 
-![alt tag](example/html_eg.png?raw=True "HTML Example")
+![alt tag](example/html_ex.png?raw=True "HTML Example")
 
 ## Features
 
