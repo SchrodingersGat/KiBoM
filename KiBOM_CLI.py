@@ -32,9 +32,9 @@ parser = argparse.ArgumentParser(description="KiBOM Bill of Materials generator 
 
 parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running from within KiCad')
 parser.add_argument("output",  default="", help='BoM output file name.\nUse "%%O" when running from within KiCad to use the default output name (csv file).\nFor e.g. HTML output, use "%%O.html"')
-parser.add_argument("-b", "--boards", help="Number of boards to build (default = 1)", type=int, default=1)
+parser.add_argument("-n", "--number", help="Number of boards to build (default = 1)", type=int, default=1)
 parser.add_argument("-v", "--verbose", help="Enable verbose output", action='count')
-parser.add_argument("-n", "--noheader", help="Do not generate file headers; data only.", action='count')
+parser.add_argument("-r", "--revision", help="Board variant, used to determine which components are output to the BoM", type=str, default=None)
 parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
 
 args = parser.parse_args()
@@ -62,20 +62,22 @@ if args.cfg:
 #read preferences from file. If file does not exists, default preferences will be used
 pref = BomPref()
 
-#pass various command-line options through
-pref.verbose = verbose
-pref.boards = args.boards
-if args.noheader:
-    pref.hideHeaders = True
-
 if os.path.exists(config_file):
     pref.Read(config_file)
     say("Config:",config_file)
 
+#pass various command-line options through
+pref.verbose = verbose
+pref.boards = args.number
+
+if args.revision is not None:
+    pref.pcbConfig = args.revision
+    print("PCB Revision:",args.revision)
+
+
 #write preference file back out (first run will generate a file with default preferences)
-if not os.path.exists(ini):
-    pref.Write(ini)
-    say("Writing preferences file bom.ini")
+pref.Write(ini)
+say("Writing preferences file bom.ini")
 
 #individual components
 components = []

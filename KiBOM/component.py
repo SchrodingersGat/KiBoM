@@ -35,14 +35,6 @@ class Component():
         #no match, return False
         return False
 
-    #compare footprint with another component
-    def compareFootprint(self, other):
-        return self.getFootprint().lower() == other.getFootprint().lower()
-
-    #compare the component library of this part to another part
-    def compareLibName(self, other):
-        return self.getLibName().lower() == other.getLibName().lower()
-
     #determine if two parts have the same name
     def comparePartName(self, other):
         pn1 = self.getPartName().lower()
@@ -57,24 +49,43 @@ class Component():
                 return True
 
         return False
-
+        
+    def compareField(self, other, field):
+        
+        this_field = self.getField(field).lower()
+        other_field = other.getField(field).lower()
+        
+        if this_field == other_field: return True
+        
+        #if blank comparisons are allowed
+        if self.prefs.mergeBlankFields:
+            if this_field == "" or other_field == "":
+                return True
+                
+        return False
+        
     #Equivalency operator is used to determine if two parts are 'equal'
     def __eq__(self, other):
         """Equlivalency operator, remember this can be easily overloaded"""
 
-        valueResult = self.compareValue(other)
-
-        #if connector comparison is overridden, set valueResult to True
-        if self.prefs.groupConnectors:
-            if "conn" in self.getDescription().lower():
-                valueResult = True
-
-        if self.prefs.compareFootprints:
-            fpResult = self.compareFootprint(other)
-        else:
-            fpResult = True
+        results = []
+        
+        #'fitted' value must be the same for both parts
+        results.append(self.isFitted() == other.isFitted())
+        
+        for c in self.prefs.groups:
+            #perform special matches
+            if c.lower() == ColumnList.COL_VALUE.lower():
+                results.append(self.compareValue(other))
+            #match part name
+            elif c.lower() == ColumnList.COL_PART.lower():
+                results.append(self.comparePartName(other))
             
-        return valueResult and fpResult and self.compareLibName(other) and self.comparePartName(other) and self.isFitted() == other.isFitted()
+            #generic match
+            else:
+                results.append(self.compareField(other, c))
+        
+        return all(results)
 
     def setLibPart(self, part):
         self.libpart = part
@@ -107,7 +118,7 @@ class Component():
     def getValue(self):
         return self.element.get("value")
 
-    def getField(self, name, libraryToo=True):
+    def getField(self, name, ignoreCase=True, libraryToo=True):
         """Return the value of a field named name. The component is first
         checked for the field, and then the components library part is checked
         for the field. If the field doesn't exist in either, an empty string is
@@ -118,10 +129,40 @@ class Component():
         libraryToo --   look in the libpart's fields for the same name if not found
                         in component itself
         """
+        
+        
+        #special fields
+        
+        if name.lower() == ColumnList.COL_REFERENCE.lower():
+            return self.getRef()
+            
+        if name.lower() == ColumnList.COL_DESCRIPTION.lower():
+            return self.getDescription()
+            
+        if name.lower() == ColumnList.COL_DATASHEET.lower():
+            return self.getDatasheet()
+            
+        if name.lower() == ColumnList.COL_FP.lower():
+            return self.getFootprint().split(":")[0]
+            
+        if name.lower() == ColumnList.COL_FP.lower():
+            return self.getFootprint().split(":")[1]
+            
+        if name.lower() == ColumnList.COL_VALUE.lower():
+            return self.getValue()
 
+        if name.lower() == ColumnList.COL_PART.lower():
+            return self.getPartName()
+            
+        if name.lower() == ColumnList.COL_PART_LIB.lower():
+            return self.getLibName()
+        
+        
         field = self.element.get("field", "name", name)
+        
         if field == "" and libraryToo:
             field = self.libpart.getField(name)
+        
         return field
 
     def getFieldNames(self):
@@ -142,13 +183,31 @@ class Component():
 
     #determine if a component is FITTED or not
     def isFitted(self):
-
-        check = [self.getValue().lower(), self.getField("Notes").lower()]
-
-        for item in check:
-            if any([dnf in item for dnf in DNF]): return False
-
-        return True
+    
+        check = self.getField(self.prefs.configField).lower()
+        
+        #check the value field first
+        if self.getValue().lower() in DNF or check.lower() in DNF:
+            return False
+    
+        if check == "":
+            return True #empty is fitted
+            
+        opts = check.split(",")
+        
+        result = True
+        
+        for opt in opts:
+            #options that start with '-' are explicitly removed from certain configurations
+            if opt.startswith('-') and opt[1:].lower() == self.prefs.pcbConfig.lower():
+                result = False
+                break
+            if opt.startswith("+"):
+                if opt.lower() == self.prefs.pcbConfig.lower():
+                    result = True
+        
+        #by default, part is fitted
+        return result
 
     def getFootprint(self, libraryToo=True):
         ret = self.element.get("footprint")
@@ -180,6 +239,7 @@ class ComponentGroup():
         self.prefs = prefs
         
     def getField(self, field):
+    
         if not field in self.fields.keys(): return ""
         if not self.fields[field]: return ""
         return u''.join((self.fields[field]))
@@ -191,6 +251,8 @@ class ComponentGroup():
     def matchComponent(self, c):
         if len(self.components) == 0: return True
         if c == self.components[0]: return True
+        
+        return False
 
     #test if a given component is already contained in this grop
     def containsComponent(self, c):
@@ -260,6 +322,7 @@ class ComponentGroup():
         self.fields[ColumnList.COL_GRP_QUANTITY] = "{n}{dnf}".format(
             n=q,
             dnf = " (DNF)" if not self.isFitted() else "")
+            
         self.fields[ColumnList.COL_GRP_BUILD_QUANTITY] = str(q * self.prefs.boards) if self.isFitted() else "0"
         self.fields[ColumnList.COL_VALUE] = self.components[0].getValue()
         self.fields[ColumnList.COL_PART] = self.components[0].getPartName()
@@ -278,7 +341,11 @@ class ComponentGroup():
     #return True if none match (i.e. this group is OK)
     #retunr False if any match
     def testRegex(self):
+    
+        return True
+        #run the excusion 
         
+        """
         for key in self.prefs.regex.keys():
             reg = self.prefs.regex[key]
             if not type(reg) in [str, list]: continue #regex must be a string, or a list of strings
@@ -303,6 +370,7 @@ class ComponentGroup():
                     return False
                     
         return True
+        """
                 
 
     #return a dict of the KiCAD data based on the supplied columns

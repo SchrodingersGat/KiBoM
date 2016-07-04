@@ -12,46 +12,57 @@ class BomPref:
     
     SECTION_IGNORE = "IGNORE_COLUMNS"
     SECTION_GENERAL = "BOM_OPTIONS"
-    SECTION_EXCLUDE_VALUES = "EXCLUDE_COMPONENT_VALUES"
-    SECTION_EXCLUDE_REFS = "EXCLUDE_COMPONENT_REFS"
-    SECTION_EXCLUDE_FP = "EXCLUDE_COMPONENT_FP"
-    SECTION_EXCLUDE_PART = "EXCLUDE_COMPONENT_PART"
-    SECTION_EXCLUDE_DESC = "EXCLUDE_COMPONENT_DESC"
     SECTION_ALIASES = "COMPONENT_ALIASES"
-    SECTION_CONFIGURATIONS = "PCB_CONFIGURATIONS"
+    SECTION_GROUPING_FIELDS = "GROUP_FIELDS"
+    SECTION_REGEXCLUDES = "REGEX_EXCLUDE"
+    SECTION_REGINCLUDES = "REGEX_INCLUDE"
     
-    OPT_IGNORE_DNF = "ignore_dnf"
+    OPT_PCB_CONFIG = "pcb_configuration"
     OPT_NUMBER_ROWS = "number_rows"
     OPT_GROUP_CONN = "group_connectors"
     OPT_USE_REGEX = "test_regex"
-    OPT_COMP_FP = "compare_footprints"
-    OPT_INC_PRICE = "calculate_price"
-    
-    #list of columns which we can use regex on
-    COL_REG_EX = [
-        ColumnList.COL_REFERENCE,
-        ColumnList.COL_DESCRIPTION,
-        ColumnList.COL_VALUE,
-        ColumnList.COL_FP,
-        ColumnList.COL_FP_LIB,
-        ColumnList.COL_PART,
-        ColumnList.COL_PART_LIB
-        ]
+    OPT_MERGE_BLANK = "merge_blank_fields"
+    OPT_IGNORE_DNF = "ignore_dnf"
 
+    OPT_CONFIG_FIELD = "configuration_field"
+    
     def __init__(self):
         self.ignore = [
             ColumnList.COL_PART_LIB,
             ColumnList.COL_FP_LIB,
             ] #list of headings to ignore in BoM generation
-        self.ignoreDNF = False #ignore rows for do-not-fit parts
+        self.ignoreDNF = True #ignore rows for do-not-fit parts
         self.numberRows = True #add row-numbers to BoM output
         self.groupConnectors = True #group connectors and ignore component value
         self.useRegex = True #Test various columns with regex
-        self.compareFootprints = True #test footprints when comparing components
         self.boards = 1
+        self.mergeBlankFields = True #blanks fields will be merged when possible
         self.hideHeaders = False
         self.verbose = False #by default, is not verbose
-        self.configurations = [] #list of various configurations
+        self.configField = "Config" #default field used for part fitting config
+        self.pcbConfig = "default"
+            
+        #default fields used to group components
+        self.groups = [
+            ColumnList.COL_PART,
+            ColumnList.COL_PART_LIB,
+            ColumnList.COL_VALUE,
+            ColumnList.COL_FP,
+            ColumnList.COL_FP_LIB,
+            #user can add custom grouping columns in bom.ini
+            ]
+            
+        self.regIncludes = [] #none by default
+        
+        self.regExcludes = [
+            [ColumnList.COL_REFERENCE,'TP[0-9]'],
+            [ColumnList.COL_PART,'mount[\s-_]*hole'],
+            [ColumnList.COL_PART,'solder[\s-_]*bridge'],
+            [ColumnList.COL_PART,'test[\s-_]*point'],
+            [ColumnList.COL_FP,'test[\s-_]*point'],
+            [ColumnList.COL_FP,'mount[\s-_]*hole'],
+            [ColumnList.COL_FP,'fiducial'],
+        ]
             
         #default component groupings
         self.aliases = [
@@ -62,29 +73,6 @@ class BomPref:
             ["zener","zenersmall"],
             ["d","diode","d_small"]
             ]
-            
-        #dictionary of possible regex expressions for ignoring component row(s)
-        self.regex = dict.fromkeys(self.COL_REG_EX)
-        
-        #default regex values
-        self.regex[ColumnList.COL_REFERENCE] = [
-            'TP[0-9]+',
-            ]
-            
-        self.regex[ColumnList.COL_PART] = [
-            'mounthole',
-            'scopetest',
-            'mount_hole',
-            'solder_bridge',
-            'test_point',
-            ]
-            
-        self.regex[ColumnList.COL_FP] = [
-            'mounthole'
-            ]
-        
-    def columnToGroup(self, col):
-        return "REGEXCLUDE_" + col.upper().replace(" ","_")
         
     #check an option within the SECTION_GENERAL group
     def checkOption(self, parser, opt, default=False):
@@ -102,6 +90,7 @@ class BomPref:
             
         with open(file, 'rb') as configfile:
             cf = ConfigParser.RawConfigParser(allow_no_value = True)
+            cf.optionxform=str
             
             cf.read(file)
             
@@ -111,12 +100,18 @@ class BomPref:
                 self.numberRows = self.checkOption(cf, self.OPT_NUMBER_ROWS, default=True)
                 self.groupConnectors = self.checkOption(cf, self.OPT_GROUP_CONN, default=True)
                 self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
-                self.compareFootprints = self.checkOption(cf, self.OPT_COMP_FP, default=True)
-                        
-            #read out configurations
-            if self.SECTION_CONFIGURATIONS in cf.sections():
-                self.configurations = [i for i in cf.options(self.SECTION_CONFIGURATIONS)]
-                    
+                self.mergeBlankFields = self.checkOption(cf, self.OPT_MERGE_BLANK, default = True)
+                
+            if cf.has_option(self.SECTION_GENERAL, self.OPT_PCB_CONFIG):
+                self.pcbConfig = cf.get(self.SECTION_GENERAL, self.OPT_PCB_CONFIG)
+                
+            if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
+                self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
+       
+            #read out grouping colums
+            if self.SECTION_GROUPING_FIELDS in cf.sections():
+                self.groups = [i for i in cf.options(self.SECTION_GROUPING_FIELDS)]
+       
             #read out ignored-rows
             if self.SECTION_IGNORE in cf.sections():
                 self.ignore = [i for i in cf.options(self.SECTION_IGNORE)]
@@ -125,12 +120,11 @@ class BomPref:
             if self.SECTION_ALIASES in cf.sections():
                 self.aliases = [a.split(" ") for a in cf.options(self.SECTION_ALIASES)]
                 
-            #read out the regex
-            for key in self.regex.keys():
-                section = self.columnToGroup(key)
-                if section in cf.sections():
-                    self.regex[key] = [r for r in cf.options(section)]
-            
+            if self.SECTION_REGEXCLUDES in cf.sections():
+                pass
+                
+            if self.SECTION_REGINCLUDES in cf.sections():
+                pass
             
     #add an option to the SECTION_GENRAL group
     def addOption(self, parser, opt, value, comment=None):
@@ -145,6 +139,7 @@ class BomPref:
         file = os.path.abspath(file)
         
         cf = ConfigParser.RawConfigParser(allow_no_value = True)
+        cf.optionxform=str
         
         cf.add_section(self.SECTION_GENERAL)
         cf.set(self.SECTION_GENERAL, "; General BoM options here")
@@ -152,7 +147,14 @@ class BomPref:
         self.addOption(cf, self.OPT_NUMBER_ROWS, self.numberRows, comment="If '{opt}' option is set to 1, each row in the BoM will be prepended with an incrementing row number".format(opt=self.OPT_NUMBER_ROWS))
         self.addOption(cf, self.OPT_GROUP_CONN, self.groupConnectors, comment="If '{opt}' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
         self.addOption(cf, self.OPT_USE_REGEX, self.useRegex, comment="If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
-        self.addOption(cf, self.OPT_COMP_FP, self.compareFootprints, comment="If '{opt}' option is set to 1, two components must have the same footprint to be grouped together. If '{opt}' is not set, then footprint comparison is ignored.".format(opt=self.OPT_COMP_FP))
+        self.addOption(cf, self.OPT_MERGE_BLANK, self.mergeBlankFields, comment="If '{opt}' option is set to 1, component groups with blank fields will be merged into the most compatible group, where possible".format(opt=self.OPT_MERGE_BLANK))
+        
+        cf.set(self.SECTION_GENERAL, '; Field name used to determine if a particular part is to be fitted')
+        cf.set(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD, self.configField)
+        
+        cf.set(self.SECTION_GENERAL, "; Configuration string used to determine which components are loaded on a particular board")
+        cf.set(self.SECTION_GENERAL, '; Configuration string is case-insensitive')
+        cf.set(self.SECTION_GENERAL, self.OPT_PCB_CONFIG, self.pcbConfig)
         
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")
@@ -161,36 +163,40 @@ class BomPref:
         for i in self.ignore:
             cf.set(self.SECTION_IGNORE, i)
             
-        cf.add_section(self.SECTION_CONFIGURATIONS)
-        cf.set(self.SECTION_CONFIGURATIONS, '; List of PCB configuration parameters')
-        for i in self.configurations:
-            cf.set(self.SECTION_CONFIGURATIONS, i)
-            
+        #write the component grouping fields 
+        cf.add_section(self.SECTION_GROUPING_FIELDS)
+        cf.set(self.SECTION_GROUPING_FIELDS, '; List of fields used for sorting individual components into groups')
+        cf.set(self.SECTION_GROUPING_FIELDS, '; Components which match (comparing *all* fields) will be grouped together')
+        cf.set(self.SECTION_GROUPING_FIELDS, '; Field names are CASE-SENSITIVE!')
+        
+        for i in self.groups:
+            cf.set(self.SECTION_GROUPING_FIELDS, i)
+        
         cf.add_section(self.SECTION_ALIASES)
         cf.set(self.SECTION_ALIASES, "; A series of values which are considered to be equivalent for the part name")
         cf.set(self.SECTION_ALIASES, "; Each line represents a space-separated list of equivalent component name values")
         cf.set(self.SECTION_ALIASES, "; e.g. 'c c_small cap' will ensure the equivalent capacitor symbols can be grouped together")
+        cf.set(self.SECTION_ALIASES, '; Aliases are case-insensitive')
+        
         for a in self.aliases:
             cf.set(self.SECTION_ALIASES, " ".join(a))
+        
+        cf.add_section(self.SECTION_REGINCLUDES)
+        cf.set(self.SECTION_REGINCLUDES, '; A series of regular expressions used to include parts in the BoM')
+        cf.set(self.SECTION_REGINCLUDES, '; Column names are case-insensitive')
+        for i in self.regIncludes:
+            if not len(i) == 2: continue
             
-        for col in self.regex.keys():
+            cf.set(self.SECTION_REGINCLUDE, i[0], i[1])
             
-            reg = self.regex[col]
+        cf.add_section(self.SECTION_REGEXCLUDES)
+        cf.set(self.SECTION_REGEXCLUDES, '; A series of regular expressions used to exclude parts from the BoM')
+        cf.set(self.SECTION_REGINCLUDES, '; Column names are case-insensitive')
+        
+        for i in self.regExcludes:
+            if not len(i) == 2: continue
             
-            section = self.columnToGroup(col)
-            cf.add_section(section)
-            #comments
-            cf.set(section, "; A list of regex to compare against the '{col}' column".format(col=col))
-            cf.set(section, "; If the value in the '{col}' column matches any of these expressions, the row will be excluded from the BoM".format(col=col))
-            
-            if type(reg) == str:
-                cf.set(section, reg)
-                
-            elif type(reg) == list:
-                for r in reg:
-                    cf.set(section, r)
-            
+            cf.set(self.SECTION_REGEXCLUDES, i[0], i[1])
 
-            
         with open(file, 'wb') as configfile:
             cf.write(configfile)
