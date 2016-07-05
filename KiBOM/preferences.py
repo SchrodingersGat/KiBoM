@@ -167,7 +167,7 @@ class BomPref:
         cf.add_section(self.SECTION_GROUPING_FIELDS)
         cf.set(self.SECTION_GROUPING_FIELDS, '; List of fields used for sorting individual components into groups')
         cf.set(self.SECTION_GROUPING_FIELDS, '; Components which match (comparing *all* fields) will be grouped together')
-        cf.set(self.SECTION_GROUPING_FIELDS, '; Field names are CASE-SENSITIVE!')
+        cf.set(self.SECTION_GROUPING_FIELDS, '; Field names are case-insensitive')
         
         for i in self.groups:
             cf.set(self.SECTION_GROUPING_FIELDS, i)

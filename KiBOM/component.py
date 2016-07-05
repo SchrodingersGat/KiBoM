@@ -158,12 +158,17 @@ class Component():
             return self.getLibName()
         
         
-        field = self.element.get("field", "name", name)
-        
-        if field == "" and libraryToo:
-            field = self.libpart.getField(name)
-        
-        return field
+        for f in self.getFieldNames():
+            if f.lower() == name.lower():
+                field = self.element.get("field", "name", f)
+                
+                if field == "" and libraryToo:
+                    field = self.libpart.getField(f)
+                    
+                return field
+                
+        #could not find
+        return ""
 
     def getFieldNames(self):
         """Return a list of field names in play for this component.  Mandatory
