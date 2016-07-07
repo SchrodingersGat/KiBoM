@@ -142,7 +142,7 @@ class Component():
         if name.lower() == ColumnList.COL_DATASHEET.lower():
             return self.getDatasheet()
             
-        if name.lower() == ColumnList.COL_FP.lower():
+        if name.lower() == ColumnList.COL_FP_LIB.lower():
             return self.getFootprint().split(":")[0]
             
         if name.lower() == ColumnList.COL_FP.lower():
@@ -157,7 +157,7 @@ class Component():
         if name.lower() == ColumnList.COL_PART_LIB.lower():
             return self.getLibName()
         
-        
+        #other fields (case insensitive)
         for f in self.getFieldNames():
             if f.lower() == name.lower():
                 field = self.element.get("field", "name", f)
@@ -213,6 +213,53 @@ class Component():
         
         #by default, part is fitted
         return result
+        
+    #test if this part should be included, based on any regex expressions provided in the preferences
+    def testRegExclude(self):
+        
+        for reg in self.prefs.regExcludes:
+            
+            if type(reg) == list and len(reg) == 2:
+                field_name, regex = reg
+                field_value = self.getField(field_name)
+                
+                regex = regex.decode("unicode_escape")
+                
+                if re.search(regex, field_value, flags=re.IGNORECASE) is not None:
+                    if self.prefs.verbose:
+                        print("Excluding '{ref}': Field '{field}' ({value}) matched '{reg}'".format(
+                            ref = self.getRef(),
+                            field = field_name,
+                            value = field_value,
+                            reg = regex))
+                        
+                    return True #found a match
+                
+        #default, could not find any matches
+        return False
+            
+    def testRegInclude(self):
+    
+        if len(self.prefs.regIncludes) == 0: #nothing to match against
+            return True
+    
+        for reg in self.prefs.regIncludes:
+            
+            if type(reg) == list and len(reg) == 2:
+                field_name, regex = reg
+                field_value = self.getField(field_name)
+                
+                print(field_name,field_value,regex)
+                
+                if re.search(regex, field_value, flags=re.IGNORECASE) is not None:
+                    if self.prefs.verbose:
+                        print("")
+                        
+                    #found a match
+                    return True
+            
+        #default, could not find a match
+        return False
 
     def getFootprint(self, libraryToo=True):
         ret = self.element.get("footprint")
@@ -341,42 +388,6 @@ class ComponentGroup():
         else:
             self.fields[ColumnList.COL_FP] = ""
             self.fields[ColumnList.COL_FP_LIB] = ""
-            
-    #run test against all available regex exclusions in the preference file
-    #return True if none match (i.e. this group is OK)
-    #retunr False if any match
-    def testRegex(self):
-    
-        return True
-        #run the excusion 
-        
-        """
-        for key in self.prefs.regex.keys():
-            reg = self.prefs.regex[key]
-            if not type(reg) in [str, list]: continue #regex must be a string, or a list of strings
-            #does this group have a column that matches this regex?
-            if not self.getField(key): continue
-            
-            #list of regex to compare against
-            if type(reg) is str:
-                regex = [reg]
-            else:
-                regex = reg
-                
-            #test each regex
-            for r in regex:
-                field = self.getField(key)
-                if re.search(r, field, flags=re.IGNORECASE) is not None:
-                    print("'{col}' value '{val}' matched regex '{reg}'".format(
-                        col = key,
-                        val = self.getField(key),
-                        reg = r
-                        ))
-                    return False
-                    
-        return True
-        """
-                
 
     #return a dict of the KiCAD data based on the supplied columns
     #NOW WITH UNICODE SUPPORT!

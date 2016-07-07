@@ -400,6 +400,12 @@ class netlist():
         
         # Iterate through each component, and test whether a group for these already exists
         for c in components:
+        
+            if self.prefs.useRegex:
+                #skip components if they do not meet regex requirements
+                if c.testRegInclude() == False: continue
+                if c.testRegExclude() == True: continue
+        
             found = False
             
             for g in groups:
@@ -417,10 +423,6 @@ class netlist():
         for g in groups:
             g.sortComponents()
             g.updateFields()
-            
-        if self.prefs.useRegex:
-            #remove any that don't match regex
-            groups = [g for g in groups if g.testRegex()]
 
         #sort the groups
         #first priority is the Type of component (e.g. R?, U?, L?)
