@@ -24,7 +24,7 @@ class BomPref:
     OPT_MERGE_BLANK = "merge_blank_fields"
     OPT_IGNORE_DNF = "ignore_dnf"
 
-    OPT_CONFIG_FIELD = "configuration_field"
+    OPT_CONFIG_FIELD = "fit_field"
     
     def __init__(self):
         self.ignore = [
@@ -103,9 +103,6 @@ class BomPref:
                 self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
                 self.mergeBlankFields = self.checkOption(cf, self.OPT_MERGE_BLANK, default = True)
                 
-            if cf.has_option(self.SECTION_GENERAL, self.OPT_PCB_CONFIG):
-                self.pcbConfig = cf.get(self.SECTION_GENERAL, self.OPT_PCB_CONFIG)
-                
             if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
                 self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
        
@@ -158,10 +155,6 @@ class BomPref:
         
         cf.set(self.SECTION_GENERAL, '; Field name used to determine if a particular part is to be fitted')
         cf.set(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD, self.configField)
-        
-        cf.set(self.SECTION_GENERAL, "; Configuration string used to determine which components are loaded on a particular board")
-        cf.set(self.SECTION_GENERAL, '; Configuration string is case-insensitive')
-        cf.set(self.SECTION_GENERAL, self.OPT_PCB_CONFIG, self.pcbConfig)
         
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")

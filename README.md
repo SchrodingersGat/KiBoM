@@ -37,8 +37,6 @@ optional arguments:
                         not specified here)
 ~~~~                        
     
-    
-![alt tag](example/usage.png?raw=True "Command Line")
 
 **netlist** The netlist must be provided to the script. When running from KiCAD use "%I"
 
@@ -48,14 +46,13 @@ optional arguments:
 * HTML output can be specified within KiCad as: "%O.html" or "%O_BOM.html" (etc)
 * XML output can be specified within KiCad as: "%O.xml" (etc)
 
-**-b --boards** Specify number of boards for calculating part quantities
+**-n --number** Specify number of boards for calculating part quantities
 
 **-v --verbose** Enable extra debugging information
 
-**-n --noheader** Do not generate extra header information within the file. (HTML and CSV output only)
+**-r --revision** Specify the PCB *revision*. Support for arbitrary PCB configurations allows individual components to be marked as 'fitted' or 'not fitted' in a given configuration.
 
 **--cfg** If provided, this is the BOM config file that will be used. If not provided, options will be loaded from "bom.ini"
-
 
 To run from KiCad, simply add the same command line in the *Bill of Materials* script window. e.g. to generate a HTML output:
 
@@ -65,11 +62,15 @@ To run from KiCad, simply add the same command line in the *Bill of Materials* s
 
 ### Intelligent Component Grouping
 
-To be useful for ordering components, the BoM output from a KiCad project should be organized into sensible component groups. KiBom groups components based on the following factors:
+To be useful for ordering components, the BoM output from a KiCad project should be organized into sensible component groups. By default, KiBom groups components based on the following factors:
 
 * Part name: (e.g. 'R' for resistors, 'C' for capacitors, or longer part names such as 'MAX232') *note: parts such as {'R','r_small'} (which are different symbol representations for the same component) can also be grouped together*
 * Value: Components must have the same value to be grouped together 
 * Footprint: Components must have the same footprint to be grouped together *(this option can be enabled/disabled in the bom.ini configuration file)*
+
+#### Custom Column Grouping
+
+If the user wishes to group components based on additional field values, these can be specifed in the preferences (.ini) file
 
 ### Intelligent Value Matching
 
@@ -93,6 +94,16 @@ The following default fields are extracted and can be added to the output BoM fi
 **User Fields**
 If any components have custom fields added, these are available to the output BoM file.
 
+### Regular Expression Matching
+
+KiBoM features two types of regex matching : "Include" and "Exclude" (each of these are specified within the prefrences (.ini) file).
+
+If the user wishes to include ONLY parts that match one-of-many regular expressions, these can be specifed in REGEX_INCLUDE section of the .ini file
+
+If the user wishes to exclude components based on one-of-many regular expressions, these are specified in the REGEX_EXCLUDE section of the .ini file
+
+(Refer to the default .ini file for examples)
+
 ### Multiple File Outputs
 Multiple BoM output formats are supported:
 * CSV (Comma separated values)
@@ -105,18 +116,21 @@ Output file format selection is set by the output filename. e.g. "bom.html" will
 
 ### Configuration File
 BoM generation options can be configured (on a per-project basis) by editing the *bom.ini* file in the PCB project directory. This file is generated the first time that the KiBoM script is run, and allows configuration of the following options.
-* *ignore_dnf*: Component groups marked as 'DNF' (do not fit) will be excluded from the BoM output
+* *ignore_dnf*: Component groups designated as 'DNF' (do not fit) will be excluded from the BoM output
 * *number_rows*: Add row numbers to the BoM output
 * *group_connectors*: If this option is set, connector comparison based on the 'Value' field is ignored. This allows multiple connectors which are named for their function (e.g. "Power", "ICP" etc) can be grouped together.
 * *test_regex*: If this option is set, each component group row is test against a list of (user configurable) regular expressions. If any matches are found, that row is excluded from the output BoM file.
-* *compare_footprints*: If this option is set *(default)*, two components must have the same footprint to be grouped together. If not set, components with different footprints can be grouped together
+* *merge_blank_field*: If this option is set, blank fields are able to be merged with non-blank fields (and do not count as a 'conflict')
+* *fit_field*: This is the name of the part field used to determine if the component is fitted, or not.
 
 * *IGNORE_COLUMNS*: A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
+* *GROUP_FIELDS*: A list of component fields used to group components together.
 * *COMPONENT_ALIASES*: A list of space-separated values which allows multiple schematic symbol visualisations to be consolidated.
-* *REGEXCLUDE_COLUMN_NAME*: A list of regular expressions to ignore components based on the value in a given column.
+* *REGEX_INCLUDE*: A list of regular expressions used to explicity include components. If there are no regex here, all components pass this test. If there are regex here, then a component must match at least one of them to be included in the BoM.
+* *REGEX_EXCLUDE*: If a component matches any of these regular expressions, it wil *not* be included in the BoM.
 
 Example configuration file (.ini format) *default values shown*
-![alt tag](example/ini.png?raw=True "Configuration")
+![alt tag](example/default_ini.png?raw=True "Configuration")
 
 ## Example
 
