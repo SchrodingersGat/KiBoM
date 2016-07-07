@@ -53,7 +53,7 @@ def WriteHTML(filename, groups, net, headings, prefs):
         #header
         html.write("<html>\n")
         html.write("<head>\n")
-        html.write('\t<meta charset="ISO-8859-1">\n') #UTF-8 encoding for unicode support
+        html.write('\t<meta charset="UTF-8">\n') #UTF-8 encoding for unicode support
         html.write("</head>\n")
         html.write("<body>\n")
         
