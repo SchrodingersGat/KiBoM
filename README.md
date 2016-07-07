@@ -122,9 +122,9 @@ Multiple configurations can be addressed as the *fit_field* can contain multiple
 
 e.g. if we have a PCB with three components that have the following values in the *fit_field* field:
 
-C1 -> "-production"
-C2 -> "+production"
-R1 -> ""
+* C1 -> "-production"
+* C2 -> "+production"
+* R1 -> ""
 
 If the script is run with the flag *--revision production* then C2 and R1 will be loaded
 If the script is run without the *--revision* flag, then C1 and R1 will be loaded
@@ -272,7 +272,7 @@ Hit the "Generate" button, and the output window should show that the BoM genera
 ### HTML Output
 The output HTML file is generated as follows:
 
-![alt tag](example/html_eg.png?raw=True "HTML Gen")
+![alt tag](example/html_ex.png?raw=True "HTML Gen")
 
 ![alt tag](example/html.png?raw=True "HTML Output")
 
