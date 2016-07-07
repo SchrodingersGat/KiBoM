@@ -94,6 +94,41 @@ The following default fields are extracted and can be added to the output BoM fi
 **User Fields**
 If any components have custom fields added, these are available to the output BoM file.
 
+### Multiple PCB Configurations
+
+KiBoM allows for arbitary PCB configurations, which means that the user can specify that individual components will be included or excluded from the BoM in certain circumstances.
+
+The preferences (.ini) file provides the *fit_field* option which designates a particular part field (default = "Config") which the user can specify whether or not a part is to be included.
+
+**DNF Parts**
+
+To specify a part as DNF (do not fit), the *fit_field* field can be set to one of the following values:
+
+DNF = ["dnf", "do not fit", "nofit", "no stuff", "nostuff", "noload", "do not load"] (case insensitive)
+
+*Note: if the *Value* field for the component contains any of these values, the component will also not be included*
+
+**PCB Configurations**
+
+To generate a BoM with a custom *Configuration*, the --revision flag can be used at the command line to specifiy which revision/configuration is to be used.
+
+If a revision is specified, the value of the *fit_field* field is used to determine if a component will be included in the BoM, as follow:
+
+If the *fit_field* value is empty / blank then it will be loaded in ALL configuration
+If the *fit_field* begins with a '-' character, if will be excluded from the matching configuration
+If the *fit_field* begins with a '+' character, if will ONLY be included in the matching configuration
+
+Multiple configurations can be addressed as the *fit_field* can contain multiple comma-separated values.
+
+e.g. if we have a PCB with three components that have the following values in the *fit_field* field:
+
+C1 -> "-production"
+C2 -> "+production"
+R1 -> ""
+
+If the script is run with the flag *--revision production* then C2 and R1 will be loaded
+If the script is run without the *--revision* flag, then C1 and R1 will be loaded
+
 ### Regular Expression Matching
 
 KiBoM features two types of regex matching : "Include" and "Exclude" (each of these are specified within the prefrences (.ini) file).
