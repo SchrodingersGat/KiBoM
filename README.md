@@ -13,7 +13,30 @@ BoM options are user-configurable in a per-project configuration file.
 
 The *KiBOM_CLI* script can be run directly from KiCad or from the command line. For command help, run the script with the *-h* flag e.g. 
 
-    python KiBOM_CLI.py -h
+`python KiBOM_CLI.py -h`
+    
+~~~~
+KiBOM Bill of Materials generator script
+
+positional arguments:
+  netlist               xml netlist file. Use "%I" when running from within
+                        KiCad
+  output                BoM output file name. Use "%O" when running from
+                        within KiCad to use the default output name (csv
+                        file). For e.g. HTML output, use "%O.html"
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -n NUMBER, --number NUMBER
+                        Number of boards to build (default = 1)
+  -v, --verbose         Enable verbose output
+  -r REVISION, --revision REVISION
+                        Board variant, used to determine which components are
+                        output to the BoM
+  --cfg CFG             BoM config file (script will try to use 'bom.ini' if
+                        not specified here)
+~~~~                        
+    
     
 ![alt tag](example/usage.png?raw=True "Command Line")
 
