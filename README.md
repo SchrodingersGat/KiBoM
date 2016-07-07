@@ -104,7 +104,7 @@ The preferences (.ini) file provides the *fit_field* option which designates a p
 
 To specify a part as DNF (do not fit), the *fit_field* field can be set to one of the following values:
 
-DNF = ["dnf", "do not fit", "nofit", "no stuff", "nostuff", "noload", "do not load"] (case insensitive)
+DNF = "dnf", "do not fit", "nofit", "no stuff", "nostuff", "noload", "do not load" (case insensitive)
 
 *Note: if the *Value* field for the component contains any of these values, the component will also not be included*
 
