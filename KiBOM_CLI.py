@@ -1,3 +1,13 @@
+"""
+    @package
+    Generate BOM in xml, csv, txt, tsv or html formats.
+    Rows are sorted.
+    Rows are grouped (summed to Quantity, and References) 
+    by Value, Footprint, and optional fields, typically Vendor and SKU.
+    Fields are Description, Part, References, Value, Footprint, Quantity, Datasheet.
+    Configurable by a config file .ini
+"""
+
 from __future__ import print_function
 
 import re
