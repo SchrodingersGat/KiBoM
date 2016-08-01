@@ -1,3 +1,13 @@
+"""
+    @package
+    Generate BOM in xml, csv, txt, tsv or html formats.
+    Rows are sorted.
+    Rows are grouped (summed to Quantity, and References) 
+    by Value, Footprint, and optional fields, typically Vendor and SKU.
+    Fields are Description, Part, References, Value, Footprint, Quantity, Datasheet.
+    Configurable by a config file .ini
+"""
+
 from __future__ import print_function
 
 import re
@@ -27,6 +37,15 @@ def close(*arg):
 def say(*arg):
     if verbose:
         print(*arg)
+
+def isExtensionSupported(filename):
+    result = False
+    extensions = [".xml",".csv",".txt",".tsv",".html"]
+    for e in extensions:
+        if filename.endswith(e):
+            result = True
+            break
+    return result
     
 parser = argparse.ArgumentParser(description="KiBOM Bill of Materials generator script")
 
@@ -117,16 +136,10 @@ if write_to_bom:
 
     if output_file is None:
         output_file = input_file.replace(".xml","_bom.csv")
-       
-    #enfore a proper extension
-    valid = False
-    extensions = [".xml",".csv",".txt",".tsv",".html"]
-    for e in extensions:
-        if output_file.endswith(e):
-            valid = True
-            break
-    if not valid:
-        close("Extension must be one of",extensions)
+    
+    # KiCad BOM dialog by default passes "%O" without an extension.  Append our default 
+    if not isExtensionSupported(output_file):
+        output_file += "_bom.csv"
        
     output_file = os.path.abspath(output_file)
 
