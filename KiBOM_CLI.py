@@ -1,11 +1,16 @@
 """
     @package
+    KiBOM - Bill of Materials generation for KiCAD
+    
     Generate BOM in xml, csv, txt, tsv or html formats.
-    Rows are sorted.
-    Rows are grouped (summed to Quantity, and References) 
-    by Value, Footprint, and optional fields, typically Vendor and SKU.
-    Fields are Description, Part, References, Value, Footprint, Quantity, Datasheet.
-    Configurable by a config file .ini
+    
+    - Components are automatically grouped into BoM rows (grouping is configurable)
+    - Component groups count number of components and list component designators
+    - Rows are automatically sorted by component reference(s)
+    - Supports board revisions
+    
+    Extended options are available in the ".bom" config file in the PCB directory (this file is auto-generated with default options the first time the script is executed).
+    
 """
 
 from __future__ import print_function
