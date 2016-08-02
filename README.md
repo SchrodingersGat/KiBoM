@@ -329,5 +329,6 @@ An XML file output can be generated simply by changing the file extension
 ## Contributors
 
 With thanks to the following contributors:
-https://github.com/bootchk
+
+* https://github.com/bootchk
 
