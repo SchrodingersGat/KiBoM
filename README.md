@@ -326,3 +326,8 @@ An XML file output can be generated simply by changing the file extension
         <group Datasheet="http://www.ti.com/lit/ds/symlink/max232.pdf" Description="Dual RS232 driver/receiver, 5V supply, 120kb/s, 0C-70C" Footprint="DIP-16_W7.62mm" Notes="Do not fit" Part="MAX232" Quantity="1 (DNF)" Rating="" References="U1" Value="MAX232" Vendor=""/>
     </KiCAD_BOM>
 
+## Contributors
+
+With thanks to the following contributors:
+https://github.com/bootchk
+
