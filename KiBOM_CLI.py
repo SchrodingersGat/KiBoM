@@ -9,7 +9,7 @@
     - Rows are automatically sorted by component reference(s)
     - Supports board revisions
     
-    Extended options are available in the ".bom" config file in the PCB directory (this file is auto-generated with default options the first time the script is executed).
+    Extended options are available in the "bom.ini" config file in the PCB directory (this file is auto-generated with default options the first time the script is executed).
     
 """
 

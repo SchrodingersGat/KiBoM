@@ -91,6 +91,7 @@ Some component values can be expressed in multiple ways (e.g. "0.1uF" === "100n"
 In addition to the default KiCad fields which are assigned to each component, KiBoM extracts and custom fields added to the various components. 
 
 **Default Fields**
+
 The following default fields are extracted and can be added to the output BoM file:
 * Description - Part description as per the schematic symbol
 * References - List of part references included in a particular group
@@ -102,6 +103,7 @@ The following default fields are extracted and can be added to the output BoM fi
 * Datasheet - Component datasheet extracted either from user-included data, or from part library
 
 **User Fields**
+
 If any components have custom fields added, these are available to the output BoM file.
 
 ### Multiple PCB Configurations
@@ -112,21 +114,29 @@ The preferences (.ini) file provides the *fit_field* option which designates a p
 
 **DNF Parts**
 
-To specify a part as DNF (do not fit), the *fit_field* field can be set to one of the following values:
+To specify a part as DNF (do not fit), the *fit_field* field can be set to one of the following values: (case insensitive)
 
-DNF = "dnf", "do not fit", "nofit", "no stuff", "nostuff", "noload", "do not load" (case insensitive)
+* "dnf" 
+* "do not fit" 
+* "nofit" 
+* "no stuff"
+* "nostuff"
+* "noload"
+* "do not load" 
 
-*Note: if the *Value* field for the component contains any of these values, the component will also not be included*
+**Note:**
+
+If the *Value* field for the component contains any of these values, the component will also not be included
 
 **PCB Configurations**
 
 To generate a BoM with a custom *Configuration*, the --revision flag can be used at the command line to specifiy which revision/configuration is to be used.
 
-If a revision is specified, the value of the *fit_field* field is used to determine if a component will be included in the BoM, as follow:
+If a revision is specified, the value of the *fit_field* field is used to determine if a component will be included in the BoM, as follows:
 
-If the *fit_field* value is empty / blank then it will be loaded in ALL configuration
-If the *fit_field* begins with a '-' character, if will be excluded from the matching configuration
-If the *fit_field* begins with a '+' character, if will ONLY be included in the matching configuration
+* If the *fit_field* value is empty / blank then it will be loaded in ALL configuration.
+* If the *fit_field* begins with a '-' character, if will be excluded from the matching configuration.
+* If the *fit_field* begins with a '+' character, if will ONLY be included in the matching configuration.
 
 Multiple configurations can be addressed as the *fit_field* can contain multiple comma-separated values.
 
@@ -136,18 +146,19 @@ e.g. if we have a PCB with three components that have the following values in th
 * C2 -> "+production"
 * R1 -> ""
 
-If the script is run with the flag *--revision production* then C2 and R1 will be loaded
-If the script is run without the *--revision* flag, then C1 and R1 will be loaded
+If the script is run with the flag *--revision production* then C2 and R1 will be loaded.
+
+If the script is run without the *--revision production* flag, then C1 and R1 will be loaded
 
 ### Regular Expression Matching
 
-KiBoM features two types of regex matching : "Include" and "Exclude" (each of these are specified within the prefrences (.ini) file).
+KiBoM features two types of regex matching : "Include" and "Exclude" (each of these are specified within the prefrences (bom.ini) file).
 
-If the user wishes to include ONLY parts that match one-of-many regular expressions, these can be specifed in REGEX_INCLUDE section of the .ini file
+If the user wishes to include ONLY parts that match one-of-many regular expressions, these can be specifed in REGEX_INCLUDE section of the bom.ini file
 
-If the user wishes to exclude components based on one-of-many regular expressions, these are specified in the REGEX_EXCLUDE section of the .ini file
+If the user wishes to exclude components based on one-of-many regular expressions, these are specified in the REGEX_EXCLUDE section of the bom.ini file
 
-(Refer to the default .ini file for examples)
+(Refer to the default bom.ini file for examples)
 
 ### Multiple File Outputs
 Multiple BoM output formats are supported:
