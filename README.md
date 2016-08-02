@@ -58,6 +58,16 @@ To run from KiCad, simply add the same command line in the *Bill of Materials* s
 
 ![alt tag](example/html_ex.png?raw=True "HTML Example")
 
+## Quick Start
+
+Download and unzip the files almost anywhere.  
+
+When you start the KiCad schematic editor and choose *Tools>Generate Bill of Materials* expect a *Bill of Material* dialog.  Choose the *Add Plugin* button, expect a file chooser dialog.  Navigate to where you unzipped the files, select the KiBOM_CLI.py file, and choose the *Open* button.  Expect another confirmation dialog and choose *OK*.  Expect the *Command Line:* text box to be filled in, and for a description of the plugin to appear in the *Plugin Info* text box.  Choose the *Generate* button.  Expect some messages in the *Plugin Info* text box, and for a .csv file to exist in your KiCad project directory.
+
+If you want other than .csv format, edit the *Command Line*, for example inserting ".html" after the "%O".
+
+If you want more columns in your BOM, before you generate your BOM, in the schematic editor choose *Preferences>Schematic Editor Options*  and create new rows in the *Template Field Names* tab.  Then edit your components and fill in the fields.  KiBOM will reasonably sum rows in the BOM having the same values in your fields.  For example, if you have two components both with Vendor=Digikey and SKU=877-5309 (and value and footprints equal), there will be one row with Quantity "2" and References e.g. "R1, R2."
+
 ## Features
 
 ### Intelligent Component Grouping
