@@ -134,28 +134,28 @@ class Component():
         #special fields
         
         if name.lower() == ColumnList.COL_REFERENCE.lower():
-            return self.getRef()
+            return self.getRef().strip()
             
         if name.lower() == ColumnList.COL_DESCRIPTION.lower():
-            return self.getDescription()
+            return self.getDescription().strip()
             
         if name.lower() == ColumnList.COL_DATASHEET.lower():
-            return self.getDatasheet()
+            return self.getDatasheet().strip()
             
         if name.lower() == ColumnList.COL_FP_LIB.lower():
-            return self.getFootprint().split(":")[0]
+            return self.getFootprint().split(":")[0].strip()
             
         if name.lower() == ColumnList.COL_FP.lower():
-            return self.getFootprint().split(":")[1]
+            return self.getFootprint().split(":")[1].strip()
             
         if name.lower() == ColumnList.COL_VALUE.lower():
-            return self.getValue()
+            return self.getValue().strip()
 
         if name.lower() == ColumnList.COL_PART.lower():
-            return self.getPartName()
+            return self.getPartName().strip()
             
         if name.lower() == ColumnList.COL_PART_LIB.lower():
-            return self.getLibName()
+            return self.getLibName().strip()
         
         #other fields (case insensitive)
         for f in self.getFieldNames():
@@ -165,7 +165,7 @@ class Component():
                 if field == "" and libraryToo:
                     field = self.libpart.getField(f)
                     
-                return field
+                return field.strip()
                 
         #could not find
         return ""
