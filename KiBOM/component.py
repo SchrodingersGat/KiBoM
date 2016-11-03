@@ -276,7 +276,10 @@ class Component():
         return ret
 
     def getDatasheet(self, libraryToo=True):
-        return self.libpart.getDatasheet()
+        ret = self.element.get("datasheet")
+        if ret =="" and libraryToo:
+            ret = self.libpart.getDatasheet()
+        return ret
 
     def getTimestamp(self):
         return self.element.get("tstamp")
