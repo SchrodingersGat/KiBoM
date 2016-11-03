@@ -284,8 +284,11 @@ class Component():
     def getTimestamp(self):
         return self.element.get("tstamp")
 
-    def getDescription(self):
-        return self.libpart.getDescription()
+    def getDescription(self, libraryToo=True):
+        ret = self.element.get("field", "name", "Description")
+        if ret =="" and libraryToo:
+            ret = self.libpart.getDescription()
+        return ret
 
 class ComponentGroup():
 
