@@ -132,6 +132,7 @@ class Component():
         
         
         #special fields
+        fp = self.getFootprint().split(":")
         
         if name.lower() == ColumnList.COL_REFERENCE.lower():
             return self.getRef().strip()
@@ -141,8 +142,6 @@ class Component():
             
         elif name.lower() == ColumnList.COL_DATASHEET.lower():
             return self.getDatasheet().strip()
-
-        fp = self.getFootprint().split(":")
 
         # Footprint library is first element
         elif name.lower() == ColumnList.COL_FP_LIB.lower():
