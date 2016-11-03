@@ -136,28 +136,34 @@ class Component():
         if name.lower() == ColumnList.COL_REFERENCE.lower():
             return self.getRef().strip()
             
-        if name.lower() == ColumnList.COL_DESCRIPTION.lower():
+        elif name.lower() == ColumnList.COL_DESCRIPTION.lower():
             return self.getDescription().strip()
             
-        if name.lower() == ColumnList.COL_DATASHEET.lower():
+        elif name.lower() == ColumnList.COL_DATASHEET.lower():
             return self.getDatasheet().strip()
 
         fp = self.getFootprint().split(":")
 
-        if len(fp) > 1:
-            if name.lower() == ColumnList.COL_FP_LIB.lower():
+        # Footprint library is first element
+        elif name.lower() == ColumnList.COL_FP_LIB.lower():
+            if len(fp) > 0:
                 return fp[0].strip()
+            else:
+                return "" # explicit empty return
 
-            if name.lower() == ColumnList.COL_FP.lower():
+        elif name.lower() == ColumnList.COL_FP.lower():
+            if len(fp) > 0:
                 return fp[1].strip()
+            else:
+                return "" # explicit empty return
 
-        if name.lower() == ColumnList.COL_VALUE.lower():
+        elif name.lower() == ColumnList.COL_VALUE.lower():
             return self.getValue().strip()
 
-        if name.lower() == ColumnList.COL_PART.lower():
+        elif name.lower() == ColumnList.COL_PART.lower():
             return self.getPartName().strip()
             
-        if name.lower() == ColumnList.COL_PART_LIB.lower():
+        elif name.lower() == ColumnList.COL_PART_LIB.lower():
             return self.getLibName().strip()
         
         #other fields (case insensitive)
@@ -170,7 +176,7 @@ class Component():
                     
                 return field.strip()
                 
-        #could not find
+        #could not find a matching field
         return ""
 
     def getFieldNames(self):
