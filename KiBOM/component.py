@@ -145,13 +145,13 @@ class Component():
 
         # Footprint library is first element
         elif name.lower() == ColumnList.COL_FP_LIB.lower():
-            if len(fp) > 0:
+            if len(fp) > 1:
                 return fp[0].strip()
             else:
                 return "" # explicit empty return
 
         elif name.lower() == ColumnList.COL_FP.lower():
-            if len(fp) > 0:
+            if len(fp) > 1:
                 return fp[1].strip()
             else:
                 return "" # explicit empty return
