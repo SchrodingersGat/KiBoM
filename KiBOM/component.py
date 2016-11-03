@@ -141,13 +141,16 @@ class Component():
             
         if name.lower() == ColumnList.COL_DATASHEET.lower():
             return self.getDatasheet().strip()
-            
-        if name.lower() == ColumnList.COL_FP_LIB.lower():
-            return self.getFootprint().split(":")[0].strip()
-            
-        if name.lower() == ColumnList.COL_FP.lower():
-            return self.getFootprint().split(":")[1].strip()
-            
+
+        fp = self.getFootprint().split(":")
+
+        if len(fp) > 1:
+            if name.lower() == ColumnList.COL_FP_LIB.lower():
+                return fp[0].strip()
+
+            if name.lower() == ColumnList.COL_FP.lower():
+                return fp[1].strip()
+
         if name.lower() == ColumnList.COL_VALUE.lower():
             return self.getValue().strip()
 
