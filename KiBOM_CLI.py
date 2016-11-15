@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 """
     @package
     KiBOM - Bill of Materials generation for KiCAD
