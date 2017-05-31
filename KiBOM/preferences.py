@@ -110,6 +110,8 @@ class BomPref:
 
             if cf.has_option(self.SECTION_GENERAL, self.OPT_BACKUP):
                 self.backup = cf.get(self.SECTION_GENERAL, self.OPT_BACKUP)
+            else:
+                self.backup = False
        
             #read out grouping colums
             if self.SECTION_GROUPING_FIELDS in cf.sections():
