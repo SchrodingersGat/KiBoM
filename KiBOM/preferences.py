@@ -11,6 +11,7 @@ from columns import ColumnList
 class BomPref:
     
     SECTION_IGNORE = "IGNORE_COLUMNS"
+    SECTION_COLUMN_ORDER = "COLUMN_ORDER"
     SECTION_GENERAL = "BOM_OPTIONS"
     SECTION_ALIASES = "COMPONENT_ALIASES"
     SECTION_GROUPING_FIELDS = "GROUP_FIELDS"
@@ -32,6 +33,7 @@ class BomPref:
             ColumnList.COL_PART_LIB,
             ColumnList.COL_FP_LIB,
             ] #list of headings to ignore in BoM generation
+        self.corder = ColumnList._COLUMNS_DEFAULT
         self.ignoreDNF = True #ignore rows for do-not-fit parts
         self.numberRows = True #add row-numbers to BoM output
         self.groupConnectors = True #group connectors and ignore component value
@@ -120,7 +122,11 @@ class BomPref:
             #read out ignored-rows
             if self.SECTION_IGNORE in cf.sections():
                 self.ignore = [i for i in cf.options(self.SECTION_IGNORE)]
-            
+
+            #read out column order
+            if self.SECTION_COLUMN_ORDER in cf.sections():
+                self.corder = [i for i in cf.options(self.SECTION_COLUMN_ORDER)]
+
             #read out component aliases
             if self.SECTION_ALIASES in cf.sections():
                 self.aliases = [a.split("\t") for a in cf.options(self.SECTION_ALIASES)]
@@ -169,9 +175,16 @@ class BomPref:
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")
         cf.set(self.SECTION_IGNORE, "; Titles are case-insensitive")
-        
+
         for i in self.ignore:
             cf.set(self.SECTION_IGNORE, i)
+
+        cf.add_section(self.SECTION_COLUMN_ORDER)
+        cf.set(self.SECTION_COLUMN_ORDER, "; Columns will apear in the order they are listed here")
+        cf.set(self.SECTION_COLUMN_ORDER, "; Titles are case-insensitive")
+
+        for i in self.corder:
+            cf.set(self.SECTION_COLUMN_ORDER, i)
             
         #write the component grouping fields 
         cf.add_section(self.SECTION_GROUPING_FIELDS)

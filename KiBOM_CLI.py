@@ -121,7 +121,7 @@ components = net.getInterestingComponents()
 #group the components
 groups = net.groupComponents(components)
 
-columns = ColumnList()
+columns = ColumnList(pref.corder)
 
 #read out all available fields
 for g in groups:
