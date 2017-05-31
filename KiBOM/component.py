@@ -54,14 +54,14 @@ class Component():
         
         this_field = self.getField(field).lower()
         other_field = other.getField(field).lower()
+
+        #if blank comparisons are allowed
+        if this_field == "" or other_field == "":
+            if not self.prefs.mergeBlankFields:
+                return False
         
         if this_field == other_field: return True
-        
-        #if blank comparisons are allowed
-        if self.prefs.mergeBlankFields:
-            if this_field == "" or other_field == "":
-                return True
-                
+
         return False
         
     #Equivalency operator is used to determine if two parts are 'equal'
