@@ -23,6 +23,7 @@ class BomPref:
     OPT_USE_REGEX = "test_regex"
     OPT_MERGE_BLANK = "merge_blank_fields"
     OPT_IGNORE_DNF = "ignore_dnf"
+    OPT_BACKUP = "make_backup"
 
     OPT_CONFIG_FIELD = "fit_field"
     
@@ -41,6 +42,7 @@ class BomPref:
         self.verbose = False #by default, is not verbose
         self.configField = "Config" #default field used for part fitting config
         self.pcbConfig = "default"
+        self.backup = "%O.tmp"
             
         #default fields used to group components
         self.groups = [
@@ -105,6 +107,9 @@ class BomPref:
                 
             if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
                 self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
+
+            if cf.has_option(self.SECTION_GENERAL, self.OPT_BACKUP):
+                self.backup = cf.get(self.SECTION_GENERAL, self.OPT_BACKUP)
        
             #read out grouping colums
             if self.SECTION_GROUPING_FIELDS in cf.sections():
@@ -155,6 +160,9 @@ class BomPref:
         
         cf.set(self.SECTION_GENERAL, '; Field name used to determine if a particular part is to be fitted')
         cf.set(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD, self.configField)
+
+        cf.set(self.SECTION_GENERAL, '; Make a backup of the bom before generating the new one, using the folloing template')
+        cf.set(self.SECTION_GENERAL, self.OPT_BACKUP, self.backup)
         
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")
