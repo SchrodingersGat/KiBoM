@@ -68,24 +68,28 @@ class Component():
     def __eq__(self, other):
         """Equlivalency operator, remember this can be easily overloaded"""
 
-        results = []
-        
         #'fitted' value must be the same for both parts
-        results.append(self.isFitted() == other.isFitted())
-        
+        if self.isFitted() != other.isFitted():
+            return False
+
+        if len(self.prefs.groups)==0:
+            return False
+
         for c in self.prefs.groups:
             #perform special matches
             if c.lower() == ColumnList.COL_VALUE.lower():
-                results.append(self.compareValue(other))
+                if not self.compareValue(other):
+                    return False
             #match part name
             elif c.lower() == ColumnList.COL_PART.lower():
-                results.append(self.comparePartName(other))
+                if not self.comparePartName(other):
+                    return False
             
             #generic match
-            else:
-                results.append(self.compareField(other, c))
+            elif not self.compareField(other, c):
+                    return False
         
-        return all(results)
+        return True
 
     def setLibPart(self, part):
         self.libpart = part
