@@ -47,7 +47,7 @@ def WriteBoM(filename, groups, net, headings = columns.ColumnList._COLUMNS_DEFAU
     result = False
     
     #CSV file writing
-    if ext in ["csv","csv","txt"]:
+    if ext in ["csv","tsv","txt"]:
         if WriteCSV(filename, groups, net, headings, prefs):
             print("CSV Output -> {fn}".format(fn=filename))
             result = True
