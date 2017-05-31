@@ -87,7 +87,8 @@ if args.cfg:
 #read preferences from file. If file does not exists, default preferences will be used
 pref = BomPref()
 
-if os.path.exists(config_file):
+have_cfile = os.path.exists(config_file)
+if have_cfile:
     pref.Read(config_file)
     say("Config:",config_file)
 
@@ -101,8 +102,9 @@ if args.revision is not None:
 
 
 #write preference file back out (first run will generate a file with default preferences)
-pref.Write(ini)
-say("Writing preferences file bom.ini")
+if not have_cfile:
+    pref.Write(config_file)
+    say("Writing preferences file %s"%(config_file,))
 
 #individual components
 components = []
