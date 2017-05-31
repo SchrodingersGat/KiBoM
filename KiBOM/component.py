@@ -104,6 +104,16 @@ class Component():
 
         return prefix
 
+    def getSufix(self): #return the reference sufix #
+        #e.g. if this component has a reference U12, will return "12"
+        sufix = ""
+
+        for c in self.getRef():
+            if c.isalpha(): sufix = ""
+            else: sufix += c
+
+        return int(sufix)
+
     def getLibPart(self):
         return self.libpart
 
@@ -350,7 +360,39 @@ class ComponentGroup():
     def getRefs(self):
         #print([c.getRef() for c in self.components]))
         #return " ".join([c.getRef() for c in self.components]) 
-        return " ".join([c.getRef() for c in self.components])
+        return ",".join([c.getRef() for c in self.components])
+
+    def getAltRefs(self):
+        refs = ""
+        p=None
+        l=p
+        for n in self.components:
+            if (p==None):
+                refs+=n.getRef()
+                p = (n.getPrefix(), n.getSufix())
+                l = p
+                continue
+
+            if n.getSufix()==l[1]+1:
+                l = (n.getPrefix(), n.getSufix())
+            else:
+                if l!=p:
+                    #ranges need to span at least 3 references to merit use of -
+                    if l[1]-p[1]>1:
+                        refs+="-%s%d"%l
+                    else:
+                        refs+=",%s%d"%l
+
+	        l = (n.getPrefix(), n.getSufix())
+	        p = l
+	        refs+=",%s%d"%l
+
+        if not (l==p):
+            if l[1]-p[1]>1:
+                refs+="-%s%d"%l
+            else:
+                refs+=",%s%d"%l
+        return refs
 
     #sort the components in correct order
     def sortComponents(self):
@@ -374,7 +416,7 @@ class ComponentGroup():
             print("Conflict:",self.fields[field],",",fieldData)
             self.fields[field] += " " + fieldData
         
-    def updateFields(self):
+    def updateFields(self, usealt=False):
     
         for c in self.components:
             for f in c.getFieldNames():
@@ -386,7 +428,10 @@ class ComponentGroup():
                 self.updateField(f, c.getField(f))
                      
         #update 'global' fields
-        self.fields[ColumnList.COL_REFERENCE] = self.getRefs()
+        if usealt:
+            self.fields[ColumnList.COL_REFERENCE] = self.getAltRefs()
+        else:
+            self.fields[ColumnList.COL_REFERENCE] = self.getRefs()
         
         q = self.getCount()
         self.fields[ColumnList.COL_GRP_QUANTITY] = "{n}{dnf}".format(

@@ -22,6 +22,7 @@ class BomPref:
     OPT_NUMBER_ROWS = "number_rows"
     OPT_GROUP_CONN = "group_connectors"
     OPT_USE_REGEX = "test_regex"
+    OPT_USE_ALT = "use_alt"
     OPT_MERGE_BLANK = "merge_blank_fields"
     OPT_IGNORE_DNF = "ignore_dnf"
     OPT_BACKUP = "make_backup"
@@ -34,6 +35,7 @@ class BomPref:
             ColumnList.COL_FP_LIB,
             ] #list of headings to ignore in BoM generation
         self.corder = ColumnList._COLUMNS_DEFAULT
+        self.useAlt = False #use alternate reference representation
         self.ignoreDNF = True #ignore rows for do-not-fit parts
         self.numberRows = True #add row-numbers to BoM output
         self.groupConnectors = True #group connectors and ignore component value
@@ -102,6 +104,7 @@ class BomPref:
             #read general options
             if self.SECTION_GENERAL in cf.sections():
                 self.ignoreDNF =  self.checkOption(cf, self.OPT_IGNORE_DNF, default=True)
+                self.useAlt =  self.checkOption(cf, self.OPT_USE_ALT, default=False)
                 self.numberRows = self.checkOption(cf, self.OPT_NUMBER_ROWS, default=True)
                 self.groupConnectors = self.checkOption(cf, self.OPT_GROUP_CONN, default=True)
                 self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
@@ -161,6 +164,7 @@ class BomPref:
         cf.add_section(self.SECTION_GENERAL)
         cf.set(self.SECTION_GENERAL, "; General BoM options here")
         self.addOption(cf, self.OPT_IGNORE_DNF, self.ignoreDNF, comment="If '{opt}' option is set to 1, rows that are not to be fitted on the PCB will not be written to the BoM file".format(opt=self.OPT_IGNORE_DNF))
+        self.addOption(cf, self.OPT_USE_ALT, self.useAlt, comment="If '{opt}' option is set to 1, grouped references will be printed in the alternate compressed style eg: R1-R7,R18".format(opt=self.OPT_USE_ALT))
         self.addOption(cf, self.OPT_NUMBER_ROWS, self.numberRows, comment="If '{opt}' option is set to 1, each row in the BoM will be prepended with an incrementing row number".format(opt=self.OPT_NUMBER_ROWS))
         self.addOption(cf, self.OPT_GROUP_CONN, self.groupConnectors, comment="If '{opt}' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
         self.addOption(cf, self.OPT_USE_REGEX, self.useRegex, comment="If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
