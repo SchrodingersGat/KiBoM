@@ -349,3 +349,5 @@ With thanks to the following contributors:
 * https://github.com/bootchk
 * https://github.com/kylemanna
 * https://github.com/pointhi
+* https://github.com/schneidersoft
+* https://github.com/suzizecat
