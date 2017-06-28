@@ -57,6 +57,8 @@ optional arguments:
 **--cfg** If provided, this is the BOM config file that will be used. If not provided, options will be loaded from "bom.ini"
 
 **-s --separator** Override the delimiter for CSV or TSV generation
+
+--------
 To run from KiCad, simply add the same command line in the *Bill of Materials* script window. e.g. to generate a HTML output:
 
 ![alt tag](example/html_ex.png?raw=True "HTML Example")
