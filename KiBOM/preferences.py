@@ -41,7 +41,7 @@ class BomPref:
         self.verbose = False #by default, is not verbose
         self.configField = "Config" #default field used for part fitting config
         self.pcbConfig = "default"
-            
+        self.separatorCSV = None
         #default fields used to group components
         self.groups = [
             ColumnList.COL_PART,

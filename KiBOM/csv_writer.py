@@ -20,12 +20,16 @@ def WriteCSV(filename, groups, net, headings, prefs):
     filename = os.path.abspath(filename)
     
     #delimeter is assumed from file extension
-    if filename.endswith(".csv"):
-        delimiter = ","
-    elif filename.endswith(".tsv") or filename.endswith(".txt"):
-        delimiter = "\t"
+	#override delimiter if separator specified
+    if prefs.separatorCSV != None:
+        delimiter = prefs.separatorCSV
     else:
-        return False
+        if filename.endswith(".csv"):
+            delimiter = ","
+        elif filename.endswith(".tsv") or filename.endswith(".txt"):
+            delimiter = "\t"
+        else:
+            return False
         
     nGroups = len(groups)
     nTotal = sum([g.getCount() for g in groups])
