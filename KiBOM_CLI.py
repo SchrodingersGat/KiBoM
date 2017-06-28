@@ -61,6 +61,7 @@ parser.add_argument("-n", "--number", help="Number of boards to build (default =
 parser.add_argument("-v", "--verbose", help="Enable verbose output", action='count')
 parser.add_argument("-r", "--revision", help="Board variant, used to determine which components are output to the BoM", type=str, default=None)
 parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
+parser.add_argument("-s","--separator",help="CSV Separator (default ',')",type=str, default=None)
 
 args = parser.parse_args()
     
@@ -95,6 +96,7 @@ if have_cfile:
 #pass various command-line options through
 pref.verbose = verbose
 pref.boards = args.number
+pref.separatorCSV = args.separator
 
 if args.revision is not None:
     pref.pcbConfig = args.revision
