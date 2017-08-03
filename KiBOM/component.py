@@ -321,18 +321,29 @@ class joiner:
         else:
             self.stack.append(((P,N),(P,N)))
 
-    def flush(self, sep, dash='-'):
-        refs = []
+    def flush(self, sep, N=None, dash='-'):
+        refstr = u''
+        c = 0
         for Q in self.stack:
+            if N!=None and c%N==0 and c!=0:
+                refstr+=u'\n'
+            elif c!=0:
+                refstr+=sep
+
             S, E = Q
             if S == E:
-                refs.append("%s%d"%S)
+                refstr+="%s%d"%S
+                c+=1
             else:
-                refs.append("%s%d%s%s%d"%(S[0],S[1],dash,E[0],E[1]))
 
-        return sep.join(refs)
+		#do we have space?
+		if (c+1)%N==0:	#no
+	                refstr+=u'\n'
+			c += 1
 
-
+                refstr+="%s%d%s%s%d"%(S[0],S[1],dash,E[0],E[1])
+		c+=2
+        return refstr
 
 class ComponentGroup():
 
@@ -388,17 +399,17 @@ class ComponentGroup():
 
     #return a list of the components
     def getRefs(self):
-        #return " ".join([c.getRef() for c in self.components]) 
-        return ",".join([c.getRef() for c in self.components])
+        return " ".join([c.getRef() for c in self.components]) 
+        #return ",".join([c.getRef() for c in self.components])
 
-    def getAltRefs(self):
+    def getAltRefs(self, wrapN=None):
         S = joiner()
 
         for n in self.components:
                 P, N = (n.getPrefix(), n.getSufix())
                 S.add(P,N)
 
-        return S.flush(',')
+        return S.flush(' ', N=wrapN)
 
     #sort the components in correct order
     def sortComponents(self):
@@ -422,7 +433,7 @@ class ComponentGroup():
             print("Conflict:",self.fields[field],",",fieldData)
             self.fields[field] += " " + fieldData
         
-    def updateFields(self, usealt=False):
+    def updateFields(self, usealt=False, wrapN=None):
     
         for c in self.components:
             for f in c.getFieldNames():
@@ -435,7 +446,7 @@ class ComponentGroup():
                      
         #update 'global' fields
         if usealt:
-            self.fields[ColumnList.COL_REFERENCE] = self.getAltRefs()
+            self.fields[ColumnList.COL_REFERENCE] = self.getAltRefs(wrapN)
         else:
             self.fields[ColumnList.COL_REFERENCE] = self.getRefs()
         
