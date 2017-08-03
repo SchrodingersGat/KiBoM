@@ -304,6 +304,36 @@ class Component():
             ret = self.libpart.getDescription()
         return ret
 
+class joiner:
+    def __init__(self):
+      self.stack = []
+
+    def add(self, P, N):
+
+        if self.stack == []:
+            self.stack.append(((P,N),(P,N)))
+            return
+
+        S, E = self.stack[-1]
+
+        if N == E[1]+1:
+            self.stack[-1] = (S, (P,N))
+        else:
+            self.stack.append(((P,N),(P,N)))
+
+    def flush(self, sep, dash='-'):
+        refs = []
+        for Q in self.stack:
+            S, E = Q
+            if S == E:
+                refs.append("%s%d"%S)
+            else:
+                refs.append("%s%d%s%s%d"%(S[0],S[1],dash,E[0],E[1]))
+
+        return sep.join(refs)
+
+
+
 class ComponentGroup():
 
     """
@@ -358,41 +388,17 @@ class ComponentGroup():
 
     #return a list of the components
     def getRefs(self):
-        #print([c.getRef() for c in self.components]))
         #return " ".join([c.getRef() for c in self.components]) 
         return ",".join([c.getRef() for c in self.components])
 
     def getAltRefs(self):
-        refs = ""
-        p=None
-        l=p
+        S = joiner()
+
         for n in self.components:
-            if (p==None):
-                refs+=n.getRef()
-                p = (n.getPrefix(), n.getSufix())
-                l = p
-                continue
+                P, N = (n.getPrefix(), n.getSufix())
+                S.add(P,N)
 
-            if n.getSufix()==l[1]+1:
-                l = (n.getPrefix(), n.getSufix())
-            else:
-                if l!=p:
-                    #ranges need to span at least 3 references to merit use of -
-                    if l[1]-p[1]>1:
-                        refs+="-%s%d"%l
-                    else:
-                        refs+=",%s%d"%l
-
-	        l = (n.getPrefix(), n.getSufix())
-	        p = l
-	        refs+=",%s%d"%l
-
-        if not (l==p):
-            if l[1]-p[1]>1:
-                refs+="-%s%d"%l
-            else:
-                refs+=",%s%d"%l
-        return refs
+        return S.flush(',')
 
     #sort the components in correct order
     def sortComponents(self):
