@@ -34,7 +34,7 @@ def WriteCSV(filename, groups, net, headings, prefs):
         
     with open(filename, "w") as f:
     
-        writer = csv.writer(f, delimiter=delimiter, lineterminator="\n")
+        writer = csv.writer(f, delimiter=delimiter, lineterminator="\n", quoting=csv.QUOTE_NONNUMERIC)
         
         if not prefs.hideHeaders:
             if prefs.numberRows:
