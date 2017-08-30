@@ -3,7 +3,7 @@ Configurable BoM generation tool for KiCad EDA (http://kicad-pcb.org/)
 
 ## Description
 
-KiBoM is a configurable BOM (Bill of Materials) generation tool for KiCad EDA. Written in Python, it can be used directly with KiCad software without the need for any external libraries or plugins. 
+KiBoM is a configurable BOM (Bill of Materials) generation tool for KiCad EDA. Written in Python, it can be used directly with KiCad software without the need for any external libraries or plugins.
 
 KiBoM intelligently groups components based on multiple factors, and can generate BoM files in multiple output formats.
 
@@ -11,10 +11,10 @@ BoM options are user-configurable in a per-project configuration file.
 
 ## Usage
 
-The *KiBOM_CLI* script can be run directly from KiCad or from the command line. For command help, run the script with the *-h* flag e.g. 
+The *KiBOM_CLI* script can be run directly from KiCad or from the command line. For command help, run the script with the *-h* flag e.g.
 
 `python KiBOM_CLI.py -h`
-    
+
 ~~~~
 KiBOM Bill of Materials generator script
 
@@ -38,7 +38,7 @@ optional arguments:
   -s SEPARATOR, --separator SEPARATOR
 
 ~~~~                        
-    
+
 
 **netlist** The netlist must be provided to the script. When running from KiCAD use "%I"
 
@@ -80,7 +80,7 @@ If you want more columns in your BOM, before you generate your BOM, in the schem
 To be useful for ordering components, the BoM output from a KiCad project should be organized into sensible component groups. By default, KiBom groups components based on the following factors:
 
 * Part name: (e.g. 'R' for resistors, 'C' for capacitors, or longer part names such as 'MAX232') *note: parts such as {'R','r_small'} (which are different symbol representations for the same component) can also be grouped together*
-* Value: Components must have the same value to be grouped together 
+* Value: Components must have the same value to be grouped together
 * Footprint: Components must have the same footprint to be grouped together *(this option can be enabled/disabled in the bom.ini configuration file)*
 
 #### Custom Column Grouping
@@ -93,19 +93,19 @@ Some component values can be expressed in multiple ways (e.g. "0.1uF" === "100n"
 
 ### Field Extraction
 
-In addition to the default KiCad fields which are assigned to each component, KiBoM extracts and custom fields added to the various components. 
+In addition to the default KiCad fields which are assigned to each component, KiBoM extracts and custom fields added to the various components.
 
 **Default Fields**
 
 The following default fields are extracted and can be added to the output BoM file:
-* Description - Part description as per the schematic symbol
-* References - List of part references included in a particular group
-* Quantity - Number of components included in a particular group
-* Part - Part name as per the schematic symbol
-* Part Lib - Part library for the symbol *(default - not output to BoM file)*
-* Footprint - Part footprint
-* Footprint Lib - Part footprint library *(default - not output to BoM file)*
-* Datasheet - Component datasheet extracted either from user-included data, or from part library
+* `Description` : Part description as per the schematic symbol
+* `References` : List of part references included in a particular group
+* `Quantity` : Number of components included in a particular group
+* `Part` : Part name as per the schematic symbol
+* `Part Lib` : Part library for the symbol *(default - not output to BoM file)*
+* `Footprint` : Part footprint
+* `Footprint Lib` : Part footprint library *(default - not output to BoM file)*
+* `Datasheet` : Component datasheet extracted either from user-included data, or from part library
 
 **User Fields**
 
@@ -121,13 +121,13 @@ The preferences (.ini) file provides the *fit_field* option which designates a p
 
 To specify a part as DNF (do not fit), the *fit_field* field can be set to one of the following values: (case insensitive)
 
-* "dnf" 
-* "do not fit" 
-* "nofit" 
+* "dnf"
+* "do not fit"
+* "nofit"
 * "no stuff"
 * "nostuff"
 * "noload"
-* "do not load" 
+* "do not load"
 
 **Note:**
 
@@ -177,18 +177,19 @@ Output file format selection is set by the output filename. e.g. "bom.html" will
 
 ### Configuration File
 BoM generation options can be configured (on a per-project basis) by editing the *bom.ini* file in the PCB project directory. This file is generated the first time that the KiBoM script is run, and allows configuration of the following options.
-* *ignore_dnf*: Component groups designated as 'DNF' (do not fit) will be excluded from the BoM output
-* *number_rows*: Add row numbers to the BoM output
-* *group_connectors*: If this option is set, connector comparison based on the 'Value' field is ignored. This allows multiple connectors which are named for their function (e.g. "Power", "ICP" etc) can be grouped together.
-* *test_regex*: If this option is set, each component group row is test against a list of (user configurable) regular expressions. If any matches are found, that row is excluded from the output BoM file.
-* *merge_blank_field*: If this option is set, blank fields are able to be merged with non-blank fields (and do not count as a 'conflict')
-* *fit_field*: This is the name of the part field used to determine if the component is fitted, or not.
+* `ignore_dnf` : Component groups designated as 'DNF' (do not fit) will be excluded from the BoM output
+* `number_rows` : Add row numbers to the BoM output
+* `group_connectors` : If this option is set, connector comparison based on the 'Value' field is ignored. This allows multiple connectors which are named for their function (e.g. "Power", "ICP" etc) can be grouped together.
+* `test_regex` : If this option is set, each component group row is test against a list of (user configurable) regular expressions. If any matches are found, that row is excluded from the output BoM file.
+* `merge_blank_field` : If this option is set, blank fields are able to be merged with non-blank fields (and do not count as a 'conflict')
+* `fit_field` : This is the name of the part field used to determine if the component is fitted, or not.
+* `include_version_number` : If this option is set, the schematic version number will be appended to the BOM filename (before the extension). e.g. `PRJBOM.csv` will become `PRJBOM_REV.csv`
 
-* *IGNORE_COLUMNS*: A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
-* *GROUP_FIELDS*: A list of component fields used to group components together.
-* *COMPONENT_ALIASES*: A list of space-separated values which allows multiple schematic symbol visualisations to be consolidated.
-* *REGEX_INCLUDE*: A list of regular expressions used to explicity include components. If there are no regex here, all components pass this test. If there are regex here, then a component must match at least one of them to be included in the BoM.
-* *REGEX_EXCLUDE*: If a component matches any of these regular expressions, it wil *not* be included in the BoM.
+* `IGNORE_COLUMNS` : A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
+* `GROUP_FIELDS` : A list of component fields used to group components together.
+* `COMPONENT_ALIASES` : A list of space-separated values which allows multiple schematic symbol visualisations to be consolidated.
+* `REGEX_INCLUDE` : A list of regular expressions used to explicity include components. If there are no regex here, all components pass this test. If there are regex here, then a component must match at least one of them to be included in the BoM.
+* `REGEX_EXCLUDE` : If a component matches any of these regular expressions, it wil *not* be included in the BoM.
 
 Example configuration file (.ini format) *default values shown*
 

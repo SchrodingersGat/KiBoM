@@ -2,16 +2,16 @@
 """
     @package
     KiBOM - Bill of Materials generation for KiCAD
-    
+
     Generate BOM in xml, csv, txt, tsv or html formats.
-    
+
     - Components are automatically grouped into BoM rows (grouping is configurable)
     - Component groups count number of components and list component designators
     - Rows are automatically sorted by component reference(s)
     - Supports board revisions
-    
+
     Extended options are available in the "bom.ini" config file in the PCB directory (this file is auto-generated with default options the first time the script is executed).
-    
+
 """
 
 from __future__ import print_function
@@ -39,7 +39,8 @@ verbose = False
 def close(*arg):
     print(*arg)
     sys.exit(0)
-    
+
+# Simple debug message handler
 def say(*arg):
     if verbose:
         print(*arg)
@@ -52,7 +53,7 @@ def isExtensionSupported(filename):
             result = True
             break
     return result
-    
+
 parser = argparse.ArgumentParser(description="KiBOM Bill of Materials generator script")
 
 parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running from within KiCad')
@@ -64,18 +65,18 @@ parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.
 parser.add_argument("-s","--separator",help="CSV Separator (default ',')",type=str, default=None)
 
 args = parser.parse_args()
-    
+
 input_file = args.netlist
 
 if not input_file.endswith(".xml"):
     close("{i} is not a valid xml file".format(i=input_file))
-    
+
 verbose = args.verbose is not None
-    
+
 input_file = os.path.abspath(input_file)
 
 say("Input:",input_file)
-   
+
 #look for a config file!
 #bom.ini by default
 ini = os.path.abspath(os.path.join(os.path.dirname(input_file), "bom.ini"))
@@ -101,7 +102,6 @@ pref.separatorCSV = args.separator
 if args.revision is not None:
     pref.pcbConfig = args.revision
     print("PCB Revision:",args.revision)
-
 
 #write preference file back out (first run will generate a file with default preferences)
 if not have_cfile:
@@ -135,10 +135,10 @@ if pref.boards <= 1:
     columns.RemoveColumn(ColumnList.COL_GRP_BUILD_QUANTITY)
     say("Removing:",ColumnList.COL_GRP_BUILD_QUANTITY)
 
-#todo    
+#todo
 write_to_bom = True
 result = True
-        
+
 #Finally, write the BoM out to file
 if write_to_bom:
 
@@ -146,20 +146,26 @@ if write_to_bom:
 
     if output_file is None:
         output_file = input_file.replace(".xml","_bom.csv")
-    
-    # KiCad BOM dialog by default passes "%O" without an extension.  Append our default 
+
+    # KiCad BOM dialog by default passes "%O" without an extension.  Append our default
     if not isExtensionSupported(output_file):
         output_file += "_bom.csv"
-       
+
+    # If required, append the schematic version number to the filename
+    if pref.includeVersionNumber:
+        fsplit = output_file.split(".")
+        fname = ".".join(fsplit[:-1])
+        fext = fsplit[-1]
+
+        output_file = fname + "_" + net.getVersion() + "." + fext
+
     output_file = os.path.abspath(output_file)
 
     say("Output:",output_file)
 
     result = WriteBoM(output_file, groups, net, columns.columns, pref)
-    
+
 if result:
     sys.exit(0)
 else:
     sys.exit(-1)
-        
-        
