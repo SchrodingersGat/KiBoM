@@ -157,8 +157,10 @@ class Component():
         elif name.lower() == ColumnList.COL_FP.lower():
             if len(fp) > 1:
                 return fp[1].strip()
+            elif len(fp) == 1:
+                return fp[0]
             else:
-                return "" # explicit empty return
+                return ""
 
         elif name.lower() == ColumnList.COL_VALUE.lower():
             return self.getValue().strip()
@@ -404,12 +406,18 @@ class ComponentGroup():
         self.fields[ColumnList.COL_DESCRIPTION] = self.components[0].getDescription()
         self.fields[ColumnList.COL_DATASHEET] = self.components[0].getDatasheet()
 
-        if len(self.components[0].getFootprint().split(":")) >= 2:
-            self.fields[ColumnList.COL_FP] = self.components[0].getFootprint().split(":")[-1]
-            self.fields[ColumnList.COL_FP_LIB] = self.components[0].getFootprint().split(":")[0]
-        else:
-            self.fields[ColumnList.COL_FP] = ""
+        # Footprint field requires special attention
+        fp = self.components[0].getFootprint().split(":")
+
+        if len(fp) >= 2:
+            self.fields[ColumnList.COL_FP_LIB] = fp[0]
+            self.fields[ColumnList.COL_FP] = fp[1]
+        elif len(fp) == 1:
             self.fields[ColumnList.COL_FP_LIB] = ""
+            self.fields[ColumnList.COL_FP] = fp[0]
+        else:
+            self.fields[ColumnList.COL_FP_LIB] = ""
+            self.fields[ColumnList.COL_FP] = ""
 
     #return a dict of the KiCAD data based on the supplied columns
     #NOW WITH UNICODE SUPPORT!
