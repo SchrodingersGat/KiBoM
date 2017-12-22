@@ -237,7 +237,12 @@ class Component():
                 field_name, regex = reg
                 field_value = self.getField(field_name)
 
-                regex = regex.decode("unicode_escape")
+                # Attempt unicode escaping...
+                # Filthy hack
+                try:
+                    regex = regex.decode("unicode_escape")
+                except:
+                    pass
 
                 if re.search(regex, field_value, flags=re.IGNORECASE) is not None:
                     if self.prefs.verbose:
