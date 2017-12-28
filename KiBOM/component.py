@@ -222,7 +222,8 @@ class Component():
                 result = False
                 break
             if opt.startswith("+"):
-                if opt.lower() == self.prefs.pcbConfig.lower():
+                result = False
+                if opt[1:].lower() == self.prefs.pcbConfig.lower():
                     result = True
 
         #by default, part is fitted
