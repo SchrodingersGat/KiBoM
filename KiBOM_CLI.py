@@ -147,7 +147,7 @@ if write_to_bom:
     if output_file is None:
         output_file = input_file.replace(".xml","_bom.csv")
 
-    # KiCad BOM dialog by default passes "%O" without an extension.  Append our default
+    # KiCad BOM dialog by default passes "%O" without an extension. Append our default
     if not isExtensionSupported(output_file):
         output_file += "_bom.csv"
 
