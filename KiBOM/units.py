@@ -19,7 +19,7 @@ PREFIX_KILO = ["kilo","k"]
 PREFIX_MEGA = ["mega","meg"]
 PREFIX_GIGA = ["giga","g"]
 
-#All prefices
+#All prefixes
 PREFIX_ALL = PREFIX_PICO + PREFIX_NANO + PREFIX_MICRO + PREFIX_MILLI + PREFIX_KILO + PREFIX_MEGA + PREFIX_GIGA
 
 #Common methods of expressing component units 
