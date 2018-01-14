@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 """
     @package
-    KiBOM - Bill of Materials generation for KiCAD
+    KiBOM - Bill of Materials generation for KiCad
 
     Generate BOM in xml, csv, txt, tsv or html formats.
 

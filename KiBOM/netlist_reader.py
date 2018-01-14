@@ -261,7 +261,7 @@ class libpart():
 
 
 class netlist():
-    """ Kicad generic netlist class. Generally loaded from a kicad generic
+    """ KiCad generic netlist class. Generally loaded from a KiCad generic
     netlist file. Includes several helper functions to ease BOM creating
     scripts
 
@@ -297,7 +297,7 @@ class netlist():
         self._curr_element.addChars(content)
 
     def addElement(self, name):
-        """Add a new kicad generic element to the list"""
+        """Add a new KiCad generic element to the list"""
         if self._curr_element == None:
             self.tree = xmlElement(name)
             self._curr_element = self.tree
@@ -439,7 +439,7 @@ class netlist():
         return self.tree.formatHTML()
 
     def load(self, fname):
-        """Load a kicad generic netlist
+        """Load a KiCad generic netlist
 
         Keywords:
         fname -- The name of the generic netlist file to open
@@ -456,7 +456,7 @@ class netlist():
 
 
 class _gNetReader(sax.handler.ContentHandler):
-    """SAX kicad generic netlist content handler - passes most of the work back
+    """SAX KiCad generic netlist content handler - passes most of the work back
     to the 'netlist' class which builds a complete tree in RAM for the design
 
     """

@@ -309,7 +309,7 @@ class ComponentGroup():
     """
     def __init__(self, prefs=None):
         self.components = []
-        self.fields = dict.fromkeys(ColumnList._COLUMNS_DEFAULT)    #columns loaded from KiCAD
+        self.fields = dict.fromkeys(ColumnList._COLUMNS_DEFAULT)    #columns loaded from KiCad
 
         if not prefs:
             prefs = BomPref()
@@ -425,7 +425,7 @@ class ComponentGroup():
             self.fields[ColumnList.COL_FP_LIB] = ""
             self.fields[ColumnList.COL_FP] = ""
 
-    #return a dict of the KiCAD data based on the supplied columns
+    #return a dict of the KiCad data based on the supplied columns
     #NOW WITH UNICODE SUPPORT!
     def getRow(self, columns):
         row = []

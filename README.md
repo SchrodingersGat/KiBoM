@@ -40,7 +40,7 @@ optional arguments:
 ~~~~                        
 
 
-**netlist** The netlist must be provided to the script. When running from KiCAD use "%I"
+**netlist** The netlist must be provided to the script. When running from KiCad use "%I"
 
 **output** This is the path to the BoM output. When running from KiCad, usage "%O" for the default option
 

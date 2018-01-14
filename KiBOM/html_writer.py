@@ -13,7 +13,7 @@ def bgColor(col):
     #auto-generated columns
     if col in ColumnList._COLUMNS_GEN:
         return BG_GEN
-    #kicad protected columns
+    #KiCad protected columns
     elif col in ColumnList._COLUMNS_PROTECTED:
         return BG_KICAD
     #additional user columns
