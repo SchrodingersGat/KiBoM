@@ -37,7 +37,7 @@ def WriteXML(filename, groups, net, headings, prefs):
     attrib['Number_of_PCBs'] = str(prefs.boards)
     attrib['Total_Components'] = str(nBuild)
 
-    xml = ElementTree.Element('KiCAD_BOM', attrib = attrib, encoding='utf-8')
+    xml = ElementTree.Element('KiCad_BOM', attrib = attrib, encoding='utf-8')
 
     for group in groups:
         if prefs.ignoreDNF and not group.isFitted():

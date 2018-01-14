@@ -75,7 +75,7 @@ def WriteHTML(filename, groups, net, headings, prefs):
             html.write("</table>\n")
             html.write("<br>\n")
             html.write("<h2>Component Groups</h2>\n")
-            html.write('<p style="background-color: {bg}">Kicad Fields (default)</p>\n'.format(bg=BG_KICAD))
+            html.write('<p style="background-color: {bg}">KiCad Fields (default)</p>\n'.format(bg=BG_KICAD))
             html.write('<p style="background-color: {bg}">Generated Fields</p>\n'.format(bg=BG_GEN))
             html.write('<p style="background-color: {bg}">User Fields</p>\n'.format(bg=BG_USER))
             html.write('<p style="background-color: {bg}">Empty Fields</p>\n'.format(bg=BG_EMPTY))
