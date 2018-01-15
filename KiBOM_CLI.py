@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 """
     @package
-    KiBOM - Bill of Materials generation for KiCAD
+    KiBOM - Bill of Materials generation for KiCad
 
     Generate BOM in xml, csv, txt, tsv or html formats.
 
@@ -147,7 +147,7 @@ if write_to_bom:
     if output_file is None:
         output_file = input_file.replace(".xml","_bom.csv")
 
-    # KiCad BOM dialog by default passes "%O" without an extension.  Append our default
+    # KiCad BOM dialog by default passes "%O" without an extension. Append our default
     if not isExtensionSupported(output_file):
         output_file += "_bom.csv"
 

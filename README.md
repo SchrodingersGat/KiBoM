@@ -40,7 +40,7 @@ optional arguments:
 ~~~~                        
 
 
-**netlist** The netlist must be provided to the script. When running from KiCAD use "%I"
+**netlist** The netlist must be provided to the script. When running from KiCad use "%I"
 
 **output** This is the path to the BoM output. When running from KiCad, usage "%O" for the default option
 
@@ -85,11 +85,11 @@ To be useful for ordering components, the BoM output from a KiCad project should
 
 #### Custom Column Grouping
 
-If the user wishes to group components based on additional field values, these can be specifed in the preferences (.ini) file
+If the user wishes to group components based on additional field values, these can be specified in the preferences (.ini) file
 
 ### Intelligent Value Matching
 
-Some component values can be expressed in multiple ways (e.g. "0.1uF" === "100n" for a capacitor). KiBoM matches value strings based on their interpreted numerical value, such that components are grouped together even if their values are expressed differenly.
+Some component values can be expressed in multiple ways (e.g. "0.1uF" === "100n" for a capacitor). KiBoM matches value strings based on their interpreted numerical value, such that components are grouped together even if their values are expressed differently.
 
 ### Field Extraction
 
@@ -113,7 +113,7 @@ If any components have custom fields added, these are available to the output Bo
 
 ### Multiple PCB Configurations
 
-KiBoM allows for arbitary PCB configurations, which means that the user can specify that individual components will be included or excluded from the BoM in certain circumstances.
+KiBoM allows for arbitrary PCB configurations, which means that the user can specify that individual components will be included or excluded from the BoM in certain circumstances.
 
 The preferences (.ini) file provides the *fit_field* option which designates a particular part field (default = "Config") which the user can specify whether or not a part is to be included.
 
@@ -135,7 +135,7 @@ If the *Value* field for the component contains any of these values, the compone
 
 **PCB Configurations**
 
-To generate a BoM with a custom *Configuration*, the --revision flag can be used at the command line to specifiy which revision/configuration is to be used.
+To generate a BoM with a custom *Configuration*, the --revision flag can be used at the command line to specify which revision/configuration is to be used.
 
 If a revision is specified, the value of the *fit_field* field is used to determine if a component will be included in the BoM, as follows:
 
@@ -157,9 +157,9 @@ If the script is run without the *--revision production* flag, then C1 and R1 wi
 
 ### Regular Expression Matching
 
-KiBoM features two types of regex matching : "Include" and "Exclude" (each of these are specified within the prefrences (bom.ini) file).
+KiBoM features two types of regex matching : "Include" and "Exclude" (each of these are specified within the preferences (bom.ini) file).
 
-If the user wishes to include ONLY parts that match one-of-many regular expressions, these can be specifed in REGEX_INCLUDE section of the bom.ini file
+If the user wishes to include ONLY parts that match one-of-many regular expressions, these can be specified in REGEX_INCLUDE section of the bom.ini file
 
 If the user wishes to exclude components based on one-of-many regular expressions, these are specified in the REGEX_EXCLUDE section of the bom.ini file
 
@@ -188,8 +188,8 @@ BoM generation options can be configured (on a per-project basis) by editing the
 * `IGNORE_COLUMNS` : A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
 * `GROUP_FIELDS` : A list of component fields used to group components together.
 * `COMPONENT_ALIASES` : A list of space-separated values which allows multiple schematic symbol visualisations to be consolidated.
-* `REGEX_INCLUDE` : A list of regular expressions used to explicity include components. If there are no regex here, all components pass this test. If there are regex here, then a component must match at least one of them to be included in the BoM.
-* `REGEX_EXCLUDE` : If a component matches any of these regular expressions, it wil *not* be included in the BoM.
+* `REGEX_INCLUDE` : A list of regular expressions used to explicitly include components. If there are no regex here, all components pass this test. If there are regex here, then a component must match at least one of them to be included in the BoM.
+* `REGEX_EXCLUDE` : If a component matches any of these regular expressions, it will *not* be included in the BoM.
 
 Example configuration file (.ini format) *default values shown*
 
@@ -331,7 +331,7 @@ A CSV file output can be generated simply by changing the file extension
 An XML file output can be generated simply by changing the file extension
 
     <?xml version="1.0" ?>
-    <KiCAD_BOM BOM_Date="15-May-16 5:27:03 PM" KiCad_Version="Eeschema (2016-05-06 BZR 6776, Git 63decd7)-product" Schematic_Date="2016-05-15" Schematic_Source="C:/bom_test/Bom_Test.sch" Schematic_Version="A.1" components="13" groups="9">
+    <KiCad_BOM BOM_Date="14-Jan-18 5:27:03 PM" KiCad_Version="Eeschema (2016-05-06 BZR 6776, Git 63decd7)-product" Schematic_Date="2016-05-15" Schematic_Source="C:/bom_test/Bom_Test.sch" Schematic_Version="A.1" components="13" groups="9">
         <group Datasheet="" Description="Unpolarized capacitor" Footprint="C_0805" Notes="" Part="C" Quantity="2" Rating="" References="C1 C2" Value="0.1uF" Vendor=""/>
         <group Datasheet="" Description="Unpolarized capacitor" Footprint="C_0805" Notes="" Part="C" Quantity="2" Rating="" References="C3 C5" Value="2.2uF" Vendor=""/>
         <group Datasheet="" Description="Unpolarized capacitor" Footprint="C_0603" Notes="" Part="C" Quantity="1" Rating="100V X7R" References="C4" Value="2.2uF" Vendor=""/>
@@ -341,7 +341,7 @@ An XML file output can be generated simply by changing the file extension
         <group Datasheet="" Description="Resistor" Footprint="R_0603" Notes="" Part="R" Quantity="1" Rating="0.5W 0.5%" References="R5" Value="100" Vendor=""/>
         <group Datasheet="" Description="Resistor" Footprint="R_0805" Notes="" Part="R" Quantity="2" Rating="" References="R1 R2" Value="470R" Vendor="Digikey"/>
         <group Datasheet="http://www.ti.com/lit/ds/symlink/max232.pdf" Description="Dual RS232 driver/receiver, 5V supply, 120kb/s, 0C-70C" Footprint="DIP-16_W7.62mm" Notes="Do not fit" Part="MAX232" Quantity="1 (DNF)" Rating="" References="U1" Value="MAX232" Vendor=""/>
-    </KiCAD_BOM>
+    </KiCad_BOM>
 
 ## Contributors
 
