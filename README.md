@@ -16,6 +16,10 @@ The *KiBOM_CLI* script can be run directly from KiCad or from the command line. 
 `python KiBOM_CLI.py -h`
 
 ~~~~
+usage: KiBOM_CLI.py [-h] [-n NUMBER] [-v] [-r VARIANT] [--cfg CFG]
+                    [-s SEPARATOR]
+                    netlist output
+
 KiBOM Bill of Materials generator script
 
 positional arguments:
@@ -30,12 +34,14 @@ optional arguments:
   -n NUMBER, --number NUMBER
                         Number of boards to build (default = 1)
   -v, --verbose         Enable verbose output
-  -r REVISION, --revision REVISION
+  -r VARIANT, --variant VARIANT
                         Board variant, used to determine which components are
                         output to the BoM
   --cfg CFG             BoM config file (script will try to use 'bom.ini' if
                         not specified here)
   -s SEPARATOR, --separator SEPARATOR
+                        CSV Separator (default ',')
+
 
 ~~~~                        
 
@@ -52,7 +58,7 @@ optional arguments:
 
 **-v --verbose** Enable extra debugging information
 
-**-r --revision** Specify the PCB *revision*. Support for arbitrary PCB configurations allows individual components to be marked as 'fitted' or 'not fitted' in a given configuration.
+**-r --variant** Specify the PCB *variant*. Support for arbitrary PCB variants allows individual components to be marked as 'fitted' or 'not fitted' in a given variant.
 
 **--cfg** If provided, this is the BOM config file that will be used. If not provided, options will be loaded from "bom.ini"
 
@@ -133,17 +139,17 @@ To specify a part as DNF (do not fit), the *fit_field* field can be set to one o
 
 If the *Value* field for the component contains any of these values, the component will also not be included
 
-**PCB Configurations**
+**PCB Variants**
 
-To generate a BoM with a custom *Configuration*, the --revision flag can be used at the command line to specify which revision/configuration is to be used.
+To generate a BoM with a custom *Variant*, the --variant flag can be used at the command line to specify which variant is to be used.
 
-If a revision is specified, the value of the *fit_field* field is used to determine if a component will be included in the BoM, as follows:
+If a variant is specified, the value of the *fit_field* field is used to determine if a component will be included in the BoM, as follows:
 
-* If the *fit_field* value is empty / blank then it will be loaded in ALL configuration.
-* If the *fit_field* begins with a '-' character, if will be excluded from the matching configuration.
-* If the *fit_field* begins with a '+' character, if will ONLY be included in the matching configuration.
+* If the *fit_field* value is empty / blank then it will be loaded in ALL variants.
+* If the *fit_field* begins with a '-' character, if will be excluded from the matching variant.
+* If the *fit_field* begins with a '+' character, if will ONLY be included in the matching variant.
 
-Multiple configurations can be addressed as the *fit_field* can contain multiple comma-separated values.
+Multiple variants can be addressed as the *fit_field* can contain multiple comma-separated values.
 
 e.g. if we have a PCB with three components that have the following values in the *fit_field* field:
 
@@ -151,9 +157,9 @@ e.g. if we have a PCB with three components that have the following values in th
 * C2 -> "+production"
 * R1 -> ""
 
-If the script is run with the flag *--revision production* then C2 and R1 will be loaded.
+If the script is run with the flag *--variant production* then C2 and R1 will be loaded.
 
-If the script is run without the *--revision production* flag, then C1 and R1 will be loaded
+If the script is run without the *--variant production* flag, then C1 and R1 will be loaded
 
 ### Regular Expression Matching
 

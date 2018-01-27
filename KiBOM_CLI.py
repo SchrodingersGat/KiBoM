@@ -8,7 +8,7 @@
     - Components are automatically grouped into BoM rows (grouping is configurable)
     - Component groups count number of components and list component designators
     - Rows are automatically sorted by component reference(s)
-    - Supports board revisions
+    - Supports board variants
 
     Extended options are available in the "bom.ini" config file in the PCB directory (this file is auto-generated with default options the first time the script is executed).
 
@@ -60,7 +60,7 @@ parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running fr
 parser.add_argument("output",  default="", help='BoM output file name.\nUse "%%O" when running from within KiCad to use the default output name (csv file).\nFor e.g. HTML output, use "%%O.html"')
 parser.add_argument("-n", "--number", help="Number of boards to build (default = 1)", type=int, default=1)
 parser.add_argument("-v", "--verbose", help="Enable verbose output", action='count')
-parser.add_argument("-r", "--revision", help="Board variant, used to determine which components are output to the BoM", type=str, default=None)
+parser.add_argument("-r", "--variant", help="Board variant, used to determine which components are output to the BoM", type=str, default=None)
 parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
 parser.add_argument("-s","--separator",help="CSV Separator (default ',')",type=str, default=None)
 
@@ -99,9 +99,9 @@ pref.verbose = verbose
 pref.boards = args.number
 pref.separatorCSV = args.separator
 
-if args.revision is not None:
-    pref.pcbConfig = args.revision
-    print("PCB Revision:",args.revision)
+if args.variant is not None:
+    pref.pcbConfig = args.variant
+    print("PCB variant:", args.variant)
 
 #write preference file back out (first run will generate a file with default preferences)
 if not have_cfile:
