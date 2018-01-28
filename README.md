@@ -354,6 +354,7 @@ An XML file output can be generated simply by changing the file extension
 With thanks to the following contributors:
 
 * https://github.com/bootchk
+* https://github.com/diegoherranz
 * https://github.com/kylemanna
 * https://github.com/pointhi
 * https://github.com/schneidersoft
