@@ -157,7 +157,7 @@ if write_to_bom:
         fname = ".".join(fsplit[:-1])
         fext = fsplit[-1]
 
-        output_file = fname + "_" + net.getVersion() + "." + fext
+        output_file = str(fname) + "_" + str(net.getVersion()) + "." + fext
 
     output_file = os.path.abspath(output_file)
 
