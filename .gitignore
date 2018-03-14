@@ -1,4 +1,4 @@
-**.pyc
+*.pyc
 
 *.kicad_mod
 .idea/
