@@ -29,10 +29,10 @@ here = os.path.abspath(os.path.dirname(sys.argv[0]))
 sys.path.append(here)
 sys.path.append(os.path.join(here,"KiBOM"))
 
-from KiBOM.columns import ColumnList
-from KiBOM.netlist_reader import *
-from KiBOM.bom_writer import *
-from KiBOM.preferences import BomPref
+from bomlib.columns import ColumnList
+from bomlib.netlist_reader import *
+from bomlib.bom_writer import *
+from bomlib.preferences import BomPref
 
 verbose = False
 
