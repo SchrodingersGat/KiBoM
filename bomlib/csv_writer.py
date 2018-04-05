@@ -39,7 +39,7 @@ def WriteCSV(filename, groups, net, headings, prefs):
     with open(filename, "w") as f:
 
         writer = csv.writer(f, delimiter=delimiter, lineterminator="\n")
-
+        
         if not prefs.hideHeaders:
             if prefs.numberRows:
                 writer.writerow(["Component"] + headings)

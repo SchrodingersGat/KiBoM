@@ -104,6 +104,16 @@ class Component():
 
         return prefix
 
+    def getSufix(self): #return the reference sufix #
+        #e.g. if this component has a reference U12, will return "12"
+        sufix = ""
+
+        for c in self.getRef():
+            if c.isalpha(): sufix = ""
+            else: sufix += c
+
+        return int(sufix)
+
     def getLibPart(self):
         return self.libpart
 
@@ -302,6 +312,47 @@ class Component():
             ret = self.libpart.getDescription()
         return ret
 
+class joiner:
+    def __init__(self):
+      self.stack = []
+
+    def add(self, P, N):
+
+        if self.stack == []:
+            self.stack.append(((P,N),(P,N)))
+            return
+
+        S, E = self.stack[-1]
+
+        if N == E[1]+1:
+            self.stack[-1] = (S, (P,N))
+        else:
+            self.stack.append(((P,N),(P,N)))
+
+    def flush(self, sep, N=None, dash='-'):
+        refstr = u''
+        c = 0
+        for Q in self.stack:
+            if N!=None and c%N==0 and c!=0:
+                refstr+=u'\n'
+            elif c!=0:
+                refstr+=sep
+
+            S, E = Q
+            if S == E:
+                refstr+="%s%d"%S
+                c+=1
+            else:
+
+		#do we have space?
+		if (c+1)%N==0:	#no
+	                refstr+=u'\n'
+			c += 1
+
+                refstr+="%s%d%s%s%d"%(S[0],S[1],dash,E[0],E[1])
+		c+=2
+        return refstr
+
 class ComponentGroup():
 
     """
@@ -360,6 +411,15 @@ class ComponentGroup():
         #return " ".join([c.getRef() for c in self.components])
         return " ".join([c.getRef() for c in self.components])
 
+    def getAltRefs(self, wrapN=None):
+        S = joiner()
+
+        for n in self.components:
+                P, N = (n.getPrefix(), n.getSufix())
+                S.add(P,N)
+
+        return S.flush(' ', N=wrapN)
+
     #sort the components in correct order
     def sortComponents(self):
         self.components = sorted(self.components, key=lambda c: natural_sort(c.getRef()))
@@ -385,9 +445,8 @@ class ComponentGroup():
                 flds = self.fields[field],
                 fld = fieldData))
             self.fields[field] += " " + fieldData
-
-    def updateFields(self):
-
+        
+    def updateFields(self, usealt=False, wrapN=None):
         for c in self.components:
             for f in c.getFieldNames():
 
@@ -398,7 +457,10 @@ class ComponentGroup():
                 self.updateField(f, c.getField(f))
 
         #update 'global' fields
-        self.fields[ColumnList.COL_REFERENCE] = self.getRefs()
+        if usealt:
+            self.fields[ColumnList.COL_REFERENCE] = self.getAltRefs(wrapN)
+        else:
+            self.fields[ColumnList.COL_REFERENCE] = self.getRefs()
 
         q = self.getCount()
         self.fields[ColumnList.COL_GRP_QUANTITY] = "{n}{dnf}".format(

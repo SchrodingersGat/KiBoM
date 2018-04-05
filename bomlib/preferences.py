@@ -11,6 +11,7 @@ from columns import ColumnList
 class BomPref:
 
     SECTION_IGNORE = "IGNORE_COLUMNS"
+    SECTION_COLUMN_ORDER = "COLUMN_ORDER"
     SECTION_GENERAL = "BOM_OPTIONS"
     SECTION_ALIASES = "COMPONENT_ALIASES"
     SECTION_GROUPING_FIELDS = "GROUP_FIELDS"
@@ -21,8 +22,11 @@ class BomPref:
     OPT_NUMBER_ROWS = "number_rows"
     OPT_GROUP_CONN = "group_connectors"
     OPT_USE_REGEX = "test_regex"
+    OPT_USE_ALT = "use_alt"
+    OPT_ALT_WRAP = "alt_wrap"
     OPT_MERGE_BLANK = "merge_blank_fields"
     OPT_IGNORE_DNF = "ignore_dnf"
+    OPT_BACKUP = "make_backup"
     OPT_INCLUDE_VERSION = "include_version_number"
 
     OPT_CONFIG_FIELD = "fit_field"
@@ -32,17 +36,24 @@ class BomPref:
         self.ignore = [
             ColumnList.COL_PART_LIB,
             ColumnList.COL_FP_LIB,
-            ]
+            ] #list of headings to ignore in BoM generation
+        self.corder = ColumnList._COLUMNS_DEFAULT
+        self.useAlt = False #use alternate reference representation
+        self.altWrap = None #wrap to n items when using alt representation
         self.ignoreDNF = True  # Ignore rows for do-not-fit parts
         self.numberRows = True  # Add row-numbers to BoM output
         self.groupConnectors = True  # Group connectors and ignore component value
         self.useRegex = True  # Test various columns with regex
+
         self.boards = 1
         self.mergeBlankFields = True  # Blanks fields will be merged when possible
         self.hideHeaders = False
         self.verbose = False  # By default, is not verbose
         self.configField = "Config"  # Default field used for part fitting config
         self.pcbConfig = "default"
+
+        self.backup = "%O.tmp"
+
         self.separatorCSV = None
         self.includeVersionNumber = True
 
@@ -86,6 +97,12 @@ class BomPref:
         else:
             return default
 
+    def checkInt(self, parser, opt, default=False):
+        if parser.has_option(self.SECTION_GENERAL, opt):
+            return int(parser.get(self.SECTION_GENERAL, opt).lower())
+        else:
+            return default
+            
     # Read KiBOM preferences from file
     def Read(self, file, verbose=False):
         file = os.path.abspath(file)
@@ -102,6 +119,8 @@ class BomPref:
             # Read general options
             if self.SECTION_GENERAL in cf.sections():
                 self.ignoreDNF =  self.checkOption(cf, self.OPT_IGNORE_DNF, default=True)
+                self.useAlt =  self.checkOption(cf, self.OPT_USE_ALT, default=False)
+                self.altWrap =  self.checkInt(cf, self.OPT_ALT_WRAP, default=None)
                 self.numberRows = self.checkOption(cf, self.OPT_NUMBER_ROWS, default=True)
                 self.groupConnectors = self.checkOption(cf, self.OPT_GROUP_CONN, default=True)
                 self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
@@ -111,6 +130,11 @@ class BomPref:
             if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
                 self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
 
+            if cf.has_option(self.SECTION_GENERAL, self.OPT_BACKUP):
+                self.backup = cf.get(self.SECTION_GENERAL, self.OPT_BACKUP)
+            else:
+                self.backup = False
+       
             # Read out grouping colums
             if self.SECTION_GROUPING_FIELDS in cf.sections():
                 self.groups = [i for i in cf.options(self.SECTION_GROUPING_FIELDS)]
@@ -118,6 +142,10 @@ class BomPref:
             # Read out ignored-rows
             if self.SECTION_IGNORE in cf.sections():
                 self.ignore = [i for i in cf.options(self.SECTION_IGNORE)]
+
+            # Read out column order
+            if self.SECTION_COLUMN_ORDER in cf.sections():
+                self.corder = [i for i in cf.options(self.SECTION_COLUMN_ORDER)]
 
             # Read out component aliases
             if self.SECTION_ALIASES in cf.sections():
@@ -153,6 +181,8 @@ class BomPref:
         cf.add_section(self.SECTION_GENERAL)
         cf.set(self.SECTION_GENERAL, "; General BoM options here")
         self.addOption(cf, self.OPT_IGNORE_DNF, self.ignoreDNF, comment="If '{opt}' option is set to 1, rows that are not to be fitted on the PCB will not be written to the BoM file".format(opt=self.OPT_IGNORE_DNF))
+        self.addOption(cf, self.OPT_USE_ALT, self.useAlt, comment="If '{opt}' option is set to 1, grouped references will be printed in the alternate compressed style eg: R1-R7,R18".format(opt=self.OPT_USE_ALT))
+        self.addOption(cf, self.OPT_ALT_WRAP, self.altWrap, comment="If '{opt}' option is set to and integer N, the references field will wrap after N entries are printed".format(opt=self.OPT_ALT_WRAP))
         self.addOption(cf, self.OPT_NUMBER_ROWS, self.numberRows, comment="If '{opt}' option is set to 1, each row in the BoM will be prepended with an incrementing row number".format(opt=self.OPT_NUMBER_ROWS))
         self.addOption(cf, self.OPT_GROUP_CONN, self.groupConnectors, comment="If '{opt}' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
         self.addOption(cf, self.OPT_USE_REGEX, self.useRegex, comment="If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
@@ -162,6 +192,9 @@ class BomPref:
         cf.set(self.SECTION_GENERAL, '; Field name used to determine if a particular part is to be fitted')
         cf.set(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD, self.configField)
 
+        cf.set(self.SECTION_GENERAL, '; Make a backup of the bom before generating the new one, using the folloing template')
+        cf.set(self.SECTION_GENERAL, self.OPT_BACKUP, self.backup)
+
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")
         cf.set(self.SECTION_IGNORE, "; Titles are case-insensitive")
@@ -169,6 +202,13 @@ class BomPref:
         for i in self.ignore:
             cf.set(self.SECTION_IGNORE, i)
 
+        cf.add_section(self.SECTION_COLUMN_ORDER)
+        cf.set(self.SECTION_COLUMN_ORDER, "; Columns will apear in the order they are listed here")
+        cf.set(self.SECTION_COLUMN_ORDER, "; Titles are case-insensitive")
+
+        for i in self.corder:
+            cf.set(self.SECTION_COLUMN_ORDER, i)
+            
         # Write the component grouping fields
         cf.add_section(self.SECTION_GROUPING_FIELDS)
         cf.set(self.SECTION_GROUPING_FIELDS, '; List of fields used for sorting individual components into groups')

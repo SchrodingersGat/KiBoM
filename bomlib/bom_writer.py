@@ -10,12 +10,12 @@ from preferences import BomPref
 import os, shutil
 
 #make a tmp copy of a given file
-def TmpFileCopy(filename):
+def TmpFileCopy(filename, fmt):
 
     filename = os.path.abspath(filename)
 
     if os.path.exists(filename) and os.path.isfile(filename):
-        shutil.copyfile(filename, filename + ".tmp")
+        shutil.copyfile(filename, fmt.replace("%O",filename))
 
 """
 Write BoM to file
@@ -40,8 +40,9 @@ def WriteBoM(filename, groups, net, headings = columns.ColumnList._COLUMNS_DEFAU
         filename += ".csv"
 
     #make a temporary copy of the output file
-    TmpFileCopy(filename)
-
+    if prefs.backup != False:
+        TmpFileCopy(filename, prefs.backup)
+    
     ext = filename.split('.')[-1].lower()
 
     result = False
