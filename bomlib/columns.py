@@ -9,12 +9,12 @@ class ColumnList:
     COL_PART = 'Part'
     COL_PART_LIB = 'Part Lib'
     COL_DATASHEET = 'Datasheet'
-    
+
     #default columns for groups
     COL_GRP_QUANTITY = 'Quantity Per PCB'
     COL_GRP_TOTAL_COST = 'Total Cost' #Total cost based on quantity
     COL_GRP_BUILD_QUANTITY = 'Build Quantity'
-    
+
     #generated columns
     _COLUMNS_GEN = [
                 COL_GRP_QUANTITY,
@@ -34,7 +34,7 @@ class ColumnList:
                COL_GRP_BUILD_QUANTITY,
                COL_DATASHEET
                ]
-                   
+
     #default columns
     #these columns are 'immutable'
     _COLUMNS_PROTECTED = [
@@ -55,11 +55,11 @@ class ColumnList:
 
     def __repr__(self):
         return self.__str__()
-                
+
     def __init__(self, cols=_COLUMNS_DEFAULT):
 
         self.columns = []
-        
+
         #make a copy of the supplied columns
         for col in cols:
             self.AddColumn(col)

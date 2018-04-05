@@ -19,10 +19,10 @@ PREFIX_KILO = ["kilo","k"]
 PREFIX_MEGA = ["mega","meg"]
 PREFIX_GIGA = ["giga","g"]
 
-#All prefices
+#All prefixes
 PREFIX_ALL = PREFIX_PICO + PREFIX_NANO + PREFIX_MICRO + PREFIX_MILLI + PREFIX_KILO + PREFIX_MEGA + PREFIX_GIGA
 
-#Common methods of expressing component units 
+#Common methods of expressing component units
 UNIT_R = ["r","ohms","ohm",u"Ω"]
 UNIT_C = ["farad","f"]
 UNIT_L = ["henry","h"]
@@ -35,9 +35,9 @@ Return a simplified version of a units string, for comparison purposes
 def getUnit(unit):
 
     if not unit: return None
-    
+
     unit = unit.lower()
-    
+
     if unit in UNIT_R: return "R"
     if unit in UNIT_C: return "F"
     if unit in UNIT_L: return "H"
@@ -50,9 +50,9 @@ Return the (numerical) value of a given prefix
 def getPrefix(prefix):
 
     if not prefix: return 1
-    
+
     prefix = prefix.lower()
-    
+
     if prefix in PREFIX_PICO: return 1.0e-12
     if prefix in PREFIX_NANO: return 1.0e-9
     if prefix in PREFIX_MICRO: return 1.0e-6
@@ -118,7 +118,7 @@ def componentValue(valString):
 
     if not result:
         return valString #return the same string back
-        
+
     if not len(result) == 2: #result length is incorrect
         return valString
 
@@ -143,4 +143,3 @@ def compareValues(c1, c2):
         if not u2: return True #no units for component 2
 
     return False
-        

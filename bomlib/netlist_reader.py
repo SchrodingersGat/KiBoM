@@ -261,7 +261,7 @@ class libpart():
 
 
 class netlist():
-    """ Kicad generic netlist class. Generally loaded from a kicad generic
+    """ KiCad generic netlist class. Generally loaded from a KiCad generic
     netlist file. Includes several helper functions to ease BOM creating
     scripts
 
@@ -283,12 +283,12 @@ class netlist():
         self.tree = []
 
         self._curr_element = None
-        
+
         if not prefs:
             prefs = BomPref() #default values
-            
+
         self.prefs = prefs
-        
+
         if fname != "":
             self.load(fname)
 
@@ -297,7 +297,7 @@ class netlist():
         self._curr_element.addChars(content)
 
     def addElement(self, name):
-        """Add a new kicad generic element to the list"""
+        """Add a new KiCad generic element to the list"""
         if self._curr_element == None:
             self.tree = xmlElement(name)
             self._curr_element = self.tree
@@ -369,15 +369,15 @@ class netlist():
     def getTool(self):
         """Return the tool string which was used to create the netlist tree"""
         return self.design.get("tool").encode('ascii', 'ignore')
-        
+
     def getSheet(self):
         return self.design.getChild("sheet")
-        
+
     def getSheetDate(self):
         sheet= self.getSheet()
         if sheet == None: return ""
         return sheet.get("date")
-        
+
     def getVersion(self):
         """Return the verison of the sheet info"""
         sheet = self.getSheet()
@@ -385,7 +385,7 @@ class netlist():
         return sheet.get("rev")
 
     def getInterestingComponents(self):
-        
+
         #copy out the components
         ret = [c for c in self.components]
 
@@ -395,30 +395,30 @@ class netlist():
         return ret
 
     def groupComponents(self, components):
-    
+
         groups = []
-        
+
         # Iterate through each component, and test whether a group for these already exists
         for c in components:
-        
+
             if self.prefs.useRegex:
                 #skip components if they do not meet regex requirements
                 if c.testRegInclude() == False: continue
                 if c.testRegExclude() == True: continue
-        
+
             found = False
-            
+
             for g in groups:
                 if g.matchComponent(c):
                     g.addComponent(c)
                     found = True
                     break
-            
+
             if not found:
                 g = ComponentGroup(prefs=self.prefs) #pass down the preferences
                 g.addComponent(c)
                 groups.append(g)
-            
+
         #sort the references within each group
         for g in groups:
             g.sortComponents()
@@ -427,7 +427,7 @@ class netlist():
         #sort the groups
         #first priority is the Type of component (e.g. R?, U?, L?)
         groups = sorted(groups, key=lambda g: [g.components[0].getPrefix(), g.components[0].getValue()])
-                
+
         return groups
 
     def formatXML(self):
@@ -439,7 +439,7 @@ class netlist():
         return self.tree.formatHTML()
 
     def load(self, fname):
-        """Load a kicad generic netlist
+        """Load a KiCad generic netlist
 
         Keywords:
         fname -- The name of the generic netlist file to open
@@ -456,7 +456,7 @@ class netlist():
 
 
 class _gNetReader(sax.handler.ContentHandler):
-    """SAX kicad generic netlist content handler - passes most of the work back
+    """SAX KiCad generic netlist content handler - passes most of the work back
     to the 'netlist' class which builds a complete tree in RAM for the design
 
     """
