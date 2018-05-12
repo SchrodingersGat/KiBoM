@@ -6,7 +6,7 @@ if sys.version_info.major >= 3:
 else:
     import ConfigParser
 import os
-from columns import ColumnList
+from bomlib.columns import ColumnList
 
 class BomPref:
 
@@ -102,7 +102,7 @@ class BomPref:
             return int(parser.get(self.SECTION_GENERAL, opt).lower())
         else:
             return default
-            
+
     # Read KiBOM preferences from file
     def Read(self, file, verbose=False):
         file = os.path.abspath(file)
@@ -134,7 +134,7 @@ class BomPref:
                 self.backup = cf.get(self.SECTION_GENERAL, self.OPT_BACKUP)
             else:
                 self.backup = False
-       
+
             # Read out grouping colums
             if self.SECTION_GROUPING_FIELDS in cf.sections():
                 self.groups = [i for i in cf.options(self.SECTION_GROUPING_FIELDS)]
@@ -208,7 +208,7 @@ class BomPref:
 
         for i in self.corder:
             cf.set(self.SECTION_COLUMN_ORDER, i)
-            
+
         # Write the component grouping fields
         cf.add_section(self.SECTION_GROUPING_FIELDS)
         cf.set(self.SECTION_GROUPING_FIELDS, '; List of fields used for sorting individual components into groups')

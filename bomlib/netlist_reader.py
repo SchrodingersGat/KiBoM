@@ -21,10 +21,10 @@ import xml.sax as sax
 import re
 import pdb
 
-from component import Component, ComponentGroup
-from sort import natural_sort
+from bomlib.component import (Component, ComponentGroup)
+from bomlib.sort import natural_sort
 
-from preferences import BomPref
+from bomlib.preferences import BomPref
 
 #-----</Configure>---------------------------------------------------------------
 

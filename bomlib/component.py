@@ -1,7 +1,7 @@
-from columns import ColumnList
-from preferences import BomPref
-import units
-from sort import natural_sort
+from bomlib.columns import ColumnList
+from bomlib.preferences import BomPref
+import bomlib.units as units
+from bomlib.sort import natural_sort
 import re
 
 DNF = ["dnf", "do not fit", "nofit", "no stuff", "nostuff", "noload", "do not load"]
@@ -343,14 +343,13 @@ class joiner:
                 refstr+="%s%d"%S
                 c+=1
             else:
-
-		#do we have space?
-		if (c+1)%N==0:	#no
-	                refstr+=u'\n'
-			c += 1
+                #do we have space?
+                if (c+1)%N==0: #no
+                    refstr+=u'\n'
+                    c += 1
 
                 refstr+="%s%d%s%s%d"%(S[0],S[1],dash,E[0],E[1])
-		c+=2
+                c+=2
         return refstr
 
 class ComponentGroup():
@@ -445,7 +444,7 @@ class ComponentGroup():
                 flds = self.fields[field],
                 fld = fieldData))
             self.fields[field] += " " + fieldData
-        
+
     def updateFields(self, usealt=False, wrapN=None):
         for c in self.components:
             for f in c.getFieldNames():
