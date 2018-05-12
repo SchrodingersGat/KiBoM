@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """
     @package
     KiBOM - Bill of Materials generation for KiCad
