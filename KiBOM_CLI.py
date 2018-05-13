@@ -47,7 +47,7 @@ def say(*arg):
 
 def isExtensionSupported(filename):
     result = False
-    extensions = [".xml",".csv",".txt",".tsv",".html"]
+    extensions = [".xml",".csv",".txt",".tsv",".html",".xlsx"]
     for e in extensions:
         if filename.endswith(e):
             result = True
