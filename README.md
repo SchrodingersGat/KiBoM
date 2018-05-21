@@ -1,4 +1,7 @@
 # KiBoM
+
+[![Travis Status](https://travis-ci.org/haata/KiBoM.svg?branch=master)](https://travis-ci.org/haata/KiBoM)
+
 Configurable BoM generation tool for KiCad EDA (http://kicad-pcb.org/)
 
 ## Description

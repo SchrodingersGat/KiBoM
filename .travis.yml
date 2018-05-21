@@ -1,0 +1,54 @@
+# travis-ci integration for KiBOM
+
+sudo:
+  - false
+
+os:
+  - linux
+
+language:
+  - python
+
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.7-dev"
+  - "nightly"
+
+addons:
+  apt:
+    packages:
+      - tree
+
+# Test Scripts
+env:
+  # Basic Tests
+  - DIR=tests SCRIPT=sanity.bash
+
+# Exclusions
+matrix:
+  allow_failures:
+    - python: "3.7-dev"
+    - python: "nightly"
+
+# System setup
+install:
+  # Info about OS
+  - uname -a
+
+  # Directory tree to validate kll.git
+  - tree
+
+  # Python Version
+  - python --version
+
+# Run test script(s)
+script:
+  - (cd ${DIR} && ./${SCRIPT})
+
+# Post test script commands
+after_script:
+  - tree
