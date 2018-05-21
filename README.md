@@ -1,6 +1,6 @@
 # KiBoM
 
-[![Travis Status](https://api.travis-ci.org/SchrodingersGat/KiBoM.svg?branch=master)](https://travis-ci.org/haata/KiBoM)
+[![Travis Status](https://api.travis-ci.org/SchrodingersGat/KiBoM.svg?branch=master)](https://travis-ci.org/SchrodingersGat/KiBoM)
 
 Configurable BoM generation tool for KiCad EDA (http://kicad-pcb.org/)
 
