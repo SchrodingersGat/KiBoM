@@ -1,10 +1,10 @@
 # _*_ coding:latin-1 _*_
 
 import csv
-import columns
-from component import *
+import bomlib.columns as columns
+from bomlib.component import *
 import os, shutil
-from preferences import BomPref
+from bomlib.preferences import BomPref
 
 """
 Write BoM out to a CSV file
@@ -39,7 +39,7 @@ def WriteCSV(filename, groups, net, headings, prefs):
     with open(filename, "w") as f:
 
         writer = csv.writer(f, delimiter=delimiter, lineterminator="\n")
-        
+
         if not prefs.hideHeaders:
             if prefs.numberRows:
                 writer.writerow(["Component"] + headings)

@@ -1,8 +1,8 @@
-import columns
-from component import *
+import bomlib.columns as columns
+from bomlib.component import *
 from xml.etree import ElementTree
 from xml.dom import minidom
-from preferences import BomPref
+from bomlib.preferences import BomPref
 
 """
 Write BoM out to an XML file

@@ -1,6 +1,6 @@
 
-import columns
-from component import *
+import bomlib.columns as columns
+from bomlib.component import *
 import os
 
 BG_GEN = "#E6FFEE"

@@ -1,11 +1,11 @@
-from csv_writer import WriteCSV
-from xml_writer import WriteXML
-from html_writer import WriteHTML
+from bomlib.csv_writer import WriteCSV
+from bomlib.xml_writer import WriteXML
+from bomlib.html_writer import WriteHTML
 
-import columns
-from component import *
+import bomlib.columns as columns
+from bomlib.component import *
 from xml.etree import ElementTree
-from preferences import BomPref
+from bomlib.preferences import BomPref
 
 import os, shutil
 
@@ -42,7 +42,7 @@ def WriteBoM(filename, groups, net, headings = columns.ColumnList._COLUMNS_DEFAU
     #make a temporary copy of the output file
     if prefs.backup != False:
         TmpFileCopy(filename, prefs.backup)
-    
+
     ext = filename.split('.')[-1].lower()
 
     result = False
