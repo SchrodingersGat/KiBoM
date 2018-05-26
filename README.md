@@ -288,11 +288,11 @@ While R5 has the same value as R3 and R4, it is in a different footprint and thu
 **C1 C2**
 C1 and C2 have the same value and footprint
 
-**C3 C4**
-C3 and C4 have the same value and footprint
+**C3 C5**
+C3 and C5 have the same value and footprint
 
-**C5**
-C5 has a different footprint to C3 and C4, and thus is grouped separately
+**C4**
+C4 has a different footprint to C3 and C5, and thus is grouped separately
 
 A HTML BoM file is generated as follows:
 
