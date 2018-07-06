@@ -46,9 +46,9 @@ optional arguments:
                         CSV Separator (default ',')
   -p NUMBER, --prettyhtml NUMBER
                         1 enables prettyhtml moudle
-						0 disables				
+                        0 disables                
   -a STRING, --authorofproject STRING
-                        Defines author of project. Follow argument with "string"					
+                        Defines author of project. Follow argument with "string"                    
   -t STRING, --titleofproject STRING
                         Defines title of project. Follow argument with "string"
 ~~~~                        
@@ -244,32 +244,32 @@ Footprint Lib
 ; Each line represents a tab-separated list of equivalent component name values
 ; e.g. 'c c_small cap' will ensure the equivalent capacitor symbols can be grouped together
 ; Aliases are case-insensitive
-c	c_small	cap	capacitor
-r	r_small	res	resistor
-sw	switch
-l	l_small	inductor
-zener	zenersmall
-d	diode	d_small
+c    c_small    cap    capacitor
+r    r_small    res    resistor
+sw    switch
+l    l_small    inductor
+zener    zenersmall
+d    diode    d_small
 
 [REGEX_INCLUDE]
 ; A series of regular expressions used to include parts in the BoM
 ; If there are any regex defined here, only components that match against ANY of them will be included in the BOM
 ; Column names are case-insensitive
-; Format is: "ColumName	Regex" (tab-separated)
+; Format is: "ColumName    Regex" (tab-separated)
 
 [REGEX_EXCLUDE]
 ; A series of regular expressions used to exclude parts from the BoM
 ; If a component matches ANY of these, it will be excluded from the BoM
 ; Column names are case-insensitive
-; Format is: "ColumName	Regex" (tab-separated)
-References	^TP[0-9]*
-References	^FID
-Part	mount.*hole
-Part	solder.*bridge
-Part	test.*point
-Footprint	test.*point
-Footprint	mount.*hole
-Footprint	fiducial
+; Format is: "ColumName    Regex" (tab-separated)
+References    ^TP[0-9]*
+References    ^FID
+Part    mount.*hole
+Part    solder.*bridge
+Part    test.*point
+Footprint    test.*point
+Footprint    mount.*hole
+Footprint    fiducial
 ~~~~
 
 ## Example
