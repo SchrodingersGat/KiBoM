@@ -56,7 +56,6 @@ def isExtensionSupported(filename):
 
 	
 parser = argparse.ArgumentParser(description="KiBOM Bill of Materials generator script")
-#parser.add_argument("author", help='xml netlist file. Use "%%I" when running from within KiCad')
 parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running from within KiCad')
 parser.add_argument("output",  default="", help='BoM output file name.\nUse "%%O" when running from within KiCad to use the default output name (csv file).\nFor e.g. HTML output, use "%%O.html"')
 parser.add_argument("-n", "--number", help="Number of boards to build (default = 1)", type=int, default=1)
@@ -64,7 +63,11 @@ parser.add_argument("-v", "--verbose", help="Enable verbose output", action='cou
 parser.add_argument("-r", "--variant", help="Board variant, used to determine which components are output to the BoM", type=str, default=None)
 parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
 parser.add_argument("-s","--separator",help="CSV Separator (default ',')",type=str, default=None)
+
+#pref parameters for prettyhtml
 parser.add_argument("-p", "--prettyhtml", help="Enable pretty HTML output", type=int, default=0)
+parser.add_argument("-a", "--authorname", help="Name of author", type=str, default="")
+parser.add_argument("-t", "--titleofproject", help="Title of project", type=str, default="")
 
 
 print("hmm")
@@ -103,6 +106,8 @@ pref.verbose = verbose
 pref.boards = args.number
 pref.separatorCSV = args.separator
 pref.prettyhtml = args.prettyhtml
+pref.authorname = args.authorname
+pref.titleofproject = args.titleofproject
 
 if args.variant is not None:
     pref.pcbConfig = args.variant

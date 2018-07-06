@@ -36,7 +36,7 @@ net = netlist object
 headings = [list of headings to display in the BoM file]
 prefs = BomPref object
 """
-
+#writes out a flatter, more modern looking table design.
 def HTMLPretty(filename, groups, net, headings, prefs):
 
     if not filename.endswith(".html") and not filename.endswith(".htm"):
@@ -49,25 +49,33 @@ def HTMLPretty(filename, groups, net, headings, prefs):
     nBuild = nFitted * prefs.boards
 
     with open(filename,"w") as html:
-               
+        print(prefs.authorname)       
         html.write("<html>\n")
         html.write("<head>\n")
         html.write('\t<meta charset="UTF-8">\n') #UTF-8 encoding for unicode support
         html.write('<link rel="stylesheet" type="text/css" href="http://xtian.nvg.org/prettyhtml/bom.css" />\n')
         html.write("</head>\n")
         html.write("<body>\n")
-	
 
         html.write('<div class="header">\n')
         html.write('<div class="titlebox">\n')
         html.write("<p><h1>Bill of Materials</h1></P>\n")
-        html.write('<p style="padding-left: 25px; margin-top: -20px;"><input type="text" onfocus="this.value=\'\'" style="font-size:1.5em; width:100%;" value="Skriv inn tittel her"></p>\n')
-        html.write('<p style="padding-left: 25px; margin-top: -20px;"><input type="text" onfocus="this.value=\'\'" style="font-size:1em; width:100%; font-style: italic;" value="Skriv inn ditt navn her"></p>\n')
+        if prefs.authorname != "":
+            html.write('<p style="padding-left: 25px; margin-top: -20px;"><input type="text" style="font-size:1.5em; width:100%;" value="{title_of_project}"></p>\n'.format(title_of_project=prefs.titleofproject))
+        else:
+            html.write('<p style="padding-left: 25px; margin-top: -20px;"><input type="text" onfocus="this.value=\'\'" style="font-size:1.5em; width:100%;" value="Skriv inn tittel her"></p>\n')
+        if prefs.titleofproject != "":
+            html.write('<p style="padding-left: 25px; margin-top: -20px;"><input type="text" style="font-size:1.5em; width:100%;" value="{author_of_project}"></p>\n'.format(author_of_project=prefs.authorname))
+        else:
+            html.write('<p style="padding-left: 25px; margin-top: -20px;"><input type="text" onfocus="this.value=\'\'" style="font-size:1em; width:100%; font-style: italic;" value="Skriv inn ditt navn her"></p>\n')
         html.write("</div>\n")
         html.write('<div class="logobox">\n')
+        
+        #todo:
+        #add way for user to select image
         html.write('<img src="https://innsida.ntnu.no/documents/10157/3573032/logo_ntnu_u-slagord.png/d6730c55-3fde-4bea-9f31-d85e10da4744?t=1387292601173">\n')
         html.write("</div>\n")
-        html.write("</div>\n")	
+        html.write("</div>\n")    
 
         #PCB info
  #       if not prefs.hideHeaders:
@@ -131,7 +139,7 @@ def HTMLPretty(filename, groups, net, headings, prefs):
                     bg = bgColor(headings[n])
 
                 html.write('\t<td align="left">{val}</td>\n'.format(bg=' bgcolor={c}', val=link(r)))
-				
+                
             html.write("</tr>\n")
             html.write("</tbody>\n")
 

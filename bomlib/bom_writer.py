@@ -29,7 +29,6 @@ def WriteBoM(filename, groups, net, headings = columns.ColumnList._COLUMNS_DEFAU
 
     filename = os.path.abspath(filename)
     
-    #print(prefs.prettyhtml)
     
     #no preferences supplied, use defaults
     if not prefs:
@@ -59,6 +58,7 @@ def WriteBoM(filename, groups, net, headings = columns.ColumnList._COLUMNS_DEFAU
             print("Error writing CSV output")
 
     elif ext in ["htm","html"]:
+        #check if prettyhtml is enabled or not
         if prefs.prettyhtml:
             if HTMLPretty(filename, groups, net, headings, prefs):
                 print("HTML Output -> {fn}".format(fn=filename))

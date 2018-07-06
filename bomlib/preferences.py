@@ -57,8 +57,11 @@ class BomPref:
         self.separatorCSV = None
         self.includeVersionNumber = True
 
+        #pref variables for prettyhtml module
         self.prettyhtml = 0
-		
+        self.authorname = ""
+        self.titleofproject = ""
+        
         # Default fields used to group components
         self.groups = [
             ColumnList.COL_PART,
