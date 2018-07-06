@@ -57,6 +57,8 @@ class BomPref:
         self.separatorCSV = None
         self.includeVersionNumber = True
 
+        self.prettyhtml = 0
+		
         # Default fields used to group components
         self.groups = [
             ColumnList.COL_PART,

@@ -1,6 +1,7 @@
 from bomlib.csv_writer import WriteCSV
 from bomlib.xml_writer import WriteXML
 from bomlib.html_writer import WriteHTML
+from bomlib.htmlpretty import HTMLPretty
 
 import bomlib.columns as columns
 from bomlib.component import *
@@ -27,7 +28,9 @@ prefs = BomPref object
 def WriteBoM(filename, groups, net, headings = columns.ColumnList._COLUMNS_DEFAULT, prefs=None):
 
     filename = os.path.abspath(filename)
-
+    
+    #print(prefs.prettyhtml)
+    
     #no preferences supplied, use defaults
     if not prefs:
         prefs = BomPref()
@@ -56,11 +59,18 @@ def WriteBoM(filename, groups, net, headings = columns.ColumnList._COLUMNS_DEFAU
             print("Error writing CSV output")
 
     elif ext in ["htm","html"]:
-        if WriteHTML(filename, groups, net, headings, prefs):
-            print("HTML Output -> {fn}".format(fn=filename))
-            result = True
+        if prefs.prettyhtml:
+            if HTMLPretty(filename, groups, net, headings, prefs):
+                print("HTML Output -> {fn}".format(fn=filename))
+                result = True
+            else:
+                print("Error writing HTML output")
         else:
-            print("Error writing HTML output")
+            if WriteHTML(filename, groups, net, headings, prefs):
+                print("HTML Output -> {fn}".format(fn=filename))
+                result = True
+            else:
+                print("Error writing HTML output")            
 
     elif ext in ["xml"]:
         if WriteXML(filename, groups, net, headings, prefs):
