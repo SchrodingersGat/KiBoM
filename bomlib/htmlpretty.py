@@ -50,11 +50,10 @@ def HTMLPretty(filename, groups, net, headings, prefs):
 
     with open(filename,"w") as html:
                
-        #header17-8k1IDwaptZyClynI2WZv2rWA16HXmJ
         html.write("<html>\n")
         html.write("<head>\n")
         html.write('\t<meta charset="UTF-8">\n') #UTF-8 encoding for unicode support
-        html.write('<link rel="stylesheet" type="text/css" href="https://googledrive.com/host/17-8k1IDwaptZyClynI2WZv2rWA16HXmJ/" />\n')
+        html.write('<link rel="stylesheet" type="text/css" href="http://xtian.nvg.org/prettyhtml/bom.css" />\n')
         html.write("</head>\n")
         html.write("<body>\n")
 	
