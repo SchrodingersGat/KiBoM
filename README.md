@@ -44,8 +44,13 @@ optional arguments:
                         not specified here)
   -s SEPARATOR, --separator SEPARATOR
                         CSV Separator (default ',')
-
-
+  -p NUMBER, --prettyhtml NUMBER
+                        1 enables prettyhtml moudle
+						0 disables				
+  -a STRING, --authorofproject STRING
+                        Defines author of project. Follow argument with "string"					
+  -t STRING, --titleofproject STRING
+                        Defines title of project. Follow argument with "string"
 ~~~~                        
 
 
