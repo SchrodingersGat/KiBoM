@@ -50,7 +50,10 @@ optional arguments:
   -a STRING, --authorofproject STRING
                         Defines author of project. Follow argument with "string"                    
   -t STRING, --titleofproject STRING
-                        Defines title of project. Follow argument with "string"
+                        Defines title of project. Follow argument with "string"                 
+  -i STRING, --i STRING
+                        Defines title of project. Follow argument path of logo as a "string"
+                        If not defined, will default to KiCAD logo
 ~~~~                        
 
 
