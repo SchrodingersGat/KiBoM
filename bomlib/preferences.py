@@ -61,6 +61,7 @@ class BomPref:
         self.prettyhtml = 0
         self.authorname = ""
         self.titleofproject = ""
+        self.image = ""
         
         # Default fields used to group components
         self.groups = [

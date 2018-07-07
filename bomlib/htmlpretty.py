@@ -8,6 +8,7 @@ BG_KICAD = "#FFE6B3"
 BG_USER = "#E6F9FF"
 BG_EMPTY = "#FF8080"
 
+#todo: remove
 #return a background color for a given column title
 def bgColor(col):
     #auto-generated columns
@@ -24,7 +25,7 @@ def link(text):
 
     for t in ["http","https","ftp","www"]:
         if text.startswith(t):
-            return '<a href="{t}">{t}</a>'.format(t=text)
+            return '<a href="{t}" target="_blank">{t}</a>'.format(t=text)
 
     return text
 
@@ -48,8 +49,7 @@ def HTMLPretty(filename, groups, net, headings, prefs):
     nFitted = sum([g.getCount() for g in groups if g.isFitted()])
     nBuild = nFitted * prefs.boards
 
-    with open(filename,"w") as html:
-        print(prefs.authorname)       
+    with open(filename,"w") as html:      
         html.write("<html>\n")
         html.write("<head>\n")
         html.write('\t<meta charset="UTF-8">\n') #UTF-8 encoding for unicode support
@@ -70,34 +70,15 @@ def HTMLPretty(filename, groups, net, headings, prefs):
             html.write('<p style="padding-left: 25px; margin-top: -20px;"><input type="text" onfocus="this.value=\'\'" style="font-size:1em; width:100%; font-style: italic;" value="Skriv inn ditt navn her"></p>\n')
         html.write("</div>\n")
         html.write('<div class="logobox">\n')
-        
-        #todo:
-        #add way for user to select image
-        html.write('<img src="https://innsida.ntnu.no/documents/10157/3573032/logo_ntnu_u-slagord.png/d6730c55-3fde-4bea-9f31-d85e10da4744?t=1387292601173">\n')
+        print(prefs.image)
+        if prefs.image != "":
+            html.write('<img src="{logo}">\n'.format(logo=prefs.image))
+        else:
+            #todo:
+            #fix an actual logo host
+            html.write('<img src="https://blogdotoshparkdotcom.files.wordpress.com/2016/12/screenshot-from-2016-12-21-20-26-05.png">\n')
         html.write("</div>\n")
         html.write("</div>\n")    
-
-        #PCB info
- #       if not prefs.hideHeaders:
- #           html.write("<h2>KiBoM PCB Bill of Materials</h2>\n")
- #           html.write('<table border="1">\n')
- #           html.write("<tr><td>Source File</td><td>{source}</td></tr>\n".format(source=net.getSource()))
- #           html.write("<tr><td>BoM Date</td><td>{date}</td></tr>\n".format(date=net.getDate()))
- #           html.write("<tr><td>Schematic Version</td><td>{version}</td></tr>\n".format(version=net.getVersion()))
- #           html.write("<tr><td>Schematic Date</td><td>{date}</td></tr>\n".format(date=net.getSheetDate()))
- #           html.write("<tr><td>KiCad Version</td><td>{version}</td></tr>\n".format(version=net.getTool()))
- #           html.write("<tr><td>Component Groups</td><td>{n}</td></tr>\n".format(n=nGroups))
- #           html.write("<tr><td>Component Count (per PCB)</td><td>{n}</td></tr>\n".format(n=nTotal))
- #           html.write("<tr><td>Fitted Components (per PCB)</td><td>{n}</td></tr>\n".format(n=nFitted))
- #           html.write("<tr><td>Number of PCBs</td><td>{n}</td></tr>\n".format(n=prefs.boards))
- #           html.write("<tr><td>Total Component Count<br>(for {n} PCBs)</td><td>{t}</td></tr>\n".format(n=prefs.boards, t=nBuild))
- #           html.write("</table>\n")
- #           html.write("<br>\n")
- #           html.write("<h2>Component Groups</h2>\n")
- #           html.write('<p style="background-color: {bg}">KiCad Fields (default)</p>\n'.format(bg=BG_KICAD))
- #           html.write('<p style="background-color: {bg}">Generated Fields</p>\n'.format(bg=BG_GEN))
- #           html.write('<p style="background-color: {bg}">User Fields</p>\n'.format(bg=BG_USER))
- #           html.write('<p style="background-color: {bg}">Empty Fields</p>\n'.format(bg=BG_EMPTY))
 
         #component groups
         html.write('<table class="minimalistBlack">\n')

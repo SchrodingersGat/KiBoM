@@ -68,9 +68,8 @@ parser.add_argument("-s","--separator",help="CSV Separator (default ',')",type=s
 parser.add_argument("-p", "--prettyhtml", help="Enable pretty HTML output", type=int, default=0)
 parser.add_argument("-a", "--authorname", help="Name of author", type=str, default="")
 parser.add_argument("-t", "--titleofproject", help="Title of project", type=str, default="")
+parser.add_argument("-i", "--image", help="Image for BOM", type=str, default="")
 
-
-print("hmm")
 args = parser.parse_args()
 
 input_file = args.netlist
@@ -108,6 +107,7 @@ pref.separatorCSV = args.separator
 pref.prettyhtml = args.prettyhtml
 pref.authorname = args.authorname
 pref.titleofproject = args.titleofproject
+pref.image = args.image
 
 if args.variant is not None:
     pref.pcbConfig = args.variant
