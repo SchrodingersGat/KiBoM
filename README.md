@@ -79,7 +79,7 @@ optional arguments:
 
 **-t --titleofproject** Defines title of project. Follow argument with "string"
 
-**-i --image** Defines title of project. Follow argument path of logo as a "string". If not provided, will default to KiCAD logo
+**-i --image** Defines source for logo image. Follow argument path of logo as a "string". If not provided, will default to KiCAD logo
 
 --------
 To run from KiCad, simply add the same command line in the *Bill of Materials* script window. e.g. to generate a HTML output:
