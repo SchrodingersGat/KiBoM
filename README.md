@@ -50,7 +50,7 @@ optional arguments:
                         Name of author                  
   -t STRING, --titleofproject STRING
                         Title of project                 
-  -i STRING, --i STRING
+  -i STRING, --image STRING
                         Image for BOM
 ~~~~                        
 
@@ -73,13 +73,13 @@ optional arguments:
 
 **-s --separator** Override the delimiter for CSV or TSV generation
 
-**-p --separator** Override the delimiter for CSV or TSV generation
+**-p --prettyhtml** Override the delimiter for CSV or TSV generation
 
-**-a --separator** Defines author of project. Follow argument with "string"
+**-a --authorofproject** Defines author of project. Follow argument with "string"
 
-**-t --separator** Defines title of project. Follow argument with "string"
+**-t --titleofproject** Defines title of project. Follow argument with "string"
 
-**-i --separator** Defines title of project. Follow argument path of logo as a "string". If not provided, will default to KiCAD logo
+**-i --image** Defines title of project. Follow argument path of logo as a "string". If not provided, will default to KiCAD logo
 
 --------
 To run from KiCad, simply add the same command line in the *Bill of Materials* script window. e.g. to generate a HTML output:
