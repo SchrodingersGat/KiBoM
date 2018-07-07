@@ -73,7 +73,7 @@ optional arguments:
 
 **-s --separator** Override the delimiter for CSV or TSV generation
 
-**-p --prettyhtml** Enable pretty HTML output. This runs the htmlpretty.py module instead of html_writer.py.
+**-p --prettyhtml** Enable pretty HTML output. This runs the htmlpretty.py module instead of html_writer.py. Will only work if output file type is html or htm.
 
 **-a --authorofproject** Defines author of project. Follow argument with "string"
 
