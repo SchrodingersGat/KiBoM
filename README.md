@@ -45,15 +45,13 @@ optional arguments:
   -s SEPARATOR, --separator SEPARATOR
                         CSV Separator (default ',')
   -p NUMBER, --prettyhtml NUMBER
-                        1 enables prettyhtml module
-                        0 disables                
+                        Enable pretty HTML output (0, 1)              
   -a STRING, --authorofproject STRING
-                        Defines author of project. Follow argument with "string"                    
+                        Name of author                  
   -t STRING, --titleofproject STRING
-                        Defines title of project. Follow argument with "string"                 
+                        Title of project                 
   -i STRING, --i STRING
-                        Defines title of project. Follow argument path of logo as a "string"
-                        If not defined, will default to KiCAD logo
+                        Image for BOM
 ~~~~                        
 
 
@@ -74,6 +72,14 @@ optional arguments:
 **--cfg** If provided, this is the BOM config file that will be used. If not provided, options will be loaded from "bom.ini"
 
 **-s --separator** Override the delimiter for CSV or TSV generation
+
+**-p --separator** Override the delimiter for CSV or TSV generation
+
+**-a --separator** Defines author of project. Follow argument with "string"
+
+**-t --separator** Defines title of project. Follow argument with "string"
+
+**-i --separator** Defines title of project. Follow argument path of logo as a "string". If not provided, will default to KiCAD logo
 
 --------
 To run from KiCad, simply add the same command line in the *Bill of Materials* script window. e.g. to generate a HTML output:
