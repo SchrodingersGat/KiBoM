@@ -80,6 +80,7 @@ def WriteCSV(filename, groups, net, headings, prefs):
             writer.writerow(["Total components:", nBuild])
             writer.writerow(["Schematic Version:",net.getVersion()])
             writer.writerow(["Schematic Date:",net.getSheetDate()])
+            writer.writerow(["PCB Variant:",' + '.join(prefs.pcbConfig)])
             writer.writerow(["BoM Date:",net.getDate()])
             writer.writerow(["Schematic Source:",net.getSource()])
             writer.writerow(["KiCad Version:",net.getTool()])

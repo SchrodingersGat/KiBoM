@@ -50,7 +50,7 @@ class BomPref:
         self.hideHeaders = False
         self.verbose = False  # By default, is not verbose
         self.configField = "Config"  # Default field used for part fitting config
-        self.pcbConfig = "default"
+        self.pcbConfig = ["default"]
 
         self.backup = "%O.tmp"
 

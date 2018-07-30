@@ -4,7 +4,16 @@ import bomlib.units as units
 from bomlib.sort import natural_sort
 import re
 
-DNF = ["dnf", "do not fit", "nofit", "no stuff", "nostuff", "noload", "do not load"]
+DNF = ["dnf",
+       "do not fit",
+       "nofit",
+       "not fitted",
+       "dnp",
+       "do not place",
+       "no stuff",
+       "nostuff",
+       "noload",
+       "do not load"]
 
 class Component():
     """Class for a component, aka 'comp' in the xml netlist file.
@@ -216,7 +225,7 @@ class Component():
         check = self.getField(self.prefs.configField).lower()
 
         #check the value field first
-        if self.getValue().lower() in DNF or check.lower() in DNF:
+        if self.getValue().lower() in DNF:
             return False
 
         if check == "":
@@ -224,20 +233,23 @@ class Component():
 
         opts = check.split(",")
 
-        result = True
+        exclude = False
+        include = False
 
         for opt in opts:
+            # Any option containing a DNF is not fitted
+            if opt.lower() in DNF:
+                exclude = True
+                break
             #options that start with '-' are explicitly removed from certain configurations
-            if opt.startswith('-') and opt[1:].lower() == self.prefs.pcbConfig.lower():
-                result = False
+            if opt.startswith('-') and opt[1:].lower() in self.prefs.pcbConfig:
+                exclude = True
                 break
             if opt.startswith("+"):
-                result = False
-                if opt[1:].lower() == self.prefs.pcbConfig.lower():
-                    result = True
+                include = include or opt[1:].lower() in self.prefs.pcbConfig
 
         #by default, part is fitted
-        return result
+        return include and not exclude
 
     #test if this part should be included, based on any regex expressions provided in the preferences
     def testRegExclude(self):
