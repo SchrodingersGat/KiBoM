@@ -172,9 +172,9 @@ If the script is run with the flag *--variant production* then C2, R1 and R2 wil
 
 If the script is run without the *--variant production* flag, then C1, R1 and R2 will be loaded.
 
-If the script is run with the *--variant test* flag, then C1, C2 and R1 will be loaded.
+If the script is run with the flag *--variant test*, then C1, C2 and R1 will be loaded.
 
-If the script is run with the *--variant production,test* flag, then C2 and R1 will be loaded
+If the script is run with the flags *--variant production,test*, then C2 and R1 will be loaded.
 
 ### Regular Expression Matching
 
