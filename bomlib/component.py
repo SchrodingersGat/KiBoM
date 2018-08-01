@@ -234,7 +234,7 @@ class Component():
         opts = check.split(",")
 
         exclude = False
-        include = False
+        include = False if "+" in check else True
 
         for opt in opts:
             # Any option containing a DNF is not fitted
@@ -242,7 +242,7 @@ class Component():
                 exclude = True
                 break
             #options that start with '-' are explicitly removed from certain configurations
-            if opt.startswith('-') and opt[1:].lower() in self.prefs.pcbConfig:
+            if opt.startswith("-") and opt[1:].lower() in self.prefs.pcbConfig:
                 exclude = True
                 break
             if opt.startswith("+"):
