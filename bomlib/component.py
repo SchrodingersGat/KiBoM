@@ -294,7 +294,8 @@ class Component():
     def getFootprint(self, libraryToo=True):
         ret = self.element.get("footprint")
         if ret =="" and libraryToo:
-            ret = self.libpart.getFootprint()
+            if self.libpart:
+                ret = self.libpart.getFootprint()
         return ret
 
     def getDatasheet(self, libraryToo=True):
