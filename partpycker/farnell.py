@@ -1,8 +1,8 @@
 
 from __future__ import print_function
-import urllib2
+
+import requests
 import time
-import json
 
 from collections import defaultdict
 class Query :
@@ -120,7 +120,8 @@ class Farnell:
 		:param str req: End of the URL to send
 		"""
 		self.wait_api_cooldown()
-		ret = urllib2.urlopen(Farnell.base_address + str(req)).read()
+		
+		ret = requests.get(Farnell.base_address + str(req)).json()
 		self.last_call_time = time.clock()
 		return ret
 	
@@ -133,7 +134,7 @@ class Farnell:
 	
 		query_search = "id:" + "%20".join([str(x) for x in parts.keys()])
 		q = Query(query_search,self.store_id,self.api_key,response_group="prices",format="JSON")
-		result = json.loads(self._request_send(q))
+		result = self._request_send(q)
 		
 		output = defaultdict(dict)
 		
