@@ -56,7 +56,15 @@ class BomPref:
 
         self.separatorCSV = None
         self.includeVersionNumber = True
-
+        self.farnell = {
+            "enabled" : False,
+            "api" : None,
+            "store_id" : "uk",
+            "column" : "Farnell SKU",
+            "api_per_sec" : 2,
+            "decimal_separator" : "."
+            }
+        
         # Default fields used to group components
         self.groups = [
             ColumnList.COL_PART,

@@ -33,7 +33,7 @@ from bomlib.columns import ColumnList
 from bomlib.netlist_reader import *
 from bomlib.bom_writer import *
 from bomlib.preferences import BomPref
-
+from partpycker import farnell
 verbose = False
 
 def close(*arg):
@@ -63,6 +63,7 @@ parser.add_argument("-v", "--verbose", help="Enable verbose output", action='cou
 parser.add_argument("-r", "--variant", help="Board variant, used to determine which components are output to the BoM", type=str, default=None)
 parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
 parser.add_argument("-s","--separator",help="CSV Separator (default ',')",type=str, default=None)
+parser.add_argument("--farnell",help="Setup for price finding on Farnell.\nUsage : --farnell APIkey [columnName = 'Farnell SKU' [storeID = uk [[decimalSep = . [API_calls_per_sec = 2]]]",nargs="+",type=str, default=None)
 
 args = parser.parse_args()
 
@@ -99,6 +100,10 @@ pref.verbose = verbose
 pref.boards = args.number
 pref.separatorCSV = args.separator
 
+if args.farnell is not None :
+    pref.farnell["enabled"] = True
+    pref.farnell.update(zip(["api","column","store_id","decimal_separator","api_per_sec"],args.farnell))
+    
 if args.variant is not None:
     pref.pcbConfig = args.variant
     print("PCB variant:", args.variant)
@@ -130,10 +135,52 @@ for g in groups:
     for f in g.fields:
         columns.AddColumn(f)
 
+if pref.farnell["enabled"] :
+    print("Retrieving prices (Farnell)")
+    columns.AddColumn("Unit Price")
+    columns.AddColumn("OrderQty")
+    
+    farnell_component_list = dict()
+    farnell_col = pref.farnell["column"]
+    prices = dict()
+    for g in groups :
+        if farnell_col in g.fields :
+            farnell_id = g.fields[farnell_col]
+            if farnell_id is "" :
+                continue
+            if farnell_id not in farnell_component_list :
+                farnell_component_list[farnell_id] = 0
+            farnell_component_list[farnell_id] += g.getCount()* int(g.fields[ColumnList.COL_GRP_BUILD_QUANTITY])
+
+    farnell_handler = farnell.Farnell(pref.farnell["api"],pref.farnell["store_id"],pref.farnell["api_per_sec"])
+    if len(farnell_component_list) :
+        try :
+            prices = farnell_handler.retrieve_price(farnell_component_list)
+        except Exception as e :
+            print("Error ",e.message)
+            print("Error while trying to retrieve Farnell prices as batch. Trying per-component at {:d} call/sec".format(pref.farnell["api_per_sec"]))
+            
+            for id,qty in enumerate(farnell_component_list) :
+                try :
+                    prices.update(farnell_handler.retrieve_price({id:qty,}))
+                except :
+                    say("Issue with ID ",id)
+    
+        for g in groups :
+            if farnell_col in g.fields :
+                if g.fields[farnell_col] in prices :
+                    g.fields["Unit Price"] = str(prices[g.fields[farnell_col]]["unit_price"]).replace(".",pref.farnell["decimal_separator"])
+                    g.fields["OrderQty"] = str(prices[g.fields[farnell_col]]["order_qty"])
+    else :
+        say("No farnell reference found in design")
+
 #don't add 'boards' column if only one board is specified
 if pref.boards <= 1:
     columns.RemoveColumn(ColumnList.COL_GRP_BUILD_QUANTITY)
     say("Removing:",ColumnList.COL_GRP_BUILD_QUANTITY)
+
+
+    
 
 #todo
 write_to_bom = True
