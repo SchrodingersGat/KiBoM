@@ -123,6 +123,9 @@ class Component():
     def getLibName(self):
         return self.element.get("libsource", "lib")
 
+    def getDescription(self):
+        return self.element.get("libsource", "description")
+
     def setValue(self, value):
         """Set the value of this component"""
         v = self.element.getChild("value")
@@ -306,12 +309,6 @@ class Component():
 
     def getTimestamp(self):
         return self.element.get("tstamp")
-
-    def getDescription(self, libraryToo=True):
-        ret = self.element.get("field", "name", "Description")
-        if ret =="" and libraryToo:
-            ret = self.libpart.getDescription()
-        return ret
 
 class joiner:
     def __init__(self):

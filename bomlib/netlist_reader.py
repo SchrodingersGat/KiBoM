@@ -213,9 +213,6 @@ class libpart():
     def getPartName(self):
         return self.element.get("libpart", "part")
 
-    def getDescription(self):
-        return self.element.get("description")
-
     def getDocs(self):
         return self.element.get("docs")
 
