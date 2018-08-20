@@ -363,3 +363,4 @@ With thanks to the following contributors:
 * https://github.com/schneidersoft
 * https://github.com/suzizecat
 * https://github.com/marcelobarrosalmeida
+* https://github.com/fauxpark
