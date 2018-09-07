@@ -236,17 +236,21 @@ class Component():
 
         opts = check.split(",")
 
-        result = True
 
+        included = not bool(opts) #included by default if no options
+        excluded = False
+
+        config = self.prefs.pcbConfig.lower()
         for opt in opts:
             #options that start with '-' are explicitly removed from certain configurations
-            if opt.startswith('-') and opt[1:].lower() == self.prefs.pcbConfig.lower():
-                result = False
+            if opt.startswith('-') and opt[1:].lower() == config:
+                excluded = True
                 break
-            if opt.startswith("+"):
-                result = False
-                if opt[1:].lower() == self.prefs.pcbConfig.lower():
-                    result = True
+            if opt.startswith("+") and opt[1:].lower() == config:
+                included = True
+                break
+
+        result = included and not excluded
 
         #by default, part is fitted
         return result
