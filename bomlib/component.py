@@ -132,6 +132,18 @@ class Component():
     def getLibName(self):
         return self.element.get("libsource", "lib")
 
+    def getDescription(self):
+        try:
+            return self.element.get("libsource", "description")
+        except:
+            # Compatibility with old KiCad versions (4.x)
+            ret = self.element.get("field", "name", "description")
+
+            if ret == "":
+                ret = self.libpart.getDescription()
+
+            return ret
+
     def setValue(self, value):
         """Set the value of this component"""
         v = self.element.getChild("value")
@@ -307,7 +319,8 @@ class Component():
     def getFootprint(self, libraryToo=True):
         ret = self.element.get("footprint")
         if ret =="" and libraryToo:
-            ret = self.libpart.getFootprint()
+            if self.libpart:
+                ret = self.libpart.getFootprint()
         return ret
 
     def getDatasheet(self, libraryToo=True):
@@ -318,12 +331,6 @@ class Component():
 
     def getTimestamp(self):
         return self.element.get("tstamp")
-
-    def getDescription(self, libraryToo=True):
-        ret = self.element.get("field", "name", "Description")
-        if ret =="" and libraryToo:
-            ret = self.libpart.getDescription()
-        return ret
 
 class joiner:
     def __init__(self):

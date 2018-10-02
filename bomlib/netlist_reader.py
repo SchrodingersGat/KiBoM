@@ -213,6 +213,7 @@ class libpart():
     def getPartName(self):
         return self.element.get("libpart", "part")
 
+    # For backwards Compatibility with v4.x only
     def getDescription(self):
         return self.element.get("description")
 
