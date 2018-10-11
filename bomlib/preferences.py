@@ -192,7 +192,7 @@ class BomPref:
         cf.set(self.SECTION_GENERAL, '; Field name used to determine if a particular part is to be fitted')
         cf.set(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD, self.configField)
 
-        cf.set(self.SECTION_GENERAL, '; Make a backup of the bom before generating the new one, using the folloing template')
+        cf.set(self.SECTION_GENERAL, '; Make a backup of the bom before generating the new one, using the following template')
         cf.set(self.SECTION_GENERAL, self.OPT_BACKUP, self.backup)
 
         cf.add_section(self.SECTION_IGNORE)
