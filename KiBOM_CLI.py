@@ -58,7 +58,7 @@ parser = argparse.ArgumentParser(description="KiBOM Bill of Materials generator 
 
 parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running from within KiCad')
 parser.add_argument("output",  default="", help='BoM output file name.\nUse "%%O" when running from within KiCad to use the default output name (csv file).\nFor e.g. HTML output, use "%%O.html"')
-parser.add_argument("-n", "--number", help="Number of boards to build (default = 1)", type=int, default=1)
+parser.add_argument("-n", "--number", help="Number of boards to build (default = 1)", type=int, default=None)
 parser.add_argument("-v", "--verbose", help="Enable verbose output", action='count')
 parser.add_argument("-r", "--variant", help="Board variant, used to determine which components are output to the BoM", type=str, default=None)
 parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
@@ -96,12 +96,14 @@ if have_cfile:
 
 #pass various command-line options through
 pref.verbose = verbose
-pref.boards = args.number
+if args.number is not None:
+    pref.boards = args.number
 pref.separatorCSV = args.separator
 
 if args.variant is not None:
     pref.pcbConfig = args.variant
-    print("PCB variant:", args.variant)
+print("PCB variant:", pref.pcbConfig)
+
 
 #write preference file back out (first run will generate a file with default preferences)
 if not have_cfile:
