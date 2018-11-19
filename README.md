@@ -193,6 +193,7 @@ BoM generation options can be configured (on a per-project basis) by editing the
 * `merge_blank_field` : If this option is set, blank fields are able to be merged with non-blank fields (and do not count as a 'conflict')
 * `fit_field` : This is the name of the part field used to determine if the component is fitted, or not.
 * `include_version_number` : If this option is set, the schematic version number will be appended to the BOM filename (before the extension). e.g. `PRJBOM.csv` will become `PRJBOM_REV.csv`
+* `use_short_source_filename` : If this option is set, only the filename portion of the source filename path will be used in the output. e.g. `/home/jp/my_kicad_project/my_schematic.sch` will be shown as `my_schematic.sch`
 
 * `IGNORE_COLUMNS` : A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
 * `GROUP_FIELDS` : A list of component fields used to group components together.
