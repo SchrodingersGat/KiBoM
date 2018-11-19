@@ -28,6 +28,7 @@ class BomPref:
     OPT_IGNORE_DNF = "ignore_dnf"
     OPT_BACKUP = "make_backup"
     OPT_INCLUDE_VERSION = "include_version_number"
+    OPT_USE_SHORT_SOURCE_FILENAME = "use_short_source_filename"
 
     OPT_CONFIG_FIELD = "fit_field"
 
@@ -56,6 +57,7 @@ class BomPref:
 
         self.separatorCSV = None
         self.includeVersionNumber = True
+        self.useShortSourceFilename = False
 
         # Default fields used to group components
         self.groups = [
@@ -126,6 +128,7 @@ class BomPref:
                 self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
                 self.mergeBlankFields = self.checkOption(cf, self.OPT_MERGE_BLANK, default=True)
                 self.includeVersionNumber = self.checkOption(cf, self.OPT_INCLUDE_VERSION, default=True)
+                self.useShortSourceFilename = self.checkOption(cf, self.OPT_USE_SHORT_SOURCE_FILENAME, default=False)
 
             if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
                 self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
@@ -187,7 +190,8 @@ class BomPref:
         self.addOption(cf, self.OPT_GROUP_CONN, self.groupConnectors, comment="If '{opt}' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
         self.addOption(cf, self.OPT_USE_REGEX, self.useRegex, comment="If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
         self.addOption(cf, self.OPT_MERGE_BLANK, self.mergeBlankFields, comment="If '{opt}' option is set to 1, component groups with blank fields will be merged into the most compatible group, where possible".format(opt=self.OPT_MERGE_BLANK))
-        self.addOption(cf, self.OPT_INCLUDE_VERSION, self.includeVersionNumber, comment="If '{opt}' option is set to 1, the schematic version number will be appended to the filename.")
+        self.addOption(cf, self.OPT_INCLUDE_VERSION, self.includeVersionNumber, comment="If '{opt}' option is set to 1, the schematic version number will be appended to the filename.".format(opt=self.OPT_INCLUDE_VERSION))
+        self.addOption(cf, self.OPT_USE_SHORT_SOURCE_FILENAME, self.useShortSourceFilename, comment="If '{opt}' option is set to 1, only the filename portion of the source filename path will be used in the output.".format(opt=self.OPT_USE_SHORT_SOURCE_FILENAME))
 
         cf.set(self.SECTION_GENERAL, '; Field name used to determine if a particular part is to be fitted')
         cf.set(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD, self.configField)

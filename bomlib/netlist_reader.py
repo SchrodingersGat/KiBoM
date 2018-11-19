@@ -20,6 +20,7 @@ import sys
 import xml.sax as sax
 import re
 import pdb
+import os
 
 from bomlib.component import (Component, ComponentGroup)
 from bomlib.sort import natural_sort
@@ -365,7 +366,10 @@ class netlist():
 
     def getSource(self):
         """Return the source string for the design"""
-        return self.design.get("source").encode('ascii', 'ignore')
+        source = self.design.get("source").encode('ascii', 'ignore')
+        if self.prefs.useShortSourceFilename:
+          source = os.path.basename(source)
+        return source
 
     def getTool(self):
         """Return the tool string which was used to create the netlist tree"""
