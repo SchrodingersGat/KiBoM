@@ -353,7 +353,7 @@ class joiner:
         refstr = u''
         c = 0
         for Q in self.stack:
-            if N!=None and c%N==0 and c!=0:
+            if bool(N) and c!=0 and c%N==0:
                 refstr+=u'\n'
             elif c!=0:
                 refstr+=sep
@@ -364,7 +364,7 @@ class joiner:
                 c+=1
             else:
                 #do we have space?
-                if (c+1)%N==0: #no
+                if bool(N) and (c+1)%N==0: #no
                     refstr+=u'\n'
                     c += 1
 

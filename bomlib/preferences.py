@@ -28,6 +28,8 @@ class BomPref:
     OPT_IGNORE_DNF = "ignore_dnf"
     OPT_BACKUP = "make_backup"
     OPT_INCLUDE_VERSION = "include_version_number"
+    OPT_DEFAULT_BOARDS = "number_boards"
+    OPT_DEFAULT_PCBCONFIG = "board_variant"
 
     OPT_CONFIG_FIELD = "fit_field"
 
@@ -45,7 +47,7 @@ class BomPref:
         self.groupConnectors = True  # Group connectors and ignore component value
         self.useRegex = True  # Test various columns with regex
 
-        self.boards = 1
+        self.boards = 1 # Quantity of boards to be made
         self.mergeBlankFields = True  # Blanks fields will be merged when possible
         self.hideHeaders = False
         self.verbose = False  # By default, is not verbose
@@ -130,6 +132,12 @@ class BomPref:
             if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
                 self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
 
+            if cf.has_option(self.SECTION_GENERAL, self.OPT_DEFAULT_BOARDS):
+                self.boards = self.checkInt(cf, self.OPT_DEFAULT_BOARDS, default=None)
+
+            if cf.has_option(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG):
+                self.pcbConfig = cf.get(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG)
+
             if cf.has_option(self.SECTION_GENERAL, self.OPT_BACKUP):
                 self.backup = cf.get(self.SECTION_GENERAL, self.OPT_BACKUP)
             else:
@@ -192,8 +200,14 @@ class BomPref:
         cf.set(self.SECTION_GENERAL, '; Field name used to determine if a particular part is to be fitted')
         cf.set(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD, self.configField)
 
-        cf.set(self.SECTION_GENERAL, '; Make a backup of the bom before generating the new one, using the folloing template')
+        cf.set(self.SECTION_GENERAL, '; Make a backup of the bom before generating the new one, using the following template')
         cf.set(self.SECTION_GENERAL, self.OPT_BACKUP, self.backup)
+        
+        cf.set(self.SECTION_GENERAL, '; Default number of boards to produce if none given on CLI with -n')
+        cf.set(self.SECTION_GENERAL, self.OPT_DEFAULT_BOARDS, self.boards)
+
+        cf.set(self.SECTION_GENERAL, '; Default PCB variant if none given on CLI with -r')
+        cf.set(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG, self.pcbConfig)
 
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")
