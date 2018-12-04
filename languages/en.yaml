@@ -1,0 +1,32 @@
+_MESSAGES:
+    KIBOM_PCB_BILL_OF_MATERIALS : KiBoM PCB Bill of Materials
+    SOURCE_FILE : Source file
+    BOM_DATE : BoM Date
+    SCHEMATIC_VERSION : Schematic Version
+    SCHEMATIC_DATE : Schematic Date
+    KICAD_VERSION : KiCad Version
+    COMPONENT : Component
+    COMPONENT_GROUPS : Component Groups
+    COMPONENT_COUNT_PER_PCB : Component Count (per PCB)
+    FITTED_COMPONENTS_PER_PCB : Fitted Components (per PCB)
+    NUMBER_OF_PCBS : Number of PCBs
+    TOTAL_COMPONENT_COUNT : Total Component Count
+    FOR : for
+    PCBS : PCBs
+    KICAD_FIELDS_DEFAULT : KiCad Fields (default)
+    GENERATED_FIELDS : Generated Fields
+    USER_FIELDS : User Fields
+    EMPTY_FIELDS : Empty Fields
+
+_COLUMNS:
+    References : References
+    Description : Description
+    Value : Value
+    Footprint : Footprint
+    Footprint Lib : Footprint Library
+    Part : Part
+    Part Lib : Part Library
+    Datasheet : Datasheet
+    Quantity Per PCB : Quantity Per PCB
+    Total Cost : Total Cost
+    Build Quantity : Build Quantity

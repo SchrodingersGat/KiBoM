@@ -2,6 +2,7 @@
 import bomlib.columns as columns
 from bomlib.component import *
 import os
+from bomlib.i18n import *
 
 BG_GEN = "#E6FFEE"
 BG_KICAD = "#FFE6B3"
@@ -47,6 +48,8 @@ def WriteHTML(filename, groups, net, headings, prefs):
     nTotal = sum([g.getCount() for g in groups])
     nFitted = sum([g.getCount() for g in groups if g.isFitted()])
     nBuild = nFitted * prefs.boards
+ 
+    msg,coltitle = LangLoadStr(prefs)
 
     with open(filename,"w") as html:
 
@@ -60,25 +63,25 @@ def WriteHTML(filename, groups, net, headings, prefs):
 
         #PCB info
         if not prefs.hideHeaders:
-            html.write("<h2>KiBoM PCB Bill of Materials</h2>\n")
+            html.write("<h2>{m}</h2>\n".format(m=msg["KIBOM_PCB_BILL_OF_MATERIALS"]))
             html.write('<table border="1">\n')
-            html.write("<tr><td>Source File</td><td>{source}</td></tr>\n".format(source=net.getSource()))
-            html.write("<tr><td>BoM Date</td><td>{date}</td></tr>\n".format(date=net.getDate()))
-            html.write("<tr><td>Schematic Version</td><td>{version}</td></tr>\n".format(version=net.getVersion()))
-            html.write("<tr><td>Schematic Date</td><td>{date}</td></tr>\n".format(date=net.getSheetDate()))
-            html.write("<tr><td>KiCad Version</td><td>{version}</td></tr>\n".format(version=net.getTool()))
-            html.write("<tr><td>Component Groups</td><td>{n}</td></tr>\n".format(n=nGroups))
-            html.write("<tr><td>Component Count (per PCB)</td><td>{n}</td></tr>\n".format(n=nTotal))
-            html.write("<tr><td>Fitted Components (per PCB)</td><td>{n}</td></tr>\n".format(n=nFitted))
-            html.write("<tr><td>Number of PCBs</td><td>{n}</td></tr>\n".format(n=prefs.boards))
-            html.write("<tr><td>Total Component Count<br>(for {n} PCBs)</td><td>{t}</td></tr>\n".format(n=prefs.boards, t=nBuild))
+            html.write("<tr><td>{m}</td><td>{source}</td></tr>\n".format(m=msg["SOURCE_FILE"],source=net.getSource()))
+            html.write("<tr><td>{m}</td><td>{date}</td></tr>\n".format(m=msg["BOM_DATE"],date=net.getDate()))
+            html.write("<tr><td>{m}</td><td>{version}</td></tr>\n".format(m=msg["SCHEMATIC_VERSION"],version=net.getVersion()))
+            html.write("<tr><td>{m}</td><td>{date}</td></tr>\n".format(m=msg["SCHEMATIC_DATE"],date=net.getSheetDate()))
+            html.write("<tr><td>{m}</td><td>{version}</td></tr>\n".format(m=msg["KICAD_VERSION"],version=net.getTool()))
+            html.write("<tr><td>{m}</td><td>{n}</td></tr>\n".format(m=msg["COMPONENT_GROUPS"],n=nGroups))
+            html.write("<tr><td>{m}</td><td>{n}</td></tr>\n".format(m=msg["COMPONENT_COUNT_PER_PCB"],n=nTotal))
+            html.write("<tr><td>{m}</td><td>{n}</td></tr>\n".format(m=msg["FITTED_COMPONENTS_PER_PCB"],n=nFitted))
+            html.write("<tr><td>{m}</td><td>{n}</td></tr>\n".format(m=msg["NUMBER_OF_PCBS"],n=prefs.boards))
+            html.write("<tr><td>{m1}<br>({m2} {n} {m3})</td><td>{t}</td></tr>\n".format(m1=msg["TOTAL_COMPONENT_COUNT"],m2=msg["FOR"],m3=msg["PCBS"],n=prefs.boards, t=nBuild))
             html.write("</table>\n")
             html.write("<br>\n")
-            html.write("<h2>Component Groups</h2>\n")
-            html.write('<p style="background-color: {bg}">KiCad Fields (default)</p>\n'.format(bg=BG_KICAD))
-            html.write('<p style="background-color: {bg}">Generated Fields</p>\n'.format(bg=BG_GEN))
-            html.write('<p style="background-color: {bg}">User Fields</p>\n'.format(bg=BG_USER))
-            html.write('<p style="background-color: {bg}">Empty Fields</p>\n'.format(bg=BG_EMPTY))
+            html.write("<h2>{m}</h2>\n".format(m=msg["COMPONENT_GROUPS"]))
+            html.write('<p style="background-color: {bg}">{m}</p>\n'.format(m=msg["KICAD_FIELDS_DEFAULT"],bg=BG_KICAD))
+            html.write('<p style="background-color: {bg}">{m}</p>\n'.format(m=msg["GENERATED_FIELDS"],bg=BG_GEN))
+            html.write('<p style="background-color: {bg}">{m}</p>\n'.format(m=msg["USER_FIELDS"],bg=BG_USER))
+            html.write('<p style="background-color: {bg}">{m}</p>\n'.format(m=msg["EMPTY_FIELDS"],bg=BG_EMPTY))
 
         #component groups
         html.write('<table border="1">\n')
@@ -90,6 +93,8 @@ def WriteHTML(filename, groups, net, headings, prefs):
         for i,h in enumerate(headings):
             #cell background color
             bg = bgColor(h)
+            if (h in ColumnList._COLUMNS_GEN) or (h in ColumnList._COLUMNS_PROTECTED):
+                h = coltitle[h]
             html.write('\t<th align="center"{bg}>{h}</th>\n'.format(
                         h=h,
                         bg = ' bgcolor="{c}"'.format(c=bg) if bg else ''))

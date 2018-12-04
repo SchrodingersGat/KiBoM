@@ -32,6 +32,7 @@ class BomPref:
     OPT_DEFAULT_PCBCONFIG = "board_variant"
 
     OPT_CONFIG_FIELD = "fit_field"
+    OPT_LANGUAGE = "language"
 
     def __init__(self):
         # List of headings to ignore in BoM generation
@@ -53,6 +54,8 @@ class BomPref:
         self.verbose = False  # By default, is not verbose
         self.configField = "Config"  # Default field used for part fitting config
         self.pcbConfig = "default"
+
+        self.language = "en"
 
         self.backup = "%O.tmp"
 
@@ -142,6 +145,9 @@ class BomPref:
                 self.backup = cf.get(self.SECTION_GENERAL, self.OPT_BACKUP)
             else:
                 self.backup = False
+                
+            if cf.has_option(self.SECTION_GENERAL, self.OPT_LANGUAGE):
+                self.language = cf.get(self.SECTION_GENERAL, self.OPT_LANGUAGE)
 
             # Read out grouping colums
             if self.SECTION_GROUPING_FIELDS in cf.sections():
@@ -208,6 +214,9 @@ class BomPref:
 
         cf.set(self.SECTION_GENERAL, '; Default PCB variant if none given on CLI with -r')
         cf.set(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG, self.pcbConfig)
+        
+        cf.set(self.SECTION_GENERAL, '; Titles and headings language if non given on CLI with -l')
+        cf.set(self.SECTION_GENERAL, self.OPT_LANGUAGE, self.language)
 
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")

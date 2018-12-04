@@ -1,0 +1,32 @@
+_MESSAGES:
+    KIBOM_PCB_BILL_OF_MATERIALS : KiBoM Zestawienie materiałów PCB
+    SOURCE_FILE : Plik źródłowy
+    BOM_DATE : Data utworzenia BOM
+    SCHEMATIC_VERSION : Wersja schematu
+    SCHEMATIC_DATE : Data utworzenia schematu
+    KICAD_VERSION : Wersja KiCad
+    COMPONENT : Komponent
+    COMPONENT_GROUPS : Grupy komponentów
+    COMPONENT_COUNT_PER_PCB : Liczba komponentów (na 1 PCB)
+    FITTED_COMPONENTS_PER_PCB : Komponenty montowane (na 1 PCB)
+    NUMBER_OF_PCBS : Liczba PCB
+    TOTAL_COMPONENT_COUNT : Łączna liczba komponentów
+    FOR : dla
+    PCBS : PCB
+    KICAD_FIELDS_DEFAULT : Pola KiCad (domyślne)
+    GENERATED_FIELDS : Pola wygenerowane
+    USER_FIELDS : Pola użytkownika
+    EMPTY_FIELDS : Pola puste
+
+_COLUMNS:
+    References : Oznaczenia
+    Description : Opis
+    Value : Wartość
+    Footprint : Footprint
+    Footprint Lib : Biblioteka footprint'u
+    Part : Element
+    Part Lib : Biblioteka elementu
+    Datasheet : Dokumentacja
+    Quantity Per PCB : Liczba elementów na PCB
+    Total Cost : Łączny koszt
+    Build Quantity : Łączna liczba elementów

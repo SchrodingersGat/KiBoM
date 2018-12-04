@@ -1,10 +1,10 @@
-# _*_ coding:latin-1 _*_
 
 import csv
 import bomlib.columns as columns
 from bomlib.component import *
 import os, shutil
 from bomlib.preferences import BomPref
+from bomlib.i18n import *
 
 """
 Write BoM out to a CSV file
@@ -36,15 +36,23 @@ def WriteCSV(filename, groups, net, headings, prefs):
     nFitted = sum([g.getCount() for g in groups if g.isFitted()])
     nBuild = nFitted * prefs.boards
 
+    msg,coltitle = LangLoadStr(prefs)
+
     with open(filename, "w") as f:
 
         writer = csv.writer(f, delimiter=delimiter, lineterminator="\n")
 
         if not prefs.hideHeaders:
+            modHeadings = []
+            for i,h in enumerate(headings):
+                if (h in ColumnList._COLUMNS_GEN) or (h in ColumnList._COLUMNS_PROTECTED):
+                    modHeadings.append(coltitle[h])
+                else:
+                    modHeadings.append(h)
             if prefs.numberRows:
-                writer.writerow(["Component"] + headings)
+                writer.writerow([msg["COMPONENT"]] + modHeadings)
             else:
-                writer.writerow(headings)
+                writer.writerow(modHeadings)
 
         count = 0
         rowCount = 1
@@ -57,8 +65,6 @@ def WriteCSV(filename, groups, net, headings, prefs):
             if prefs.numberRows:
                 row = [str(rowCount)] + row
 
-            #deal with unicode characters
-            #row = [el.decode('latin-1') for el in row]
             writer.writerow(row)
 
             try:
@@ -73,15 +79,15 @@ def WriteCSV(filename, groups, net, headings, prefs):
             for i in range(5):
                 writer.writerow([])
 
-            writer.writerow(["Component Groups:",nGroups])
-            writer.writerow(["Component Count:",nTotal])
-            writer.writerow(["Fitted Components:", nFitted])
-            writer.writerow(["Number of PCBs:",prefs.boards])
-            writer.writerow(["Total components:", nBuild])
-            writer.writerow(["Schematic Version:",net.getVersion()])
-            writer.writerow(["Schematic Date:",net.getSheetDate()])
-            writer.writerow(["BoM Date:",net.getDate()])
-            writer.writerow(["Schematic Source:",net.getSource()])
-            writer.writerow(["KiCad Version:",net.getTool()])
+            writer.writerow([msg["COMPONENT_GROUPS"]+":",nGroups])
+            writer.writerow([msg["COMPONENT_COUNT_PER_PCB"]+":",nTotal])
+            writer.writerow([msg["FITTED_COMPONENTS_PER_PCB"]+":", nFitted])
+            writer.writerow([msg["NUMBER_OF_PCBS"]+":",prefs.boards])
+            writer.writerow([msg["TOTAL_COMPONENT_COUNT"]+":", nBuild])
+            writer.writerow([msg["SCHEMATIC_VERSION"]+":",net.getVersion()])
+            writer.writerow([msg["SCHEMATIC_DATE"]+":",net.getSheetDate()])
+            writer.writerow([msg["BOM_DATE"]+":",net.getDate()])
+            writer.writerow([msg["SOURCE_FILE"]+":",net.getSource()])
+            writer.writerow([msg["KICAD_VERSION"]+":",net.getTool()])
 
     return True

@@ -20,7 +20,7 @@ The *KiBOM_CLI* script can be run directly from KiCad or from the command line. 
 
 ~~~~
 usage: KiBOM_CLI.py [-h] [-n NUMBER] [-v] [-r VARIANT] [--cfg CFG]
-                    [-s SEPARATOR]
+                    [-s SEPARATOR] [-l LANGUAGE]
                     netlist output
 
 KiBOM Bill of Materials generator script
@@ -44,6 +44,9 @@ optional arguments:
                         not specified here)
   -s SEPARATOR, --separator SEPARATOR
                         CSV Separator (default ',')
+  -l LANGUAGE, --language LANGUAGE
+                        Language of labels and headings (default 'en')
+
 
 
 ~~~~                        
@@ -66,6 +69,8 @@ optional arguments:
 **--cfg** If provided, this is the BOM config file that will be used. If not provided, options will be loaded from "bom.ini"
 
 **-s --separator** Override the delimiter for CSV or TSV generation
+
+**-l --language** Default language for labels, titles and headings is english.
 
 --------
 To run from KiCad, simply add the same command line in the *Bill of Materials* script window. e.g. to generate a HTML output:
@@ -183,6 +188,9 @@ Multiple BoM output formats are supported:
 * HTML
 
 Output file format selection is set by the output filename. e.g. "bom.html" will be written to a HTML file, "bom.csv" will be written to a CSV file.
+
+### Languages
+Language defitions are located in 'languages' folder as YAML files. You can provide Your own file for specific language. Just copy 'en.yaml' file, change its name to 'your-language-short-code.yaml', then translate values. Don't change keys!
 
 ### Configuration File
 BoM generation options can be configured (on a per-project basis) by editing the *bom.ini* file in the PCB project directory. This file is generated the first time that the KiBoM script is run, and allows configuration of the following options.

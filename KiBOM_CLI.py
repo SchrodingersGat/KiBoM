@@ -63,6 +63,7 @@ parser.add_argument("-v", "--verbose", help="Enable verbose output", action='cou
 parser.add_argument("-r", "--variant", help="Board variant, used to determine which components are output to the BoM", type=str, default=None)
 parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
 parser.add_argument("-s","--separator",help="CSV Separator (default ',')",type=str, default=None)
+parser.add_argument("-l", "--language", help="Language of labels and headings (default 'en')", type=str, default=None)
 
 args = parser.parse_args()
 
@@ -104,6 +105,8 @@ if args.variant is not None:
     pref.pcbConfig = args.variant
 print("PCB variant:", pref.pcbConfig)
 
+if args.language is not None:
+    pref.language = args.language
 
 #write preference file back out (first run will generate a file with default preferences)
 if not have_cfile:
