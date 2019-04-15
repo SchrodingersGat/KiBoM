@@ -32,6 +32,10 @@ class Component():
         #otherwise, perform a more complicated value comparison
         if units.compareValues(self.getValue(), other.getValue()): return True
 
+        #Ignore value if both components are connectors
+        if self.prefs.groupConnectors:
+            if self.getLibName() == 'Connector' and other.getLibName() == 'Connector': return True
+
         #no match, return False
         return False
 
