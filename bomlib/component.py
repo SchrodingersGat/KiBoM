@@ -34,7 +34,8 @@ class Component():
 
         #Ignore value if both components are connectors
         if self.prefs.groupConnectors:
-            if self.getLibName() == 'Connector' and other.getLibName() == 'Connector': return True
+            if 'connector' in self.getLibName().lower() and 'connector' in other.getLibName().lower():
+                return True
 
         #no match, return False
         return False
