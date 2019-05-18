@@ -1,6 +1,7 @@
 from bomlib.csv_writer import WriteCSV
 from bomlib.xml_writer import WriteXML
 from bomlib.html_writer import WriteHTML
+from bomlib.xlsx_writer import WriteXLSX
 
 import bomlib.columns as columns
 from bomlib.component import *
@@ -68,6 +69,13 @@ def WriteBoM(filename, groups, net, headings = columns.ColumnList._COLUMNS_DEFAU
             result = True
         else:
             print("Error writing XML output")
+
+    elif ext in ["xlsx"]:
+        if WriteXLSX(filename, groups, net, headings, prefs):
+            print("XLSX Output -> {fn}".format(fn=filename))
+            result = True
+        else:
+            print("Error writing XLSX output")
 
     else:
         print("Unsupported file extension: {ext}".format(ext=ext))
