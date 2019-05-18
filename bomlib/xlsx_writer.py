@@ -64,7 +64,7 @@ def WriteXLSX(filename, groups, net, headings, prefs):
             worksheet.write_string(rowCount,columnCount,cell,cellformats[columnCount])
                     
             if len(cell) > column_widths[columnCount]:
-                column_widths[columnCount] = len(cell)
+                column_widths[columnCount] = len(cell) + 10
 
         try:
             count += group.getCount()
@@ -80,28 +80,30 @@ def WriteXLSX(filename, groups, net, headings, prefs):
         for i in range(5):
             rowCount += 1
 
+        cellformat_left = workbook.add_format({'align': 'left'})
+
         worksheet.write_string( rowCount, 0, "Component Groups:", cellformats[0])
-        worksheet.write_number( rowCount, 1, nGroups, cellformats[1])
+        worksheet.write_number( rowCount, 1, nGroups, cellformat_left)
         rowCount += 1
 
         worksheet.write_string( rowCount, 0, "Component Count:", cellformats[0])
-        worksheet.write_number( rowCount, 1, nTotal, cellformats[1])
+        worksheet.write_number( rowCount, 1, nTotal, cellformat_left)
         rowCount += 1
 
         worksheet.write_string( rowCount, 0, "Fitted Components:", cellformats[0])
-        worksheet.write_number( rowCount, 1, nFitted, cellformats[1])
+        worksheet.write_number( rowCount, 1, nFitted, cellformat_left)
         rowCount += 1
 
         worksheet.write_string( rowCount, 0, "Number of PCBs:", cellformats[0])
-        worksheet.write_number( rowCount, 1, prefs.boards, cellformats[1])
+        worksheet.write_number( rowCount, 1, prefs.boards, cellformat_left)
         rowCount += 1
 
         worksheet.write_string( rowCount, 0, "Total components:", cellformats[0])
-        worksheet.write_number( rowCount, 1, nBuild, cellformats[1])
+        worksheet.write_number( rowCount, 1, nBuild, cellformat_left)
         rowCount += 1
 
         worksheet.write_string( rowCount, 0, "Schematic Version:", cellformats[0])
-        worksheet.write_string( rowCount, 1, net.getVersion(), cellformats[1])
+        worksheet.write_string( rowCount, 1, net.getVersion(), cellformat_left)
         rowCount += 1
 
         if len(net.getVersion()) > column_widths[1]:
@@ -109,7 +111,7 @@ def WriteXLSX(filename, groups, net, headings, prefs):
 
 
         worksheet.write_string( rowCount, 0, "Schematic Date:", cellformats[0])
-        worksheet.write_string( rowCount, 1, net.getSheetDate(), cellformats[1])
+        worksheet.write_string( rowCount, 1, net.getSheetDate(), cellformat_left)
         rowCount += 1
 
         if len(net.getSheetDate()) > column_widths[1]:
@@ -117,21 +119,21 @@ def WriteXLSX(filename, groups, net, headings, prefs):
 
 
         worksheet.write_string( rowCount, 0, "BoM Date:", cellformats[0])
-        worksheet.write_string( rowCount, 1, net.getDate(), cellformats[1])
+        worksheet.write_string( rowCount, 1, net.getDate(), cellformat_left)
         rowCount += 1
 
         if len(net.getDate()) > column_widths[1]:
             column_widths[1] = len(net.getDate())
 
         worksheet.write_string( rowCount, 0, "Schematic Source:", cellformats[0])
-        worksheet.write_string( rowCount, 1, net.getSource(), cellformats[1])
+        worksheet.write_string( rowCount, 1, net.getSource(), cellformat_left)
         rowCount += 1
 
         if len(net.getSource()) > column_widths[1]:
             column_widths[1] = len(net.getSource())
 
         worksheet.write_string( rowCount, 0, "KiCad Version:", cellformats[0])
-        worksheet.write_string( rowCount, 1, net.getTool(), cellformats[1])
+        worksheet.write_string( rowCount, 1, net.getTool(), cellformat_left)
         rowCount += 1
 
         if len(net.getTool()) > column_widths[1]:
