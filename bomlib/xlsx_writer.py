@@ -63,8 +63,8 @@ def WriteXLSX(filename, groups, net, headings, prefs):
             
             worksheet.write_string(rowCount,columnCount,cell,cellformats[columnCount])
                     
-            if len(cell) > column_widths[columnCount]:
-                column_widths[columnCount] = len(cell) + 10
+            if len(cell) > column_widths[columnCount] - 5:
+                column_widths[columnCount] = len(cell) + 5
 
         try:
             count += group.getCount()
