@@ -24,6 +24,20 @@ import shutil
 
 import argparse
 
+# Optional modules
+
+xlsxwriter_available = False
+try:
+    import xlsxwriter
+except:
+    print()
+    print('Module not found: xlsxwriter')
+    print('XLSX output format not available.')
+    print()
+else:
+    xlsxwriter_available = True
+      
+#
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 sys.path.append(here)
@@ -47,7 +61,10 @@ def say(*arg):
 
 def isExtensionSupported(filename):
     result = False
-    extensions = [".xml",".csv",".txt",".tsv",".html",".xlsx"]
+    if xlsxwriter_available:
+        extensions = [".xml",".csv",".txt",".tsv",".html",".xlsx"]
+    else:
+        extensions = [".xml",".csv",".txt",".tsv",".html"]      
     for e in extensions:
         if filename.endswith(e):
             result = True
@@ -93,6 +110,9 @@ have_cfile = os.path.exists(config_file)
 if have_cfile:
     pref.Read(config_file)
     say("Config:",config_file)
+
+#pass available modules
+pref.xlsxwriter_available = xlsxwriter_available
 
 #pass various command-line options through
 pref.verbose = verbose

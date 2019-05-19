@@ -182,7 +182,7 @@ Multiple BoM output formats are supported:
 * TXT (Text file output with tab separated values)
 * XML
 * HTML
-* XLSX
+* XLSX (Needs XlsxWriter Python module)
 
 Output file format selection is set by the output filename. e.g. "bom.html" will be written to a HTML file, "bom.csv" will be written to a CSV file.
 
