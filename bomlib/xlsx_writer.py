@@ -38,9 +38,7 @@ def WriteXLSX(filename, groups, net, headings, prefs):
     cellformats = {}
     column_widths = {}
     for i in range(len(row_headings)):
-        cellformat = workbook.add_format()
-        cellformat.set_center_across()
-        cellformats[i] = cellformat
+        cellformats[i] = workbook.add_format({'align':'center_across'})
         column_widths[i] = len(row_headings[i]) + 10
 
         if not prefs.hideHeaders:
@@ -80,7 +78,7 @@ def WriteXLSX(filename, groups, net, headings, prefs):
         for i in range(5):
             rowCount += 1
 
-        cellformat_left = workbook.add_format({'align': 'left'})
+        cellformat_left = workbook.add_format({'align':'left'})
 
         worksheet.write_string( rowCount, 0, "Component Groups:", cellformats[0])
         worksheet.write_number( rowCount, 1, nGroups, cellformat_left)
