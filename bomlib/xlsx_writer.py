@@ -76,8 +76,6 @@ else:
                 
             rowCount += 1
 
-        print('Done')
-
         if not prefs.hideHeaders:
             #blank rows
             for i in range(5):
