@@ -26,14 +26,10 @@ import argparse
 
 # Optional modules
 
-xlsxwriter_available = False
 try:
     import xlsxwriter
 except:
-    print()
-    print('Module not found: xlsxwriter')
-    print('XLSX output format not available.')
-    print()
+    xlsxwriter_available = False
 else:
     xlsxwriter_available = True
       
@@ -61,10 +57,9 @@ def say(*arg):
 
 def isExtensionSupported(filename):
     result = False
+    extensions = [".xml",".csv",".txt",".tsv",".html"]      
     if xlsxwriter_available:
-        extensions = [".xml",".csv",".txt",".tsv",".html",".xlsx"]
-    else:
-        extensions = [".xml",".csv",".txt",".tsv",".html"]      
+        extensions.append(".xlsx")
     for e in extensions:
         if filename.endswith(e):
             result = True
