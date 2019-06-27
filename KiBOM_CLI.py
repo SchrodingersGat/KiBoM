@@ -102,7 +102,7 @@ pref.separatorCSV = args.separator
 
 if args.variant is not None:
     pref.pcbConfig = set(map(lambda x: x.strip().lower(), args.variant.split(",")))
-    print("PCB variant:", args.variant)
+print("PCB variant: ", ", ".join(pref.pcbConfig))
 
 #write preference file back out (first run will generate a file with default preferences)
 if not have_cfile:
