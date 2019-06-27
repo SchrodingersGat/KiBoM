@@ -59,6 +59,9 @@ class BomPref:
         self.separatorCSV = None
         self.includeVersionNumber = True
 
+        self.xlsxwriter_available = False
+        self.xlsxwriter2_available = False
+
         # Default fields used to group components
         self.groups = [
             ColumnList.COL_PART,

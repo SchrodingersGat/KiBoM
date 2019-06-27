@@ -3,7 +3,7 @@
     @package
     KiBOM - Bill of Materials generation for KiCad
 
-    Generate BOM in xml, csv, txt, tsv or html formats.
+    Generate BOM in xml, csv, txt, tsv, html or xlsx formats.
 
     - Components are automatically grouped into BoM rows (grouping is configurable)
     - Component groups count number of components and list component designators
@@ -24,6 +24,16 @@ import shutil
 
 import argparse
 
+# Optional modules
+
+try:
+    import xlsxwriter
+except:
+    xlsxwriter_available = False
+else:
+    xlsxwriter_available = True
+      
+#
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 sys.path.append(here)
@@ -47,7 +57,9 @@ def say(*arg):
 
 def isExtensionSupported(filename):
     result = False
-    extensions = [".xml",".csv",".txt",".tsv",".html"]
+    extensions = [".xml",".csv",".txt",".tsv",".html"]      
+    if xlsxwriter_available:
+        extensions.append(".xlsx")
     for e in extensions:
         if filename.endswith(e):
             result = True
@@ -93,6 +105,9 @@ have_cfile = os.path.exists(config_file)
 if have_cfile:
     pref.Read(config_file)
     say("Config:",config_file)
+
+#pass available modules
+pref.xlsxwriter_available = xlsxwriter_available
 
 #pass various command-line options through
 pref.verbose = verbose

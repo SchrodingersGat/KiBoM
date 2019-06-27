@@ -56,6 +56,7 @@ optional arguments:
 * If a suffix is not specified, CSV output format will be used
 * HTML output can be specified within KiCad as: "%O.html" or "%O_BOM.html" (etc)
 * XML output can be specified within KiCad as: "%O.xml" (etc)
+* XSLX output can be specified within KiCad as: "%O.xlsx" (etc)
 
 **-n --number** Specify number of boards for calculating part quantities
 
@@ -193,6 +194,7 @@ Multiple BoM output formats are supported:
 * TXT (Text file output with tab separated values)
 * XML
 * HTML
+* XLSX (Needs XlsxWriter Python module)
 
 Output file format selection is set by the output filename. e.g. "bom.html" will be written to a HTML file, "bom.csv" will be written to a CSV file.
 
@@ -363,6 +365,10 @@ An XML file output can be generated simply by changing the file extension
         <group Datasheet="" Description="Resistor" Footprint="R_0805" Notes="" Part="R" Quantity="2" Rating="" References="R1 R2" Value="470R" Vendor="Digikey"/>
         <group Datasheet="http://www.ti.com/lit/ds/symlink/max232.pdf" Description="Dual RS232 driver/receiver, 5V supply, 120kb/s, 0C-70C" Footprint="DIP-16_W7.62mm" Notes="Do not fit" Part="MAX232" Quantity="1 (DNF)" Rating="" References="U1" Value="MAX232" Vendor=""/>
     </KiCad_BOM>
+
+### XLSX Output
+An XLSX file output can be generated simply by changing the file extension
+
 
 ## Contributors
 

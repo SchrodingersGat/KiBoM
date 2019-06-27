@@ -114,7 +114,7 @@ def WriteHTML(filename, groups, net, headings, prefs):
 
             for n, r in enumerate(row):
 
-                if len(r) == 0:
+                if (len(r) == 0) or (r.strip() == "~"):
                     bg = BG_EMPTY
                 else:
                     bg = bgColor(headings[n])
