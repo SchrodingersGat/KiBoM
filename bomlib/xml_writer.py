@@ -28,6 +28,7 @@ def WriteXML(filename, groups, net, headings, prefs):
     attrib['Schematic_Source'] = net.getSource()
     attrib['Schematic_Version'] = net.getVersion()
     attrib['Schematic_Date'] = net.getSheetDate()
+    attrib['PCB_Variant'] = ', '.join(prefs.pcbConfig)
     attrib['BOM_Date'] = net.getDate()
     attrib['KiCad_Version'] = net.getTool()
     attrib['Component_Groups'] = str(nGroups)

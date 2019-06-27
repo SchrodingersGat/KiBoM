@@ -66,6 +66,7 @@ def WriteHTML(filename, groups, net, headings, prefs):
             html.write("<tr><td>BoM Date</td><td>{date}</td></tr>\n".format(date=net.getDate()))
             html.write("<tr><td>Schematic Version</td><td>{version}</td></tr>\n".format(version=net.getVersion()))
             html.write("<tr><td>Schematic Date</td><td>{date}</td></tr>\n".format(date=net.getSheetDate()))
+            html.write("<tr><td>PCB Variant</td><td>{variant}</td></tr>\n".format(variant=', '.join(prefs.pcbConfig)))
             html.write("<tr><td>KiCad Version</td><td>{version}</td></tr>\n".format(version=net.getTool()))
             html.write("<tr><td>Component Groups</td><td>{n}</td></tr>\n".format(n=nGroups))
             html.write("<tr><td>Component Count (per PCB)</td><td>{n}</td></tr>\n".format(n=nTotal))

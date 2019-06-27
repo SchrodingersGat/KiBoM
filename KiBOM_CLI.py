@@ -72,7 +72,7 @@ parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running fr
 parser.add_argument("output",  default="", help='BoM output file name.\nUse "%%O" when running from within KiCad to use the default output name (csv file).\nFor e.g. HTML output, use "%%O.html"')
 parser.add_argument("-n", "--number", help="Number of boards to build (default = 1)", type=int, default=None)
 parser.add_argument("-v", "--verbose", help="Enable verbose output", action='count')
-parser.add_argument("-r", "--variant", help="Board variant, used to determine which components are output to the BoM", type=str, default=None)
+parser.add_argument("-r", "--variant", help="Board variant(s), used to determine which components are output to the BoM. Comma-separate for multiple.", type=str, default=None)
 parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
 parser.add_argument("-s","--separator",help="CSV Separator (default ',')",type=str, default=None)
 
@@ -116,9 +116,8 @@ if args.number is not None:
 pref.separatorCSV = args.separator
 
 if args.variant is not None:
-    pref.pcbConfig = args.variant
-print("PCB variant:", pref.pcbConfig)
-
+    pref.pcbConfig = set(map(lambda x: x.strip().lower(), args.variant.split(",")))
+print("PCB variant: ", ", ".join(pref.pcbConfig))
 
 #write preference file back out (first run will generate a file with default preferences)
 if not have_cfile:

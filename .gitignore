@@ -1,4 +1,18 @@
+__pycache__/
+*.py[cod]
+*$py.class
 *.pyc
 
 *.kicad_mod
 .idea/
+
+.env
+.venv
+env/
+venv/
+VENV/
+ENV/
+env.bak/
+venv.bak/
+
+.python-version

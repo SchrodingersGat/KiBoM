@@ -38,7 +38,7 @@ optional arguments:
                         Number of boards to build (default = 1)
   -v, --verbose         Enable verbose output
   -r VARIANT, --variant VARIANT
-                        Board variant, used to determine which components are
+                        Board variant(s), used to determine which components are
                         output to the BoM
   --cfg CFG             BoM config file (script will try to use 'bom.ini' if
                         not specified here)
@@ -62,7 +62,7 @@ optional arguments:
 
 **-v --verbose** Enable extra debugging information
 
-**-r --variant** Specify the PCB *variant*. Support for arbitrary PCB variants allows individual components to be marked as 'fitted' or 'not fitted' in a given variant.
+**-r --variant** Specify the PCB *variant(s)*. Support for arbitrary PCB variants allows individual components to be marked as 'fitted' or 'not fitted' in a given variant. You can provide muliple variants comma-separated.
 
 **--cfg** If provided, this is the BOM config file that will be used. If not provided, options will be loaded from "bom.ini"
 
@@ -134,6 +134,9 @@ To specify a part as DNF (do not fit), the *fit_field* field can be set to one o
 * "dnf"
 * "do not fit"
 * "nofit"
+* "not fitted"
+* "dnp"
+* "do not place"
 * "no stuff"
 * "nostuff"
 * "noload"
@@ -155,15 +158,24 @@ If a variant is specified, the value of the *fit_field* field is used to determi
 
 Multiple variants can be addressed as the *fit_field* can contain multiple comma-separated values.
 
+* If you specify multiple variants
+   - If the *fit_field* contains the variant beginning with a '-' character, it will be excluded irrespective of any other '+' matches.
+   - If the *fit_field* contains the variant beginning with a '+' and matches any of the given variants, it will be included.
+
 e.g. if we have a PCB with three components that have the following values in the *fit_field* field:
 
-* C1 -> "-production"
-* C2 -> "+production"
+* C1 -> "-production,+test"
+* C2 -> "+production,+test"
 * R1 -> ""
+* R2 -> "-test"
 
-If the script is run with the flag *--variant production* then C2 and R1 will be loaded.
+If the script is run with the flag *--variant production* then C2, R1 and R2 will be loaded.
 
-If the script is run without the *--variant production* flag, then C1 and R1 will be loaded
+If the script is run without the *--variant production* flag, then C1, R1 and R2 will be loaded.
+
+If the script is run with the flag *--variant test*, then C1, C2 and R1 will be loaded.
+
+If the script is run with the flags *--variant production,test*, then C2 and R1 will be loaded.
 
 ### Regular Expression Matching
 
@@ -372,3 +384,4 @@ With thanks to the following contributors:
 * https://github.com/fauxpark
 * https://github.com/Swij
 * https://github.com/Ximi1970
+* https://github.com/AngusP
