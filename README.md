@@ -376,4 +376,6 @@ With thanks to the following contributors:
 * https://github.com/suzizecat
 * https://github.com/marcelobarrosalmeida
 * https://github.com/fauxpark
+* https://github.com/Swij
+* https://github.com/Ximi1970
 * https://github.com/AngusP
