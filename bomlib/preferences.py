@@ -28,6 +28,7 @@ class BomPref:
     OPT_IGNORE_DNF = "ignore_dnf"
     OPT_BACKUP = "make_backup"
     OPT_INCLUDE_VERSION = "include_version_number"
+    OPT_INCLUDE_VARIANT = "include_variant_name"
     OPT_DEFAULT_BOARDS = "number_boards"
     OPT_DEFAULT_PCBCONFIG = "board_variant"
 
@@ -58,6 +59,7 @@ class BomPref:
 
         self.separatorCSV = None
         self.includeVersionNumber = True
+        self.includeVariantName = True
 
         self.xlsxwriter_available = False
         self.xlsxwriter2_available = False
@@ -131,6 +133,7 @@ class BomPref:
                 self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
                 self.mergeBlankFields = self.checkOption(cf, self.OPT_MERGE_BLANK, default=True)
                 self.includeVersionNumber = self.checkOption(cf, self.OPT_INCLUDE_VERSION, default=True)
+                self.includeVariantName = self.checkOption(cf, self.OPT_INCLUDE_VARIANT, default=True)
 
             if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
                 self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
@@ -207,7 +210,7 @@ class BomPref:
 
         cf.set(self.SECTION_GENERAL, '; Make a backup of the bom before generating the new one, using the following template')
         cf.set(self.SECTION_GENERAL, self.OPT_BACKUP, self.backup)
-        
+
         cf.set(self.SECTION_GENERAL, '; Default number of boards to produce if none given on CLI with -n')
         cf.set(self.SECTION_GENERAL, self.OPT_DEFAULT_BOARDS, self.boards)
 
