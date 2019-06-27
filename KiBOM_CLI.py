@@ -32,7 +32,7 @@ except:
     xlsxwriter_available = False
 else:
     xlsxwriter_available = True
-      
+
 #
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
@@ -57,7 +57,7 @@ def say(*arg):
 
 def isExtensionSupported(filename):
     result = False
-    extensions = [".xml",".csv",".txt",".tsv",".html"]      
+    extensions = [".xml",".csv",".txt",".tsv",".html"]
     if xlsxwriter_available:
         extensions.append(".xlsx")
     for e in extensions:
@@ -174,6 +174,13 @@ if write_to_bom:
         fext = fsplit[-1]
 
         output_file = str(fname) + "_" + str(net.getVersion()) + "." + fext
+
+    if pref.includeVariantName and args.variant is not None:
+        fsplit = output_file.split(".")
+        fname = ".".join(fsplit[:-1])
+        fext = fsplit[-1]
+
+        output_file = str(fname) + "_(" + str(args.variant) + ")" + "." + fext
 
     output_file = os.path.abspath(output_file)
 

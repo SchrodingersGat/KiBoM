@@ -64,7 +64,7 @@ optional arguments:
 
 **-r --variant** Specify the PCB *variant(s)*. Support for arbitrary PCB variants allows individual components to be marked as 'fitted' or 'not fitted' in a given variant. You can provide muliple variants comma-separated.
 
-**--cfg** If provided, this is the BOM config file that will be used. If not provided, options will be loaded from "bom.ini"
+**--cfg** If provided, this is the BoM config file that will be used. If not provided, options will be loaded from "bom.ini"
 
 **-s --separator** Override the delimiter for CSV or TSV generation
 
@@ -81,13 +81,13 @@ When you start the KiCad schematic editor and choose *Tools>Generate Bill of Mat
 
 If you want other than .csv format, edit the *Command Line*, for example inserting ".html" after the "%O".
 
-If you want more columns in your BOM, before you generate your BOM, in the schematic editor choose *Preferences>Schematic Editor Options*  and create new rows in the *Template Field Names* tab.  Then edit your components and fill in the fields.  KiBOM will reasonably sum rows in the BOM having the same values in your fields.  For example, if you have two components both with Vendor=Digikey and SKU=877-5309 (and value and footprints equal), there will be one row with Quantity "2" and References e.g. "R1, R2."
+If you want more columns in your BoM, before you generate your BoM, in the schematic editor choose *Preferences>Schematic Editor Options*  and create new rows in the *Template Field Names* tab.  Then edit your components and fill in the fields.  KiBoM will reasonably sum rows in the BoM having the same values in your fields.  For example, if you have two components both with Vendor=Digikey and SKU=877-5309 (and value and footprints equal), there will be one row with Quantity "2" and References e.g. "R1, R2."
 
 ## Features
 
 ### Intelligent Component Grouping
 
-To be useful for ordering components, the BoM output from a KiCad project should be organized into sensible component groups. By default, KiBom groups components based on the following factors:
+To be useful for ordering components, the BoM output from a KiCad project should be organized into sensible component groups. By default, KiBoM groups components based on the following factors:
 
 * Part name: (e.g. 'R' for resistors, 'C' for capacitors, or longer part names such as 'MAX232') *note: parts such as {'R','r_small'} (which are different symbol representations for the same component) can also be grouped together*
 * Value: Components must have the same value to be grouped together
@@ -206,7 +206,8 @@ BoM generation options can be configured (on a per-project basis) by editing the
 * `test_regex` : If this option is set, each component group row is test against a list of (user configurable) regular expressions. If any matches are found, that row is excluded from the output BoM file.
 * `merge_blank_field` : If this option is set, blank fields are able to be merged with non-blank fields (and do not count as a 'conflict')
 * `fit_field` : This is the name of the part field used to determine if the component is fitted, or not.
-* `include_version_number` : If this option is set, the schematic version number will be appended to the BOM filename (before the extension). e.g. `PRJBOM.csv` will become `PRJBOM_REV.csv`
+* `include_version_number` : If this option is set, the schematic version number will be appended to the BoM filename (before the extension). e.g. `PRJBOM.csv` will become `PRJBOM_REV.csv`.
+* `include_variant_name` : If this option is set, the variant name(s) will be appended to the BoM filename (before the extension). e.g. `PRJBOM.csv` will become `PRJBOM_(VARIANT(s))`, or `PRJBOM_REV.csv` will become `PRJBOM_REV_(VARIANT(s)).csv`. Where if more than one variant is used, they will be comma separated.
 
 * `IGNORE_COLUMNS` : A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
 * `GROUP_FIELDS` : A list of component fields used to group components together.
@@ -229,6 +230,10 @@ group_connectors = 1
 test_regex = 1
 ; If 'merge_blank_fields' option is set to 1, component groups with blank fields will be merged into the most compatible group, where possible
 merge_blank_fields = 1
+; If 'include_version_number' option is set to 1, the version number will be appended to the BoM filename.
+include_version_number = 1
+; If 'include_variant_name' option is set to 1, the variant name(s) will be appended to the BoM filename.
+include_variant_name = 1
 ; Field name used to determine if a particular part is to be fitted
 fit_field = Config
 
@@ -385,3 +390,4 @@ With thanks to the following contributors:
 * https://github.com/Swij
 * https://github.com/Ximi1970
 * https://github.com/AngusP
+* https://github.com/trentks
