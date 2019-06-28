@@ -522,7 +522,7 @@ class ComponentGroup():
                 val = ""
             else:
                 val = u'' + val
-                val = val.encode('utf-8')
+                val = val#.encode('utf-8')
 
             row.append(val)
 
