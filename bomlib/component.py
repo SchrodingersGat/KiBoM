@@ -3,6 +3,7 @@ from bomlib.preferences import BomPref
 import bomlib.units as units
 from bomlib.sort import natural_sort
 import re
+import sys
 
 DNF = ["dnf",
        "do not fit",
@@ -522,7 +523,8 @@ class ComponentGroup():
                 val = ""
             else:
                 val = u'' + val
-                val = val.encode('utf-8')
+                if (sys.version_info[0] < 3):
+                    val = val.encode('utf-8')
 
             row.append(val)
 
