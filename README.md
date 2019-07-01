@@ -40,6 +40,9 @@ optional arguments:
   -r VARIANT, --variant VARIANT
                         Board variant(s), used to determine which components are
                         output to the BoM
+  -d SUBDIRECTORY, --subdirectory SUBDIRECTORY
+                        Subdirectory (relative to output file) within which the 
+                        BoM(s) should be written.
   --cfg CFG             BoM config file (script will try to use 'bom.ini' if
                         not specified here)
   -s SEPARATOR, --separator SEPARATOR
