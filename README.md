@@ -62,7 +62,9 @@ optional arguments:
 
 **-v --verbose** Enable extra debugging information
 
-**-r --variant** Specify the PCB *variant(s)*. Support for arbitrary PCB variants allows individual components to be marked as 'fitted' or 'not fitted' in a given variant. You can provide muliple variants comma-separated.
+**-r --variant** Specify the PCB *variant(s)*. Support for arbitrary PCB variants allows individual components to be marked as 'fitted' or 'not fitted' in a given variant. You can provide muliple variants comma-separated. You can generate multiple BoMs at once for different variants by using semicolon-separation.
+
+**-d --subdirectory** Specify a subdirectory (from the provided **output** file) into which the boms should be generated.
 
 **--cfg** If provided, this is the BoM config file that will be used. If not provided, options will be loaded from "bom.ini"
 
@@ -156,7 +158,7 @@ If a variant is specified, the value of the *fit_field* field is used to determi
 * If the *fit_field* begins with a '-' character, if will be excluded from the matching variant.
 * If the *fit_field* begins with a '+' character, if will ONLY be included in the matching variant.
 
-Multiple variants can be addressed as the *fit_field* can contain multiple comma-separated values.
+Multiple variants can be addressed as the *fit_field* can contain multiple comma-separated values. Multiple BoMs can be generated at once by using semicolon-separated values.
 
 * If you specify multiple variants
    - If the *fit_field* contains the variant beginning with a '-' character, it will be excluded irrespective of any other '+' matches.
@@ -176,6 +178,8 @@ If the script is run without the *--variant production* flag, then C1, R1 and R2
 If the script is run with the flag *--variant test*, then C1, C2 and R1 will be loaded.
 
 If the script is run with the flags *--variant production,test*, then C2 and R1 will be loaded.
+
+If the script is run with the flags *--variant production;test;production,test*, then three separate BoMs will be generated one as though it had been run with *--variant production*, one for *--variant test*, and one for *--variant production,test*.
 
 ### Regular Expression Matching
 
