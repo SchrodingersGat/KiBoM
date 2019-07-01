@@ -160,7 +160,7 @@ if write_to_bom:
     output_file = args.output
 
     if output_file is None:
-        output_path = input_file.replace(".xml",".csv")
+        output_file = input_file.replace(".xml",".csv")
 
     output_path, output_name = os.path.split(output_file)
     output_name, output_ext = os.path.splitext(output_name)
