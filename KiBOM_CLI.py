@@ -174,7 +174,7 @@ if write_to_bom:
 
     # Make replacements to custom file_name.
     file_name = pref.outputFileName
-    print("pref.outputFileName: ", pref.outputFileName)
+
     file_name = file_name.replace("%O", output_name)
     file_name = file_name.replace("%v", net.getVersion())
     if args.variant is not None:
