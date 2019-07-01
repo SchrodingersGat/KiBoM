@@ -165,9 +165,6 @@ if write_to_bom:
     output_path, output_name = os.path.split(output_file)
     output_name, output_ext = os.path.splitext(output_name)
 
-    print("output_path: ", output_path, "output_name: ", output_name, "output_ext: ", output_ext)
-    # output_file = prefs.output_file_name
-
     # KiCad BOM dialog by default passes "%O" without an extension. Append our default
     if not isExtensionSupported(output_ext):
         output_ext = ".csv"
