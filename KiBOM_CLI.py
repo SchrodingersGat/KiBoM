@@ -157,31 +157,33 @@ result = True
 
 #Finally, write the BoM out to file
 if write_to_bom:
-
     output_file = args.output
 
     if output_file is None:
-        output_file = input_file.replace(".xml","_bom.csv")
+        output_path = input_file.replace(".xml",".csv")
+
+    output_path, output_name = os.path.split(output_file)
+    output_name, output_ext = os.path.splitext(output_name)
+
+    print("output_path: ", output_path, "output_name: ", output_name, "output_ext: ", output_ext)
+    # output_file = prefs.output_file_name
 
     # KiCad BOM dialog by default passes "%O" without an extension. Append our default
-    if not isExtensionSupported(output_file):
-        output_file += "_bom.csv"
+    if not isExtensionSupported(output_ext):
+        output_ext = ".csv"
 
-    # If required, append the schematic version number to the filename
-    if pref.includeVersionNumber:
-        fsplit = output_file.split(".")
-        fname = ".".join(fsplit[:-1])
-        fext = fsplit[-1]
+    # Make replacements to custom file_name.
+    file_name = pref.outputFileName
+    print("pref.outputFileName: ", pref.outputFileName)
+    file_name = file_name.replace("%O", output_name)
+    file_name = file_name.replace("%v", net.getVersion())
+    if args.variant is not None:
+        file_name = file_name.replace("%V", pref.variantFileNameFormat)
+        file_name = file_name.replace("%V", args.variant)
+    else:
+        file_name = file_name.replace("%V", "")
 
-        output_file = str(fname) + "_" + str(net.getVersion()) + "." + fext
-
-    if pref.includeVariantName and args.variant is not None:
-        fsplit = output_file.split(".")
-        fname = ".".join(fsplit[:-1])
-        fext = fsplit[-1]
-
-        output_file = str(fname) + "_(" + str(args.variant) + ")" + "." + fext
-
+    output_file = os.path.join(output_path,file_name+output_ext)
     output_file = os.path.abspath(output_file)
 
     say("Output:",output_file)

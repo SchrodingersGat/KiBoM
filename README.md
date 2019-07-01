@@ -206,9 +206,11 @@ BoM generation options can be configured (on a per-project basis) by editing the
 * `test_regex` : If this option is set, each component group row is test against a list of (user configurable) regular expressions. If any matches are found, that row is excluded from the output BoM file.
 * `merge_blank_field` : If this option is set, blank fields are able to be merged with non-blank fields (and do not count as a 'conflict')
 * `fit_field` : This is the name of the part field used to determine if the component is fitted, or not.
-* `include_version_number` : If this option is set, the schematic version number will be appended to the BoM filename (before the extension). e.g. `PRJBOM.csv` will become `PRJBOM_REV.csv`.
-* `include_variant_name` : If this option is set, the variant name(s) will be appended to the BoM filename (before the extension). e.g. `PRJBOM.csv` will become `PRJBOM_(VARIANT(s))`, or `PRJBOM_REV.csv` will become `PRJBOM_REV_(VARIANT(s)).csv`. Where if more than one variant is used, they will be comma separated.
-
+* `output_file_name` : A string that allows arbitrary specification of the output file name with field replacements. Fields available:
+    - `%O` : The base output file name (pulled from kicad, or specified on command line when calling script).
+    - `%v` : version number.
+    - `%V` : variant name, note that this will be ammended according to `variant_file_name_format`.
+* `variant_file_name_format` : A string that defines the variant file format. This is a unique field as the variant is not always used/specified.
 * `IGNORE_COLUMNS` : A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
 * `GROUP_FIELDS` : A list of component fields used to group components together.
 * `COMPONENT_ALIASES` : A list of space-separated values which allows multiple schematic symbol visualisations to be consolidated.
@@ -230,10 +232,10 @@ group_connectors = 1
 test_regex = 1
 ; If 'merge_blank_fields' option is set to 1, component groups with blank fields will be merged into the most compatible group, where possible
 merge_blank_fields = 1
-; If 'include_version_number' option is set to 1, the version number will be appended to the BoM filename.
-include_version_number = 1
-; If 'include_variant_name' option is set to 1, the variant name(s) will be appended to the BoM filename.
-include_variant_name = 1
+; Specify output file name format, %O is the defined output name, %v is the version, %V is the variant name which will be ammended according to 'variant_file_name_format'.
+output_file_name = %O_bom_%v%V
+; Specify the variant file name format, this is a unique field as the variant is not always used/specified. When it is unused you will want to strip all of this.
+variant_file_name_format = _(%V)
 ; Field name used to determine if a particular part is to be fitted
 fit_field = Config
 
