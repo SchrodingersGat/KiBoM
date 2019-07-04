@@ -66,6 +66,80 @@ def isExtensionSupported(filename):
             break
     return result
 
+def writeVariant(variant, subdirectory):
+    if variant is not None:
+        pref.pcbConfig = set(map(lambda x: x.strip().lower(), variant.split(",")))
+    print("PCB variant: ", ", ".join(pref.pcbConfig))
+
+    #write preference file back out (first run will generate a file with default preferences)
+    if not have_cfile:
+        pref.Write(config_file)
+        say("Writing preferences file %s"%(config_file,))
+
+    #individual components
+    components = []
+
+    #component groups
+    groups = []
+
+    #read out the netlist
+    net = netlist(input_file, prefs = pref)
+
+    #extract the components
+    components = net.getInterestingComponents()
+
+    #group the components
+    groups = net.groupComponents(components)
+
+    columns = ColumnList(pref.corder)
+
+    #read out all available fields
+    for g in groups:
+        for f in g.fields:
+            columns.AddColumn(f)
+
+    #don't add 'boards' column if only one board is specified
+    if pref.boards <= 1:
+        columns.RemoveColumn(ColumnList.COL_GRP_BUILD_QUANTITY)
+        say("Removing:",ColumnList.COL_GRP_BUILD_QUANTITY)
+
+    #Finally, write the BoM out to file
+    if write_to_bom:
+        output_file = args.output
+
+        if output_file is None:
+            output_file = input_file.replace(".xml",".csv")
+
+        output_path, output_name = os.path.split(output_file)
+        output_name, output_ext = os.path.splitext(output_name)
+
+        # KiCad BOM dialog by default passes "%O" without an extension. Append our default
+        if not isExtensionSupported(output_ext):
+            output_ext = ".csv"
+
+        # Make replacements to custom file_name.
+        file_name = pref.outputFileName
+
+        file_name = file_name.replace("%O", output_name)
+        file_name = file_name.replace("%v", net.getVersion())
+        if variant is not None:
+            file_name = file_name.replace("%V", pref.variantFileNameFormat)
+            file_name = file_name.replace("%V", variant)
+        else:
+            file_name = file_name.replace("%V", "")
+
+        if args.subdirectory is not None:
+            output_path = os.path.join(output_path,args.subdirectory)
+            if not os.path.exists(os.path.abspath(output_path)):
+                os.makedirs(os.path.abspath(output_path))
+
+        output_file = os.path.join(output_path,file_name+output_ext)
+        output_file = os.path.abspath(output_file)
+
+        say("Output:",output_file)
+
+        return WriteBoM(output_file, groups, net, columns.columns, pref)
+
 parser = argparse.ArgumentParser(description="KiBOM Bill of Materials generator script")
 
 parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running from within KiCad')
@@ -73,6 +147,7 @@ parser.add_argument("output",  default="", help='BoM output file name.\nUse "%%O
 parser.add_argument("-n", "--number", help="Number of boards to build (default = 1)", type=int, default=None)
 parser.add_argument("-v", "--verbose", help="Enable verbose output", action='count')
 parser.add_argument("-r", "--variant", help="Board variant(s), used to determine which components are output to the BoM. Comma-separate for multiple.", type=str, default=None)
+parser.add_argument("-d", "--subdirectory", help="Subdirectory within which to store the generated BoM files.", type=str, default=None)
 parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
 parser.add_argument("-s","--separator",help="CSV Separator (default ',')",type=str, default=None)
 
@@ -115,80 +190,17 @@ if args.number is not None:
     pref.boards = args.number
 pref.separatorCSV = args.separator
 
-if args.variant is not None:
-    pref.pcbConfig = set(map(lambda x: x.strip().lower(), args.variant.split(",")))
-print("PCB variant: ", ", ".join(pref.pcbConfig))
-
-#write preference file back out (first run will generate a file with default preferences)
-if not have_cfile:
-    pref.Write(config_file)
-    say("Writing preferences file %s"%(config_file,))
-
-#individual components
-components = []
-
-#component groups
-groups = []
-
-#read out the netlist
-net = netlist(input_file, prefs = pref)
-
-#extract the components
-components = net.getInterestingComponents()
-
-#group the components
-groups = net.groupComponents(components)
-
-columns = ColumnList(pref.corder)
-
-#read out all available fields
-for g in groups:
-    for f in g.fields:
-        columns.AddColumn(f)
-
-#don't add 'boards' column if only one board is specified
-if pref.boards <= 1:
-    columns.RemoveColumn(ColumnList.COL_GRP_BUILD_QUANTITY)
-    say("Removing:",ColumnList.COL_GRP_BUILD_QUANTITY)
-
 #todo
 write_to_bom = True
-result = True
 
-#Finally, write the BoM out to file
-if write_to_bom:
-
-    output_file = args.output
-
-    if output_file is None:
-        output_file = input_file.replace(".xml","_bom.csv")
-
-    # KiCad BOM dialog by default passes "%O" without an extension. Append our default
-    if not isExtensionSupported(output_file):
-        output_file += "_bom.csv"
-
-    # If required, append the schematic version number to the filename
-    if pref.includeVersionNumber:
-        fsplit = output_file.split(".")
-        fname = ".".join(fsplit[:-1])
-        fext = fsplit[-1]
-
-        output_file = str(fname) + "_" + str(net.getVersion()) + "." + fext
-
-    if pref.includeVariantName and args.variant is not None:
-        fsplit = output_file.split(".")
-        fname = ".".join(fsplit[:-1])
-        fext = fsplit[-1]
-
-        output_file = str(fname) + "_(" + str(args.variant) + ")" + "." + fext
-
-    output_file = os.path.abspath(output_file)
-
-    say("Output:",output_file)
-
-    result = WriteBoM(output_file, groups, net, columns.columns, pref)
-
-if result:
-    sys.exit(0)
+if args.variant is not None:
+    variants = args.variant.split(';')
 else:
-    sys.exit(-1)
+    variants = [None]
+
+for variant in variants:
+    result = writeVariant(variant, args)
+    if not result:
+        sys.exit(-1)
+
+sys.exit(0)

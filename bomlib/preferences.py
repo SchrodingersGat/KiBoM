@@ -27,8 +27,8 @@ class BomPref:
     OPT_MERGE_BLANK = "merge_blank_fields"
     OPT_IGNORE_DNF = "ignore_dnf"
     OPT_BACKUP = "make_backup"
-    OPT_INCLUDE_VERSION = "include_version_number"
-    OPT_INCLUDE_VARIANT = "include_variant_name"
+    OPT_OUTPUT_FILE_NAME = "output_file_name"
+    OPT_VARIANT_FILE_NAME_FORMAT = "variant_file_name_format"
     OPT_DEFAULT_BOARDS = "number_boards"
     OPT_DEFAULT_PCBCONFIG = "board_variant"
 
@@ -58,8 +58,8 @@ class BomPref:
         self.backup = "%O.tmp"
 
         self.separatorCSV = None
-        self.includeVersionNumber = True
-        self.includeVariantName = True
+        self.outputFileName = "%O_bom_%v%V"
+        self.variantFileNameFormat = "_(%V)"
 
         self.xlsxwriter_available = False
         self.xlsxwriter2_available = False
@@ -132,8 +132,8 @@ class BomPref:
                 self.groupConnectors = self.checkOption(cf, self.OPT_GROUP_CONN, default=True)
                 self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
                 self.mergeBlankFields = self.checkOption(cf, self.OPT_MERGE_BLANK, default=True)
-                self.includeVersionNumber = self.checkOption(cf, self.OPT_INCLUDE_VERSION, default=True)
-                self.includeVariantName = self.checkOption(cf, self.OPT_INCLUDE_VARIANT, default=True)
+                self.outputFileName = cf.get(self.SECTION_GENERAL, self.OPT_OUTPUT_FILE_NAME)
+                self.variantFileNameFormat = cf.get(self.SECTION_GENERAL, self.OPT_VARIANT_FILE_NAME_FORMAT)
 
             if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
                 self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
