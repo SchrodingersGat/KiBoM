@@ -1,5 +1,6 @@
 
 import sys
+import re
 
 if sys.version_info.major >= 3:
     import configparser as ConfigParser
@@ -165,19 +166,19 @@ class BomPref:
 
             # Read out component aliases
             if self.SECTION_ALIASES in cf.sections():
-                self.aliases = [a.split("\t") for a in cf.options(self.SECTION_ALIASES)]
+                self.aliases = [re.split('[ \t]+', a) for a in cf.options(self.SECTION_ALIASES)]
 
             if self.SECTION_REGEXCLUDES in cf.sections():
                 self.regExcludes = []
                 for pair in cf.options(self.SECTION_REGEXCLUDES):
-                    if len(pair.split("\t")) == 2:
-                        self.regExcludes.append(pair.split("\t"))
+                    if len(re.split('[ \t]+', pair)) == 2:
+                        self.regExcludes.append(re.split('[ \t]+', pair))
 
             if self.SECTION_REGINCLUDES in cf.sections():
                 self.regIncludes = []
                 for pair in cf.options(self.SECTION_REGINCLUDES):
-                    if len(pair.split("\t")) == 2:
-                        self.regIncludes.append(pair.split("\t"))
+                    if len(re.split('[ \t]+', pair)) == 2:
+                        self.regIncludes.append(re.split('[ \t]+', pair))
 
     # Add an option to the SECTION_GENRAL group
     def addOption(self, parser, opt, value, comment=None):
@@ -242,7 +243,7 @@ class BomPref:
 
         cf.add_section(self.SECTION_ALIASES)
         cf.set(self.SECTION_ALIASES, "; A series of values which are considered to be equivalent for the part name")
-        cf.set(self.SECTION_ALIASES, "; Each line represents a tab-separated list of equivalent component name values")
+        cf.set(self.SECTION_ALIASES, "; Each line represents a list of equivalent component name values separated by white space")
         cf.set(self.SECTION_ALIASES, "; e.g. 'c c_small cap' will ensure the equivalent capacitor symbols can be grouped together")
         cf.set(self.SECTION_ALIASES, '; Aliases are case-insensitive')
 
@@ -253,7 +254,7 @@ class BomPref:
         cf.set(self.SECTION_REGINCLUDES, '; A series of regular expressions used to include parts in the BoM')
         cf.set(self.SECTION_REGINCLUDES, '; If there are any regex defined here, only components that match against ANY of them will be included in the BOM')
         cf.set(self.SECTION_REGINCLUDES, '; Column names are case-insensitive')
-        cf.set(self.SECTION_REGINCLUDES, '; Format is: "ColumName\tRegex" (tab-separated)')
+        cf.set(self.SECTION_REGINCLUDES, '; Format is: "[ColumName] [Regex]" (white-space separated)')
 
         for i in self.regIncludes:
             if not len(i) == 2: continue
@@ -263,7 +264,7 @@ class BomPref:
         cf.set(self.SECTION_REGEXCLUDES, '; A series of regular expressions used to exclude parts from the BoM')
         cf.set(self.SECTION_REGEXCLUDES, '; If a component matches ANY of these, it will be excluded from the BoM')
         cf.set(self.SECTION_REGEXCLUDES, '; Column names are case-insensitive')
-        cf.set(self.SECTION_REGEXCLUDES, '; Format is: "ColumName\tRegex" (tab-separated)')
+        cf.set(self.SECTION_REGEXCLUDES, '; Format is: "[ColumName] [Regex]" (white-space separated)')
 
         for i in self.regExcludes:
             if not len(i) == 2: continue
