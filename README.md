@@ -231,6 +231,10 @@ Example configuration file (.ini format) *default values shown*
 ; General BoM options here
 ; If 'ignore_dnf' option is set to 1, rows that are not to be fitted on the PCB will not be written to the BoM file
 ignore_dnf = 1
+; If 'use_alt' option is set to 1, grouped references will be printed in the alternate compressed style eg: R1-R7,R18
+use_alt = 0
+; If 'alt_wrap' option is set to and integer N, the references field will wrap after N entries are printed
+alt_wrap = 0
 ; If 'number_rows' option is set to 1, each row in the BoM will be prepended with an incrementing row number
 number_rows = 1
 ; If 'group_connectors' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector
@@ -245,12 +249,32 @@ output_file_name = %O_bom_%v%V
 variant_file_name_format = _(%V)
 ; Field name used to determine if a particular part is to be fitted
 fit_field = Config
+; Make a backup of the bom before generating the new one, using the following template
+make_backup = %O.tmp
+; Default number of boards to produce if none given on CLI with -n
+number_boards = 1
+; Default PCB variant if none given on CLI with -r
+board_variant = set(['2'])
 
 [IGNORE_COLUMNS]
 ; Any column heading that appears here will be excluded from the Generated BoM
 ; Titles are case-insensitive
 Part Lib
 Footprint Lib
+
+[COLUMN_ORDER]
+; Columns will apear in the order they are listed here
+; Titles are case-insensitive
+Description
+Part
+Part Lib
+References
+Value
+Footprint
+Footprint Lib
+Quantity Per PCB
+Build Quantity
+Datasheet
 
 [GROUP_FIELDS]
 ; List of fields used for sorting individual components into groups
