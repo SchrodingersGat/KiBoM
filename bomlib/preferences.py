@@ -31,7 +31,6 @@ class BomPref:
     OPT_VARIANT_FILE_NAME_FORMAT = "variant_file_name_format"
     OPT_DEFAULT_BOARDS = "number_boards"
     OPT_DEFAULT_PCBCONFIG = "board_variant"
-
     OPT_CONFIG_FIELD = "fit_field"
 
     def __init__(self):
@@ -203,7 +202,12 @@ class BomPref:
         self.addOption(cf, self.OPT_GROUP_CONN, self.groupConnectors, comment="If '{opt}' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
         self.addOption(cf, self.OPT_USE_REGEX, self.useRegex, comment="If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
         self.addOption(cf, self.OPT_MERGE_BLANK, self.mergeBlankFields, comment="If '{opt}' option is set to 1, component groups with blank fields will be merged into the most compatible group, where possible".format(opt=self.OPT_MERGE_BLANK))
-        self.addOption(cf, self.OPT_INCLUDE_VERSION, self.includeVersionNumber, comment="If '{opt}' option is set to 1, the schematic version number will be appended to the filename.")
+        
+        cf.set(self.SECTION_GENERAL, "; Specify output file name format, %O is the defined output name, %v is the version, %V is the variant name which will be ammended according to 'variant_file_name_format'.")
+        cf.set(self.SECTION_GENERAL, self.OPT_OUTPUT_FILE_NAME, self.outputFileName)
+
+        cf.set(self.SECTION_GENERAL, "; Specify the variant file name format, this is a unique field as the variant is not always used/specified. When it is unused you will want to strip all of this.")
+        cf.set(self.SECTION_GENERAL, self.OPT_VARIANT_FILE_NAME_FORMAT, self.variantFileNameFormat)
 
         cf.set(self.SECTION_GENERAL, '; Field name used to determine if a particular part is to be fitted')
         cf.set(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD, self.configField)
