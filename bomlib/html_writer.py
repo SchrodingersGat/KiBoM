@@ -59,7 +59,7 @@ def WriteHTML(filename, groups, net, headings, prefs):
 
 
         #PCB info
-        if not prefs.hideHeaders:
+        if not prefs.hidePcbInfo:
             html.write("<h2>KiBoM PCB Bill of Materials</h2>\n")
             html.write('<table border="1">\n')
             html.write("<tr><td>Source File</td><td>{source}</td></tr>\n".format(source=net.getSource()))
