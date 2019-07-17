@@ -255,6 +255,12 @@ make_backup = %O.tmp
 number_boards = 1
 ; Default PCB variant if none given on CLI with -r
 board_variant = set(['2'])
+; When set to 1, suppresses table/column headers and legends in the output file.
+; May be useful for testing purposes.
+hideHeaders = 0
+; When set to 1, PCB information (version, component count, etc) is not shown in the output file.
+; Useful for saving space in the HTML output and for ensuring CSV output is machine-parseable.
+hidePcbInfo = 0
 
 [IGNORE_COLUMNS]
 ; Any column heading that appears here will be excluded from the Generated BoM
