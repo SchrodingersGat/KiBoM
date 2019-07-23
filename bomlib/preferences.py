@@ -33,6 +33,8 @@ class BomPref:
     OPT_DEFAULT_BOARDS = "number_boards"
     OPT_DEFAULT_PCBCONFIG = "board_variant"
     OPT_CONFIG_FIELD = "fit_field"
+    OPT_HIDE_HEADERS = "hide_headers"
+    OPT_HIDE_PCB_INFO = "hide_pcb_info"
 
     def __init__(self):
         # List of headings to ignore in BoM generation
@@ -51,6 +53,7 @@ class BomPref:
         self.boards = 1 # Quantity of boards to be made
         self.mergeBlankFields = True  # Blanks fields will be merged when possible
         self.hideHeaders = False
+        self.hidePcbInfo = False
         self.verbose = False  # By default, is not verbose
         self.configField = "Config"  # Default field used for part fitting config
         self.pcbConfig = ["default"]
@@ -151,6 +154,12 @@ class BomPref:
             else:
                 self.backup = False
 
+            if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS):
+                self.hideHeaders = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS) == '1'
+
+            if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO):
+                self.hidePcbInfo = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO) == '1'
+
             # Read out grouping colums
             if self.SECTION_GROUPING_FIELDS in cf.sections():
                 self.groups = [i for i in cf.options(self.SECTION_GROUPING_FIELDS)]
@@ -221,6 +230,12 @@ class BomPref:
 
         cf.set(self.SECTION_GENERAL, '; Default PCB variant if none given on CLI with -r')
         cf.set(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG, self.pcbConfig)
+
+        cf.set(self.SECTION_GENERAL, '; Whether to hide headers from output file')
+        cf.set(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS, self.hideHeaders)
+
+        cf.set(self.SECTION_GENERAL, '; Whether to hide PCB info from output file')
+        cf.set(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO, self.hidePcbInfo)
 
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")

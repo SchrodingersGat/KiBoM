@@ -61,6 +61,7 @@ def WriteHTML(filename, groups, net, headings, prefs):
         #PCB info
         if not prefs.hideHeaders:
             html.write("<h2>KiBoM PCB Bill of Materials</h2>\n")
+        if not prefs.hidePcbInfo:
             html.write('<table border="1">\n')
             html.write("<tr><td>Source File</td><td>{source}</td></tr>\n".format(source=net.getSource()))
             html.write("<tr><td>BoM Date</td><td>{date}</td></tr>\n".format(date=net.getDate()))
@@ -75,6 +76,8 @@ def WriteHTML(filename, groups, net, headings, prefs):
             html.write("<tr><td>Total Component Count<br>(for {n} PCBs)</td><td>{t}</td></tr>\n".format(n=prefs.boards, t=nBuild))
             html.write("</table>\n")
             html.write("<br>\n")
+
+        if not prefs.hideHeaders:
             html.write("<h2>Component Groups</h2>\n")
             html.write('<p style="background-color: {bg}">KiCad Fields (default)</p>\n'.format(bg=BG_KICAD))
             html.write('<p style="background-color: {bg}">Generated Fields</p>\n'.format(bg=BG_GEN))

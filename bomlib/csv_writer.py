@@ -72,7 +72,7 @@ def WriteCSV(filename, groups, net, headings, prefs):
 
         rowCount += 1
 
-    if not prefs.hideHeaders:
+    if not prefs.hidePcbInfo:
         #blank rows
         for i in range(5):
             writer.writerow([])
