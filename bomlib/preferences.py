@@ -155,10 +155,10 @@ class BomPref:
                 self.backup = False
 
             if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS):
-                self.hideHeaders = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS)
+                self.hideHeaders = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS) == '1'
 
             if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO):
-                self.hidePcbInfo = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO)
+                self.hidePcbInfo = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO) == '1'
 
             # Read out grouping colums
             if self.SECTION_GROUPING_FIELDS in cf.sections():
