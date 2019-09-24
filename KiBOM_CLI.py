@@ -68,7 +68,8 @@ def isExtensionSupported(filename):
 
 def writeVariant(variant, subdirectory):
     if variant is not None:
-        pref.pcbConfig = set(map(lambda x: x.strip().lower(), variant.split(",")))
+        pref.pcbConfig = variant.strip().split(',') 
+        
     print("PCB variant: ", ", ".join(pref.pcbConfig))
 
     #write preference file back out (first run will generate a file with default preferences)

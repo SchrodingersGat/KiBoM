@@ -254,7 +254,7 @@ make_backup = %O.tmp
 ; Default number of boards to produce if none given on CLI with -n
 number_boards = 1
 ; Default PCB variant if none given on CLI with -r
-board_variant = set(['2'])
+board_variant = "default"
 ; When set to 1, suppresses table/column headers and legends in the output file.
 ; May be useful for testing purposes.
 hideHeaders = 0

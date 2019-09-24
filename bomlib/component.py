@@ -242,6 +242,7 @@ class Component():
 
         check = self.getField(self.prefs.configField).lower()
 
+
         #check the value field first
         if self.getValue().lower() in DNF:
             return False
@@ -252,7 +253,7 @@ class Component():
         opts = check.lower().split(",")
 
         exclude = False
-        include = False if "+" in check else True
+        include = True
 
         for opt in opts:
             opt = opt.strip()
@@ -260,17 +261,20 @@ class Component():
             if opt in DNF:
                 exclude = True
                 break
-            #options that start with '-' are explicitly removed from certain configurations
-            if opt.startswith("-") and opt[1:] in self.prefs.pcbConfig:
+            
+            # Options that start with '-' are explicitly removed from certain configurations
+            if opt.startswith("-") and str(opt[1:]) in [str(cfg) for cfg in self.prefs.pcbConfig]:
                 exclude = True
                 break
             if opt.startswith("+"):
-                include = include or opt[1:] in self.prefs.pcbConfig
+                include = include or opt[1:] in [str(cfg) for cfg in self.prefs.pcbConfig]
 
-        #by default, part is fitted
+        # By default, part is fitted
+        fitted = include and not exclude
+
         return include and not exclude
 
-    #test if this part should be included, based on any regex expressions provided in the preferences
+    # Test if this part should be included, based on any regex expressions provided in the preferences
     def testRegExclude(self):
 
         for reg in self.prefs.regExcludes:
