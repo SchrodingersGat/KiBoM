@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
+
 class ColumnList:
 
-    #default columns (immutable)
+    # Default columns (immutable)
     COL_REFERENCE = 'References'
     COL_DESCRIPTION = 'Description'
     COL_VALUE = 'Value'
@@ -10,48 +13,47 @@ class ColumnList:
     COL_PART_LIB = 'Part Lib'
     COL_DATASHEET = 'Datasheet'
 
-    #default columns for groups
+    # Default columns for groups
     COL_GRP_QUANTITY = 'Quantity Per PCB'
-    COL_GRP_TOTAL_COST = 'Total Cost' #Total cost based on quantity
+    COL_GRP_TOTAL_COST = 'Total Cost'
     COL_GRP_BUILD_QUANTITY = 'Build Quantity'
 
-    #generated columns
+    # Generated columns
     _COLUMNS_GEN = [
-                COL_GRP_QUANTITY,
-                COL_GRP_BUILD_QUANTITY,
-                ]
+        COL_GRP_QUANTITY,
+        COL_GRP_BUILD_QUANTITY,
+    ]
 
-    #default columns
+    # Default columns
     _COLUMNS_DEFAULT = [
-               COL_DESCRIPTION,
-               COL_PART,
-               COL_PART_LIB,
-               COL_REFERENCE,
-               COL_VALUE,
-               COL_FP,
-               COL_FP_LIB,
-               COL_GRP_QUANTITY,
-               COL_GRP_BUILD_QUANTITY,
-               COL_DATASHEET
-               ]
+        COL_DESCRIPTION,
+        COL_PART,
+        COL_PART_LIB,
+        COL_REFERENCE,
+        COL_VALUE,
+        COL_FP,
+        COL_FP_LIB,
+        COL_GRP_QUANTITY,
+        COL_GRP_BUILD_QUANTITY,
+        COL_DATASHEET
+    ]
 
-    #default columns
-    #these columns are 'immutable'
+    # Default columns
+    # These columns are 'immutable'
     _COLUMNS_PROTECTED = [
-                COL_REFERENCE,
-                COL_GRP_QUANTITY,
-                COL_VALUE,
-                COL_PART,
-                COL_PART_LIB,
-                COL_DESCRIPTION,
-                COL_DATASHEET,
-                COL_FP,
-                COL_FP_LIB
-                ]
-
+        COL_REFERENCE,
+        COL_GRP_QUANTITY,
+        COL_VALUE,
+        COL_PART,
+        COL_PART_LIB,
+        COL_DESCRIPTION,
+        COL_DATASHEET,
+        COL_FP,
+        COL_FP_LIB
+    ]
 
     def __str__(self):
-        return " ".join(map(str,self.columns))
+        return " ".join(map(str, self.columns))
 
     def __repr__(self):
         return self.__str__()
@@ -60,12 +62,12 @@ class ColumnList:
 
         self.columns = []
 
-        #make a copy of the supplied columns
+        # Make a copy of the supplied columns
         for col in cols:
             self.AddColumn(col)
 
     def _hasColumn(self, col):
-        #col can either be <str> or <Column>
+        # Col can either be <str> or <Column>
         return col.lower() in [c.lower() for c in self.columns]
 
     """
@@ -79,11 +81,11 @@ class ColumnList:
 
     def RemoveColumnByName(self, name):
 
-        #first check if this is in an immutable colum
+        # First check if this is in an immutable colum
         if name in self._COLUMNS_PROTECTED:
             return
 
-        #column does not exist, return
+        # Column does not exist, return
         if name not in self.columns:
             return
 
@@ -93,17 +95,17 @@ class ColumnList:
         except ValueError:
             return
 
-    #add a new column (if it doesn't already exist!)
+    # Add a new column (if it doesn't already exist!)
     def AddColumn(self, col, index=None):
 
-        #Already exists?
+        # Already exists?
         if self._hasColumn(col):
             return
 
-        if type(index) is not int or index < 0 or index >= len(self.columns): #append
+        if type(index) is not int or index < 0 or index >= len(self.columns):
             self.columns.append(col)
 
-        #otherwise, splice the new column in
+        # Otherwise, splice the new column in
         else:
             self.columns = self.columns[0:index] + [col] + self.columns[index:]
 

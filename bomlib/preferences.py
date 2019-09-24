@@ -1,13 +1,18 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 import sys
 import re
+import os
 
+from bomlib.columns import ColumnList
+
+# Check python version to determine which version of ConfirParser to import
 if sys.version_info.major >= 3:
     import configparser as ConfigParser
 else:
     import ConfigParser
-import os
-from bomlib.columns import ColumnList
+
 
 class BomPref:
 
@@ -41,16 +46,17 @@ class BomPref:
         self.ignore = [
             ColumnList.COL_PART_LIB,
             ColumnList.COL_FP_LIB,
-            ] #list of headings to ignore in BoM generation
+        ]
+
         self.corder = ColumnList._COLUMNS_DEFAULT
-        self.useAlt = False #use alternate reference representation
-        self.altWrap = None #wrap to n items when using alt representation
+        self.useAlt = False  # Use alternate reference representation
+        self.altWrap = None  # Wrap to n items when using alt representation
         self.ignoreDNF = True  # Ignore rows for do-not-fit parts
         self.numberRows = True  # Add row-numbers to BoM output
         self.groupConnectors = True  # Group connectors and ignore component value
         self.useRegex = True  # Test various columns with regex
 
-        self.boards = 1 # Quantity of boards to be made
+        self.boards = 1  # Quantity of boards to be made
         self.mergeBlankFields = True  # Blanks fields will be merged when possible
         self.hideHeaders = False
         self.hidePcbInfo = False
@@ -75,19 +81,19 @@ class BomPref:
             ColumnList.COL_FP,
             ColumnList.COL_FP_LIB,
             # User can add custom grouping columns in bom.ini
-            ]
+        ]
 
         self.regIncludes = []  # None by default
 
         self.regExcludes = [
-            [ColumnList.COL_REFERENCE,'^TP[0-9]*'],
-            [ColumnList.COL_REFERENCE,'^FID'],
-            [ColumnList.COL_PART,'mount.*hole'],
-            [ColumnList.COL_PART,'solder.*bridge'],
-            [ColumnList.COL_PART,'test.*point'],
-            [ColumnList.COL_FP,'test.*point'],
-            [ColumnList.COL_FP,'mount.*hole'],
-            [ColumnList.COL_FP,'fiducial'],
+            [ColumnList.COL_REFERENCE, '^TP[0-9]*'],
+            [ColumnList.COL_REFERENCE, '^FID'],
+            [ColumnList.COL_PART, 'mount.*hole'],
+            [ColumnList.COL_PART, 'solder.*bridge'],
+            [ColumnList.COL_PART, 'test.*point'],
+            [ColumnList.COL_FP, 'test.*point'],
+            [ColumnList.COL_FP, 'mount.*hole'],
+            [ColumnList.COL_FP, 'fiducial'],
         ]
 
         # Default component groupings
@@ -96,14 +102,14 @@ class BomPref:
             ["r", "r_small", "res", "resistor"],
             ["sw", "switch"],
             ["l", "l_small", "inductor"],
-            ["zener","zenersmall"],
-            ["d","diode","d_small"]
-            ]
+            ["zener", "zenersmall"],
+            ["d", "diode", "d_small"]
+        ]
 
     # Check an option within the SECTION_GENERAL group
     def checkOption(self, parser, opt, default=False):
         if parser.has_option(self.SECTION_GENERAL, opt):
-            return parser.get(self.SECTION_GENERAL, opt).lower() in ["1","true","yes"]
+            return parser.get(self.SECTION_GENERAL, opt).lower() in ["1", "true", "yes"]
         else:
             return default
 
@@ -120,71 +126,70 @@ class BomPref:
             print("{f} is not a valid file!".format(f=file))
             return
 
-        with open(file, 'rb') as configfile:
-            cf = ConfigParser.RawConfigParser(allow_no_value = True)
-            cf.optionxform=str
+        cf = ConfigParser.RawConfigParser(allow_no_value=True)
+        cf.optionxform = str
 
-            cf.read(file)
+        cf.read(file)
 
-            # Read general options
-            if self.SECTION_GENERAL in cf.sections():
-                self.ignoreDNF =  self.checkOption(cf, self.OPT_IGNORE_DNF, default=True)
-                self.useAlt =  self.checkOption(cf, self.OPT_USE_ALT, default=False)
-                self.altWrap =  self.checkInt(cf, self.OPT_ALT_WRAP, default=None)
-                self.numberRows = self.checkOption(cf, self.OPT_NUMBER_ROWS, default=True)
-                self.groupConnectors = self.checkOption(cf, self.OPT_GROUP_CONN, default=True)
-                self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
-                self.mergeBlankFields = self.checkOption(cf, self.OPT_MERGE_BLANK, default=True)
-                self.outputFileName = cf.get(self.SECTION_GENERAL, self.OPT_OUTPUT_FILE_NAME)
-                self.variantFileNameFormat = cf.get(self.SECTION_GENERAL, self.OPT_VARIANT_FILE_NAME_FORMAT)
+        # Read general options
+        if self.SECTION_GENERAL in cf.sections():
+            self.ignoreDNF = self.checkOption(cf, self.OPT_IGNORE_DNF, default=True)
+            self.useAlt = self.checkOption(cf, self.OPT_USE_ALT, default=False)
+            self.altWrap = self.checkInt(cf, self.OPT_ALT_WRAP, default=None)
+            self.numberRows = self.checkOption(cf, self.OPT_NUMBER_ROWS, default=True)
+            self.groupConnectors = self.checkOption(cf, self.OPT_GROUP_CONN, default=True)
+            self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
+            self.mergeBlankFields = self.checkOption(cf, self.OPT_MERGE_BLANK, default=True)
+            self.outputFileName = cf.get(self.SECTION_GENERAL, self.OPT_OUTPUT_FILE_NAME)
+            self.variantFileNameFormat = cf.get(self.SECTION_GENERAL, self.OPT_VARIANT_FILE_NAME_FORMAT)
 
-            if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
-                self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
+            self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
 
-            if cf.has_option(self.SECTION_GENERAL, self.OPT_DEFAULT_BOARDS):
-                self.boards = self.checkInt(cf, self.OPT_DEFAULT_BOARDS, default=None)
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_DEFAULT_BOARDS):
+            self.boards = self.checkInt(cf, self.OPT_DEFAULT_BOARDS, default=None)
 
-            if cf.has_option(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG):
-                self.pcbConfig = cf.get(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG).strip().split(",")
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG):
+            self.pcbConfig = cf.get(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG).strip().split(",")
 
-            if cf.has_option(self.SECTION_GENERAL, self.OPT_BACKUP):
-                self.backup = cf.get(self.SECTION_GENERAL, self.OPT_BACKUP)
-            else:
-                self.backup = False
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_BACKUP):
+            self.backup = cf.get(self.SECTION_GENERAL, self.OPT_BACKUP)
+        else:
+            self.backup = False
 
-            if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS):
-                self.hideHeaders = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS) == '1'
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS):
+            self.hideHeaders = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS) == '1'
 
-            if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO):
-                self.hidePcbInfo = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO) == '1'
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO):
+            self.hidePcbInfo = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO) == '1'
 
-            # Read out grouping colums
-            if self.SECTION_GROUPING_FIELDS in cf.sections():
-                self.groups = [i for i in cf.options(self.SECTION_GROUPING_FIELDS)]
+        # Read out grouping colums
+        if self.SECTION_GROUPING_FIELDS in cf.sections():
+            self.groups = [i for i in cf.options(self.SECTION_GROUPING_FIELDS)]
 
-            # Read out ignored-rows
-            if self.SECTION_IGNORE in cf.sections():
-                self.ignore = [i for i in cf.options(self.SECTION_IGNORE)]
+        # Read out ignored-rows
+        if self.SECTION_IGNORE in cf.sections():
+            self.ignore = [i for i in cf.options(self.SECTION_IGNORE)]
 
-            # Read out column order
-            if self.SECTION_COLUMN_ORDER in cf.sections():
-                self.corder = [i for i in cf.options(self.SECTION_COLUMN_ORDER)]
+        # Read out column order
+        if self.SECTION_COLUMN_ORDER in cf.sections():
+            self.corder = [i for i in cf.options(self.SECTION_COLUMN_ORDER)]
 
-            # Read out component aliases
-            if self.SECTION_ALIASES in cf.sections():
-                self.aliases = [re.split('[ \t]+', a) for a in cf.options(self.SECTION_ALIASES)]
+        # Read out component aliases
+        if self.SECTION_ALIASES in cf.sections():
+            self.aliases = [re.split('[ \t]+', a) for a in cf.options(self.SECTION_ALIASES)]
 
-            if self.SECTION_REGEXCLUDES in cf.sections():
-                self.regExcludes = []
-                for pair in cf.options(self.SECTION_REGEXCLUDES):
-                    if len(re.split('[ \t]+', pair)) == 2:
-                        self.regExcludes.append(re.split('[ \t]+', pair))
+        if self.SECTION_REGEXCLUDES in cf.sections():
+            self.regExcludes = []
+            for pair in cf.options(self.SECTION_REGEXCLUDES):
+                if len(re.split('[ \t]+', pair)) == 2:
+                    self.regExcludes.append(re.split('[ \t]+', pair))
 
-            if self.SECTION_REGINCLUDES in cf.sections():
-                self.regIncludes = []
-                for pair in cf.options(self.SECTION_REGINCLUDES):
-                    if len(re.split('[ \t]+', pair)) == 2:
-                        self.regIncludes.append(re.split('[ \t]+', pair))
+        if self.SECTION_REGINCLUDES in cf.sections():
+            self.regIncludes = []
+            for pair in cf.options(self.SECTION_REGINCLUDES):
+                if len(re.split('[ \t]+', pair)) == 2:
+                    self.regIncludes.append(re.split('[ \t]+', pair))
 
     # Add an option to the SECTION_GENRAL group
     def addOption(self, parser, opt, value, comment=None):
@@ -198,8 +203,8 @@ class BomPref:
     def Write(self, file):
         file = os.path.abspath(file)
 
-        cf = ConfigParser.RawConfigParser(allow_no_value = True)
-        cf.optionxform=str
+        cf = ConfigParser.RawConfigParser(allow_no_value=True)
+        cf.optionxform = str
 
         cf.add_section(self.SECTION_GENERAL)
         cf.set(self.SECTION_GENERAL, "; General BoM options here")
@@ -274,7 +279,8 @@ class BomPref:
         cf.set(self.SECTION_REGINCLUDES, '; Format is: "[ColumName] [Regex]" (white-space separated)')
 
         for i in self.regIncludes:
-            if not len(i) == 2: continue
+            if not len(i) == 2:
+                continue
             cf.set(self.SECTION_REGINCLUDES, i[0] + "\t" + i[1])
 
         cf.add_section(self.SECTION_REGEXCLUDES)
@@ -284,7 +290,8 @@ class BomPref:
         cf.set(self.SECTION_REGEXCLUDES, '; Format is: "[ColumName] [Regex]" (white-space separated)')
 
         for i in self.regExcludes:
-            if not len(i) == 2: continue
+            if not len(i) == 2:
+                continue
 
             cf.set(self.SECTION_REGEXCLUDES, i[0] + "\t" + i[1])
 

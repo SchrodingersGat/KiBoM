@@ -1,43 +1,45 @@
+# -*- coding: utf-8 -*-
 
-import bomlib.columns as columns
-from bomlib.component import *
-import os
+from bomlib.component import ColumnList
 
 BG_GEN = "#E6FFEE"
 BG_KICAD = "#FFE6B3"
 BG_USER = "#E6F9FF"
 BG_EMPTY = "#FF8080"
 
-#return a background color for a given column title
+
 def bgColor(col):
-    #auto-generated columns
+    """ Return a background color for a given column title """
+    
+    # Auto-generated columns
     if col in ColumnList._COLUMNS_GEN:
         return BG_GEN
-    #KiCad protected columns
+    # KiCad protected columns
     elif col in ColumnList._COLUMNS_PROTECTED:
         return BG_KICAD
-    #additional user columns
+    # Additional user columns
     else:
         return BG_USER
 
+
 def link(text):
 
-    for t in ["http","https","ftp","www"]:
+    for t in ["http", "https", "ftp", "www"]:
         if text.startswith(t):
             return '<a href="{t}">{t}</a>'.format(t=text)
 
     return text
 
-"""
-Write BoM out to a HTML file
-filename = path to output file (must be a .htm or .html file)
-groups = [list of ComponentGroup groups]
-net = netlist object
-headings = [list of headings to display in the BoM file]
-prefs = BomPref object
-"""
 
 def WriteHTML(filename, groups, net, headings, prefs):
+    """
+    Write BoM out to a HTML file
+    filename = path to output file (must be a .htm or .html file)
+    groups = [list of ComponentGroup groups]
+    net = netlist object
+    headings = [list of headings to display in the BoM file]
+    prefs = BomPref object
+    """
 
     if not filename.endswith(".html") and not filename.endswith(".htm"):
         print("{fn} is not a valid html file".format(fn=filename))
@@ -48,17 +50,16 @@ def WriteHTML(filename, groups, net, headings, prefs):
     nFitted = sum([g.getCount() for g in groups if g.isFitted()])
     nBuild = nFitted * prefs.boards
 
-    with open(filename,"w") as html:
+    with open(filename, "w") as html:
 
-        #header
+        # HTML Header
         html.write("<html>\n")
         html.write("<head>\n")
-        html.write('\t<meta charset="UTF-8">\n') #UTF-8 encoding for unicode support
+        html.write('\t<meta charset="UTF-8">\n')  # UTF-8 encoding for unicode support
         html.write("</head>\n")
         html.write("<body>\n")
 
-
-        #PCB info
+        # PCB info
         if not prefs.hideHeaders:
             html.write("<h2>KiBoM PCB Bill of Materials</h2>\n")
         if not prefs.hidePcbInfo:
@@ -84,31 +85,35 @@ def WriteHTML(filename, groups, net, headings, prefs):
             html.write('<p style="background-color: {bg}">User Fields</p>\n'.format(bg=BG_USER))
             html.write('<p style="background-color: {bg}">Empty Fields</p>\n'.format(bg=BG_EMPTY))
 
-        #component groups
+        # Component groups
         html.write('<table border="1">\n')
 
-        #row titles:
+        # Row titles:
         html.write("<tr>\n")
+        
         if prefs.numberRows:
             html.write("\t<th></th>\n")
-        for i,h in enumerate(headings):
-            #cell background color
+
+        for i, h in enumerate(headings):
+            # Cell background color
             bg = bgColor(h)
             html.write('\t<th align="center"{bg}>{h}</th>\n'.format(
-                        h=h,
-                        bg = ' bgcolor="{c}"'.format(c=bg) if bg else ''))
+                h=h,
+                bg=' bgcolor="{c}"'.format(c=bg) if bg else '')
+            )
+
         html.write("</tr>\n")
 
         rowCount = 0
 
-        for i,group in enumerate(groups):
+        for i, group in enumerate(groups):
 
-            if prefs.ignoreDNF and not group.isFitted(): continue
+            if prefs.ignoreDNF and not group.isFitted():
+                continue
 
             row = group.getRow(headings)
 
             rowCount += 1
-
 
             html.write("<tr>\n")
 
@@ -123,7 +128,6 @@ def WriteHTML(filename, groups, net, headings, prefs):
                     bg = bgColor(headings[n])
 
                 html.write('\t<td align="center"{bg}>{val}</td>\n'.format(bg=' bgcolor={c}'.format(c=bg) if bg else '', val=link(r)))
-
 
             html.write("</tr>\n")
 
