@@ -1,11 +1,4 @@
-#
-# KiCad python module for interpreting generic netlists which can be used
-# to generate Bills of materials, etc.
-#
-# No string formatting is used on purpose as the only string formatting that
-# is current compatible with python 2.4+ to 3.0+ is the '%' method, and that
-# is due to be deprecated in 3.0+ soon
-#
+# -*- coding: utf-8 -*-
 
 """
     @package
@@ -18,15 +11,13 @@
 from __future__ import print_function
 import sys
 import xml.sax as sax
-import re
-import pdb
 
 from bomlib.component import (Component, ComponentGroup)
-from bomlib.sort import natural_sort
 
 from bomlib.preferences import BomPref
 
-#-----</Configure>---------------------------------------------------------------
+# -----</Configure>---------------------------------------------------------------
+
 
 class xmlElement():
     """xml element which can represent all nodes of the netlist tree.  It can be
@@ -55,10 +46,7 @@ class xmlElement():
 
         """
         s = ""
-
-        indent = ""
-        for i in range(nestLevel):
-            indent += "    "
+        indent = "    " * nestLevel
 
         if not amChild:
             s = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -74,7 +62,7 @@ class xmlElement():
 
         for c in self.children:
             s += "\n"
-            s += c.formatXML(nestLevel+1, True)
+            s += c.formatXML(nestLevel + 1, True)
 
         if (len(self.children) > 0):
             s += "\n" + indent
@@ -193,6 +181,7 @@ class xmlElement():
 
         return ""
 
+
 class libpart():
     """Class for a library part, aka 'libpart' in the xml netlist file.
     (Components in eeschema are instantiated from library parts.)
@@ -202,10 +191,6 @@ class libpart():
     def __init__(self, xml_element):
         #
         self.element = xml_element
-
-    #def __str__(self):
-        # simply print the xmlElement associated with this part
-        #return str(self.element)
 
     def getLibName(self):
         return self.element.get("libpart", "lib")
@@ -230,7 +215,7 @@ class libpart():
         fields = self.element.getChild('fields')
         if fields:
             for f in fields.getChildren():
-                fieldNames.append( f.get('field','name') )
+                fieldNames.append(f.get('field', 'name'))
         return fieldNames
 
     def getDatasheet(self):
@@ -256,7 +241,7 @@ class libpart():
             children = aliases.getChildren()
             # grab the text out of each child:
             for child in children:
-                ret.append( child.get("alias") )
+                ret.append(child.get("alias"))
             return ret
         return None
 
@@ -286,7 +271,7 @@ class netlist():
         self._curr_element = None
 
         if not prefs:
-            prefs = BomPref() #default values
+            prefs = BomPref()  # Default values
 
         self.prefs = prefs
 
@@ -299,7 +284,7 @@ class netlist():
 
     def addElement(self, name):
         """Add a new KiCad generic element to the list"""
-        if self._curr_element == None:
+        if self._curr_element is None:
             self.tree = xmlElement(name)
             self._curr_element = self.tree
         else:
@@ -341,13 +326,12 @@ class netlist():
                         break
                     else:
                         aliases = p.getAliases()
-                        if aliases and self.aliasMatch( c.getPartName(), aliases ):
+                        if aliases and self.aliasMatch(c.getPartName(), aliases):
                             c.setLibPart(p)
-                            break;
+                            break
 
             if not c.getLibPart():
-                print( 'missing libpart for ref:', c.getRef(), c.getPartName(), c.getLibName() )
-
+                print('missing libpart for ref:', c.getRef(), c.getPartName(), c.getLibName())
 
     def aliasMatch(self, partName, aliasList):
         for alias in aliasList:
@@ -384,19 +368,24 @@ class netlist():
         return self.design.getChild("sheet")
 
     def getSheetDate(self):
-        sheet= self.getSheet()
-        if sheet == None: return ""
+        sheet = self.getSheet()
+        if sheet is None:
+            return ""
         return sheet.get("date")
 
     def getVersion(self):
         """Return the verison of the sheet info"""
+
         sheet = self.getSheet()
-        if sheet == None: return ""
+        
+        if sheet is None:
+            return ""
+        
         return sheet.get("rev")
 
     def getInterestingComponents(self):
 
-        #copy out the components
+        # Copy out the components
         ret = [c for c in self.components]
 
         # Sort first by ref as this makes for easier to read BOM's
@@ -412,9 +401,11 @@ class netlist():
         for c in components:
 
             if self.prefs.useRegex:
-                #skip components if they do not meet regex requirements
-                if c.testRegInclude() == False: continue
-                if c.testRegExclude() == True: continue
+                # Skip components if they do not meet regex requirements
+                if not c.testRegInclude():
+                    continue
+                if c.testRegExclude():
+                    continue
 
             found = False
 
@@ -425,17 +416,17 @@ class netlist():
                     break
 
             if not found:
-                g = ComponentGroup(prefs=self.prefs) #pass down the preferences
+                g = ComponentGroup(prefs=self.prefs)  # Pass down the preferences
                 g.addComponent(c)
                 groups.append(g)
 
-        #sort the references within each group
+        # Sort the references within each group
         for g in groups:
             g.sortComponents()
             g.updateFields(self.prefs.useAlt, self.prefs.altWrap)
 
-        #sort the groups
-        #first priority is the Type of component (e.g. R?, U?, L?)
+        # Sort the groups
+        # First priority is the Type of component (e.g. R?, U?, L?)
         groups = sorted(groups, key=lambda g: [g.components[0].getPrefix(), g.components[0].getValue()])
 
         return groups
@@ -460,9 +451,8 @@ class netlist():
             self._reader.setContentHandler(_gNetReader(self))
             self._reader.parse(fname)
         except IOError as e:
-            print( __file__, ":", e, file=sys.stderr )
+            print(__file__, ":", e, file=sys.stderr)
             sys.exit(-1)
-
 
 
 class _gNetReader(sax.handler.ContentHandler):
