@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 
 This file contains a set of functions for matching values which may be written in different formats
@@ -7,9 +9,7 @@ e.g.
 
 """
 
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 import re
 
 PREFIX_MICRO = [u"μ", "u", "micro"]
