@@ -8,7 +8,7 @@ python:
   - "3.7"
 
 before_install:
-  - apt-get install flake8
+  - sudo apt-get install flake8
 
 script:
   - flake8 .
