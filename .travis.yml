@@ -1,11 +1,5 @@
 # travis-ci integration for KiBOM
 
-sudo:
-  - true
-
-os:
-  - linux
-
 language:
   - python
 
