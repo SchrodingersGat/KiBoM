@@ -1,7 +1,7 @@
 # travis-ci integration for KiBOM
 
 sudo:
-  - false
+  - true
 
 os:
   - linux
