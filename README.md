@@ -19,8 +19,8 @@ The *KiBOM_CLI* script can be run directly from KiCad or from the command line. 
 `python KiBOM_CLI.py -h`
 
 ~~~~
-usage: KiBOM_CLI.py [-h] [-n NUMBER] [-v] [-r VARIANT] [--cfg CFG]
-                    [-s SEPARATOR]
+usage: KiBOM_CLI.py [-h] [-n NUMBER] [-v] [-r VARIANT] [-d SUBDIRECTORY]
+                    [--cfg CFG] [-s SEPARATOR]
                     netlist output
 
 KiBOM Bill of Materials generator script
@@ -38,11 +38,11 @@ optional arguments:
                         Number of boards to build (default = 1)
   -v, --verbose         Enable verbose output
   -r VARIANT, --variant VARIANT
-                        Board variant(s), used to determine which components are
-                        output to the BoM
+                        Board variant(s), used to determine which components
+                        are output to the BoM. Comma-separate for multiple.
   -d SUBDIRECTORY, --subdirectory SUBDIRECTORY
-                        Subdirectory (relative to output file) within which the
-                        BoM(s) should be written.
+                        Subdirectory within which to store the generated BoM
+                        files.
   --cfg CFG             BoM config file (script will try to use 'bom.ini' if
                         not specified here)
   -s SEPARATOR, --separator SEPARATOR
@@ -208,6 +208,8 @@ Output file format selection is set by the output filename. e.g. "bom.html" will
 ### Configuration File
 BoM generation options can be configured (on a per-project basis) by editing the *bom.ini* file in the PCB project directory. This file is generated the first time that the KiBoM script is run, and allows configuration of the following options.
 * `ignore_dnf` : Component groups designated as 'DNF' (do not fit) will be excluded from the BoM output
+* `use_alt` : If this option is set, grouped references will be printed in the alternate compressed style eg: R1-R7,R18
+* `alt_wrap` : If this option is set to an integer `N`, the references field will wrap after `N` entries are printed
 * `number_rows` : Add row numbers to the BoM output
 * `group_connectors` : If this option is set, connector comparison based on the 'Value' field is ignored. This allows multiple connectors which are named for their function (e.g. "Power", "ICP" etc) can be grouped together.
 * `test_regex` : If this option is set, each component group row is test against a list of (user configurable) regular expressions. If any matches are found, that row is excluded from the output BoM file.
@@ -218,6 +220,11 @@ BoM generation options can be configured (on a per-project basis) by editing the
     - `%v` : version number.
     - `%V` : variant name, note that this will be ammended according to `variant_file_name_format`.
 * `variant_file_name_format` : A string that defines the variant file format. This is a unique field as the variant is not always used/specified.
+* `make_backup` : If this option is set, a backup of the bom created before generating the new one. The option is a string that allows arbitrary specification of the filename. See `output_file_name` for available fields.
+* `number_boards` : Specifies the number of boards to produce, if none is specified on CLI with `-n`.
+* `board_variant` : Specifies the name of the PCB variant, if none is specified on CLI with `-r`.
+* `hide_headers` : If this option is set, the table/column headers and legends are suppressed in the output file.
+* `hide_pcb_info` : If this option is set, PCB information (version, component count, etc) are suppressed in the output file.
 * `IGNORE_COLUMNS` : A list of columns can be marked as 'ignore', and will not be output to the BoM file. By default, the *Part_Lib* and *Footprint_Lib* columns are ignored.
 * `GROUP_FIELDS` : A list of component fields used to group components together.
 * `COMPONENT_ALIASES` : A list of space-separated values which allows multiple schematic symbol visualisations to be consolidated.
@@ -257,10 +264,10 @@ number_boards = 1
 board_variant = "default"
 ; When set to 1, suppresses table/column headers and legends in the output file.
 ; May be useful for testing purposes.
-hideHeaders = 0
+hide_headers = 0
 ; When set to 1, PCB information (version, component count, etc) is not shown in the output file.
 ; Useful for saving space in the HTML output and for ensuring CSV output is machine-parseable.
-hidePcbInfo = 0
+hide_pcb_info = 0
 
 [IGNORE_COLUMNS]
 ; Any column heading that appears here will be excluded from the Generated BoM
