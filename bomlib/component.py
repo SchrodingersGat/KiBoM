@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 from bomlib.columns import ColumnList
 from bomlib.preferences import BomPref
@@ -322,7 +323,7 @@ class Component():
                             ref=self.getRef(),
                             field=field_name,
                             value=field_value,
-                            reg=regex))
+                            reg=regex).encode('utf-8'))
 
                     # Found a match
                     return True
@@ -512,7 +513,7 @@ class ComponentGroup():
                 refs=self.getRefs(),
                 name=field,
                 flds=self.fields[field],
-                fld=fieldData))
+                fld=fieldData).encode('utf-8'))
             self.fields[field] += " " + fieldData
 
     def updateFields(self, usealt=False, wrapN=None):
