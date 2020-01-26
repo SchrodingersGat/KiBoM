@@ -464,13 +464,10 @@ class ComponentGroup():
 
     def addComponent(self, c):
         # Add a component to the group
-
-        if len(self.components) == 0:
-            self.components.append(c)
-        elif self.containsComponent(c):
+        if self.containsComponent(c):
             return
-        elif self.matchComponent(c):
-            self.components.append(c)
+
+        self.components.append(c)
 
     def isFitted(self):
         return any([c.isFitted() for c in self.components])
@@ -538,7 +535,11 @@ class ComponentGroup():
             dnf=" (DNF)" if not self.isFitted() else "")
 
         self.fields[ColumnList.COL_GRP_BUILD_QUANTITY] = str(q * self.prefs.boards) if self.isFitted() else "0"
-        self.fields[ColumnList.COL_VALUE] = self.components[0].getValue()
+        if self.prefs.agregateValues:
+            self.fields[ColumnList.COL_VALUE] = ','.join(sorted(set([c.getValue() for c in self.components])))
+        else:
+            self.fields[ColumnList.COL_VALUE] = self.components[0].getValue()
+
         self.fields[ColumnList.COL_PART] = self.components[0].getPartName()
         self.fields[ColumnList.COL_PART_LIB] = self.components[0].getLibName()
         self.fields[ColumnList.COL_DESCRIPTION] = self.components[0].getDescription()
