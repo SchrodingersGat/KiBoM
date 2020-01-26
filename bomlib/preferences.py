@@ -45,7 +45,11 @@ class BomPref:
             'If \'{opt}\' option is set to True, grouped references will be printed in the alternate compressed style eg: R1-R7,R18'),
 
         ('altWrap',          SECTION_GENERAL, 'alt_wrap', ['Int', 'None'], None,
-            'If \'{opt}\' option is set to and integer N, the references field will wrap after N entries are printed'),
+            'If \'{opt}\' option is set to an integer N, the references field will wrap after N entries are printed'),
+
+        ('agregateValues',   SECTION_GENERAL, 'agregate_values', ['Boolean'], True,
+            '''If \'{opt}\' option is set to True values will be agregated as a comma seperated list.
+            This is useful if you find you have multiple component with differeing values grouped together.'''),
 
         ('ignoreDNF',        SECTION_GENERAL, 'ignore_dnf', ['Boolean'], True,
             'If \'{opt}\' option is set to True, rows that are not to be fitted on the PCB will not be written to the BoM file'),
