@@ -7,7 +7,7 @@ import os
 
 from bomlib.columns import ColumnList
 
-# Check python version to determine which version of ConfirParser to import
+# Check python version to determine which version of ConfigParser to import
 if sys.version_info.major >= 3:
     import configparser as ConfigParser
 else:
@@ -16,188 +16,220 @@ else:
 
 class BomPref:
 
-    SECTION_IGNORE = "IGNORE_COLUMNS"
-    SECTION_COLUMN_ORDER = "COLUMN_ORDER"
-    SECTION_GENERAL = "BOM_OPTIONS"
-    SECTION_ALIASES = "COMPONENT_ALIASES"
-    SECTION_GROUPING_FIELDS = "GROUP_FIELDS"
-    SECTION_REGEXCLUDES = "REGEX_EXCLUDE"
-    SECTION_REGINCLUDES = "REGEX_INCLUDE"
+    SECTION_IGNORE = 'IGNORE_COLUMNS'
+    SECTION_COLUMN_ORDER = 'COLUMN_ORDER'
+    SECTION_GENERAL = 'BOM_OPTIONS'
+    SECTION_ALIASES = 'COMPONENT_ALIASES'
+    SECTION_GROUPING_FIELDS = 'GROUP_FIELDS'
+    SECTION_REGEXCLUDES = 'REGEX_EXCLUDE'
+    SECTION_REGINCLUDES = 'REGEX_INCLUDE'
 
-    OPT_PCB_CONFIG = "pcb_configuration"
-    OPT_NUMBER_ROWS = "number_rows"
-    OPT_GROUP_CONN = "group_connectors"
-    OPT_USE_REGEX = "test_regex"
-    OPT_USE_ALT = "use_alt"
-    OPT_ALT_WRAP = "alt_wrap"
-    OPT_MERGE_BLANK = "merge_blank_fields"
-    OPT_IGNORE_DNF = "ignore_dnf"
-    OPT_BACKUP = "make_backup"
-    OPT_OUTPUT_FILE_NAME = "output_file_name"
-    OPT_VARIANT_FILE_NAME_FORMAT = "variant_file_name_format"
-    OPT_DEFAULT_BOARDS = "number_boards"
-    OPT_DEFAULT_PCBCONFIG = "board_variant"
-    OPT_CONFIG_FIELD = "fit_field"
-    OPT_HIDE_HEADERS = "hide_headers"
-    OPT_HIDE_PCB_INFO = "hide_pcb_info"
+    '''
+    cfg_spec contains meta data about the config file.
+    This information is used when parsing the contfig file to check type and set defuaults.
+    each item is a touple with the following fields:
+
+    programatic name - usually CamelCase
+    section name - USUALLY_YELLING or None if not configurable
+    option name - usually_snake_case of None if the option comprises of the entire section
+    type - a list of types this option will accept.
+        fi. ['Boolean', 'None'] for options that must be True, False or None
+    default - the default to set this variable to.
+        put whatever you want here
+        The only requirement is that if the option is written to file; the default must be compatible with the type
+    helptext - that thing that tells you what the option does.
+        you can use {opt} as a placeholder fot the option name
+    '''
+    cfg_spec = [
+        ('useAlt',           SECTION_GENERAL, 'use_alt', ['Boolean'], False,
+            'If \'{opt}\' option is set to True, grouped references will be printed in the alternate compressed style eg: R1-R7,R18'),
+
+        ('altWrap',          SECTION_GENERAL, 'alt_wrap', ['Int', 'None'], None,
+            'If \'{opt}\' option is set to and integer N, the references field will wrap after N entries are printed'),
+
+        ('ignoreDNF',        SECTION_GENERAL, 'ignore_dnf', ['Boolean'], True,
+            'If \'{opt}\' option is set to True, rows that are not to be fitted on the PCB will not be written to the BoM file'),
+
+        ('numberRows',       SECTION_GENERAL, 'number_rows', ['Boolean'], True,
+            'If \'{opt}\' option is set to True, each row in the BoM will be prepended with an incrementing row number'),
+
+        ('groupConnectors',  SECTION_GENERAL, 'group_connectors', ['Boolean'], True,
+            'If \'{opt}\' option is set to True, connectors with the same footprints will be grouped together, independent of the name of the connector'),
+
+        ('useRegex',         SECTION_GENERAL, 'test_regex', ['Boolean'], True,
+            'If \'{opt}\' option is set to True, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file'),
+
+        ('boards',           SECTION_GENERAL, 'number_boards', ['Int'], 1,
+            'Default number of boards to produce if none given on CLI with -n'),
+
+        ('mergeBlankFields', SECTION_GENERAL, 'merge_blank_fields', ['Boolean'], True,
+            'If \'{opt}\' option is set to True, component groups with blank fields will be merged into the most compatible group, where possible'),
+
+        ('hideHeaders',      SECTION_GENERAL, 'hide_headers', ['Boolean'], False,
+            'If \'{opt}\' option is set to True, column headers will be omitted from the output file'),
+
+        ('hidePcbInfo',      SECTION_GENERAL, 'hide_pcb_info', ['Boolean'], False,
+            'Whether to hide PCB info from output file'),
+
+        ('verbose',          None, None, ['Boolean'], False,
+            ''),
+
+        ('configField',      SECTION_GENERAL, 'fit_field', ['Str'], 'Config',
+            'Field name used to determine if a particular part is to be fitted'),
+
+        ('separatorCSV',     None, None, ['Str'], None,
+            ''),
+
+        ('backup',           SECTION_GENERAL, 'make_backup', ['Str', 'None'], '%O.tmp',
+            'Make a backup of the bom before generating the new one, using the following template'),
+
+        ('outputFileName',   SECTION_GENERAL, 'output_file_name', ['Str'], '%O_bom_%v%V',
+            'Specify output file name format, %O is the defined output name, %v is the version, %V is the variant name which will be ammended according to \'variant_file_name_format\'.'),
+
+        ('variantFileNameFormat', SECTION_GENERAL, 'variant_file_name_format', ['Str'], '_(%V)',
+            'Specify the variant file name format, this is a unique field as the variant is not always used/specified. When it is unused you will want to strip all of this.'),
+
+        ('pcbConfig', SECTION_GENERAL, 'pcb_configuration', ['Array'], ['default'],
+            'Default PCB variant if none given on CLI with -r'),
+
+        ('groups', SECTION_GROUPING_FIELDS, None, ['Array'],
+            [
+                ColumnList.COL_PART,
+                ColumnList.COL_PART_LIB,
+                ColumnList.COL_VALUE,
+                ColumnList.COL_FP,
+                ColumnList.COL_FP_LIB,
+            ],
+            '''List of fields used for sorting individual components into groups
+            Components which match (comparing *all* fields) will be grouped together
+            Field names are case-insensitive'''),
+
+        ('ignore', SECTION_IGNORE, None, ['Array'],
+            [
+                ColumnList.COL_PART_LIB,
+                ColumnList.COL_FP_LIB,
+            ],
+            '''Any column heading that appears here will be excluded from the Generated BoM
+            Titles are case-insensitive'''),
+
+        ('corder', SECTION_COLUMN_ORDER, None, ['Array'], ColumnList._COLUMNS_DEFAULT,
+            '''Columns will apear in the order they are listed here
+            Titles are case-insensitive'''),
+
+        ('aliases', SECTION_ALIASES, None, ['Tabbed'], [
+                ['c', 'c_small', 'cap', 'capacitor'],
+                ['r', 'r_small', 'res', 'resistor'],
+                ['sw', 'switch'],
+                ['l', 'l_small', 'inductor'],
+                ['zener', 'zenersmall'],
+                ['d', 'diode', 'd_small']
+            ],
+            '''A series of values which are considered to be equivalent for the part name
+            Each line represents a list of equivalent component name values separated by white space
+            e.g. 'c c_small cap' will ensure the equivalent capacitor symbols can be grouped together
+            Aliases are case-insensitive'''),
+
+        ('regExcludes', SECTION_REGEXCLUDES, None, ['Regex'], [
+                [ColumnList.COL_REFERENCE, '^TP[0-9]*'],
+                [ColumnList.COL_REFERENCE, '^FID'],
+                [ColumnList.COL_PART, 'mount.*hole'],
+                [ColumnList.COL_PART, 'solder.*bridge'],
+                [ColumnList.COL_PART, 'test.*point'],
+                [ColumnList.COL_FP, 'test.*point'],
+                [ColumnList.COL_FP, 'mount.*hole'],
+                [ColumnList.COL_FP, 'fiducial'],
+            ],
+            '''A series of regular expressions used to exclude parts from the BoM
+            If a component matches ANY of these, it will be excluded from the BoM
+            Column names are case-insensitive
+            Format is: \'[ColumName] [Regex]\' (white-space separated)'''),
+
+        ('regIncludes', SECTION_REGINCLUDES, None, ['Regex'], [],
+            '''A series of regular expressions used to include parts in the BoM
+            If there are any regex defined here, only components that match against ANY of them will be included in the BOM
+            Column names are case-insensitive
+            Format is: \'[ColumName] [Regex]\' (white-space separated)'''),
+    ]
 
     def __init__(self):
-        # List of headings to ignore in BoM generation
-        self.ignore = [
-            ColumnList.COL_PART_LIB,
-            ColumnList.COL_FP_LIB,
-        ]
+        # set defaults from spec
+        for row in self.cfg_spec:
+            prgname = row[0]
+            default = row[4]
+            setattr(self, prgname, default)
 
-        self.corder = ColumnList._COLUMNS_DEFAULT
-        self.useAlt = False  # Use alternate reference representation
-        self.altWrap = None  # Wrap to n items when using alt representation
-        self.ignoreDNF = True  # Ignore rows for do-not-fit parts
-        self.numberRows = True  # Add row-numbers to BoM output
-        self.groupConnectors = True  # Group connectors and ignore component value
-        self.useRegex = True  # Test various columns with regex
-
-        self.boards = 1  # Quantity of boards to be made
-        self.mergeBlankFields = True  # Blanks fields will be merged when possible
-        self.hideHeaders = False
-        self.hidePcbInfo = False
-        self.verbose = False  # By default, is not verbose
-        self.configField = "Config"  # Default field used for part fitting config
-        self.pcbConfig = ["default"]
-
-        self.backup = "%O.tmp"
-
-        self.separatorCSV = None
-        self.outputFileName = "%O_bom_%v%V"
-        self.variantFileNameFormat = "_(%V)"
-
+        # cruft for feature detection (default disabled)
         self.xlsxwriter_available = False
         self.xlsxwriter2_available = False
-
-        # Default fields used to group components
-        self.groups = [
-            ColumnList.COL_PART,
-            ColumnList.COL_PART_LIB,
-            ColumnList.COL_VALUE,
-            ColumnList.COL_FP,
-            ColumnList.COL_FP_LIB,
-            # User can add custom grouping columns in bom.ini
-        ]
-
-        self.regIncludes = []  # None by default
-
-        self.regExcludes = [
-            [ColumnList.COL_REFERENCE, '^TP[0-9]*'],
-            [ColumnList.COL_REFERENCE, '^FID'],
-            [ColumnList.COL_PART, 'mount.*hole'],
-            [ColumnList.COL_PART, 'solder.*bridge'],
-            [ColumnList.COL_PART, 'test.*point'],
-            [ColumnList.COL_FP, 'test.*point'],
-            [ColumnList.COL_FP, 'mount.*hole'],
-            [ColumnList.COL_FP, 'fiducial'],
-        ]
-
-        # Default component groupings
-        self.aliases = [
-            ["c", "c_small", "cap", "capacitor"],
-            ["r", "r_small", "res", "resistor"],
-            ["sw", "switch"],
-            ["l", "l_small", "inductor"],
-            ["zener", "zenersmall"],
-            ["d", "diode", "d_small"]
-        ]
-
-    # Check an option within the SECTION_GENERAL group
-    def checkOption(self, parser, opt, default=False):
-        if parser.has_option(self.SECTION_GENERAL, opt):
-            return parser.get(self.SECTION_GENERAL, opt).lower() in ["1", "true", "yes"]
-        else:
-            return default
-
-    def checkInt(self, parser, opt, default=False):
-        if parser.has_option(self.SECTION_GENERAL, opt):
-            return int(parser.get(self.SECTION_GENERAL, opt).lower())
-        else:
-            return default
 
     # Read KiBOM preferences from file
     def Read(self, file, verbose=False):
         file = os.path.abspath(file)
         if not os.path.exists(file) or not os.path.isfile(file):
-            print("{f} is not a valid file!".format(f=file))
+            print('{f} is not a valid file!'.format(f=file))
             return
 
         cf = ConfigParser.RawConfigParser(allow_no_value=True)
         cf.optionxform = str
-
         cf.read(file)
 
-        # Read general options
-        if self.SECTION_GENERAL in cf.sections():
-            self.ignoreDNF = self.checkOption(cf, self.OPT_IGNORE_DNF, default=True)
-            self.useAlt = self.checkOption(cf, self.OPT_USE_ALT, default=False)
-            self.altWrap = self.checkInt(cf, self.OPT_ALT_WRAP, default=None)
-            self.numberRows = self.checkOption(cf, self.OPT_NUMBER_ROWS, default=True)
-            self.groupConnectors = self.checkOption(cf, self.OPT_GROUP_CONN, default=True)
-            self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
-            self.mergeBlankFields = self.checkOption(cf, self.OPT_MERGE_BLANK, default=True)
-            self.outputFileName = cf.get(self.SECTION_GENERAL, self.OPT_OUTPUT_FILE_NAME, default='bom')
-            self.variantFileNameFormat = cf.get(self.SECTION_GENERAL, self.OPT_VARIANT_FILE_NAME_FORMAT, default='csv')
+        for row in self.cfg_spec:
+            prgname = row[0]
+            section = row[1]
+            optname = row[2]
+            vartype = row[3]
+            default = row[4]
+            hlptext = row[5]
 
-        if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
-            self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
+            # skip stuff not allowed in a config file
+            if section is None and optname is None:
+                continue
 
-        if cf.has_option(self.SECTION_GENERAL, self.OPT_DEFAULT_BOARDS):
-            self.boards = self.checkInt(cf, self.OPT_DEFAULT_BOARDS, default=None)
+            # skip loading stuff not in the config file
+            if section not in cf.sections():
+                continue
 
-        if cf.has_option(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG):
-            self.pcbConfig = cf.get(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG).strip().split(",")
+            if optname is None:
+                # this option is comprised of the entire section
 
-        if cf.has_option(self.SECTION_GENERAL, self.OPT_BACKUP):
-            self.backup = cf.get(self.SECTION_GENERAL, self.OPT_BACKUP)
-        else:
-            self.backup = False
+                if 'Array' in vartype:
+                    vals = [i for i in cf.options(section)]
+                    setattr(self, prgname, vals)
 
-        if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS):
-            self.hideHeaders = self.checkOption(cf, self.OPT_HIDE_HEADERS)
+                elif 'Tabbed' in vartype:
+                    vals = [re.split('[ \t]+', a) for a in cf.options(section)]
+                    setattr(self, prgname, vals)
 
-        if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO):
-            self.hidePcbInfo = self.checkOption(cf, self.OPT_HIDE_PCB_INFO)
+                elif 'Regex' in vartype:
+                    vals = []
+                    for pair in cf.options(section):
+                        if len(re.split('[ \t]+', pair)) == 2:
+                            vals.append(re.split('[ \t]+', pair))
+                    setattr(self, prgname, vals)
+                else:
+                    raise NameError('unsupported option type `{}` specified in cfg (init) spec'.format(vartype))
+            else:
+                # this is normal option
 
-        # Read out grouping colums
-        if self.SECTION_GROUPING_FIELDS in cf.sections():
-            self.groups = [i for i in cf.options(self.SECTION_GROUPING_FIELDS)]
+                if not cf.has_option(section, optname): # leave defaults if not overiden
+                    continue
 
-        # Read out ignored-rows
-        if self.SECTION_IGNORE in cf.sections():
-            self.ignore = [i for i in cf.options(self.SECTION_IGNORE)]
+                val = cf.get(section, optname)
 
-        # Read out column order
-        if self.SECTION_COLUMN_ORDER in cf.sections():
-            self.corder = [i for i in cf.options(self.SECTION_COLUMN_ORDER)]
-
-        # Read out component aliases
-        if self.SECTION_ALIASES in cf.sections():
-            self.aliases = [re.split('[ \t]+', a) for a in cf.options(self.SECTION_ALIASES)]
-
-        if self.SECTION_REGEXCLUDES in cf.sections():
-            self.regExcludes = []
-            for pair in cf.options(self.SECTION_REGEXCLUDES):
-                if len(re.split('[ \t]+', pair)) == 2:
-                    self.regExcludes.append(re.split('[ \t]+', pair))
-
-        if self.SECTION_REGINCLUDES in cf.sections():
-            self.regIncludes = []
-            for pair in cf.options(self.SECTION_REGINCLUDES):
-                if len(re.split('[ \t]+', pair)) == 2:
-                    self.regIncludes.append(re.split('[ \t]+', pair))
-
-    # Add an option to the SECTION_GENRAL group
-    def addOption(self, parser, opt, value, comment=None):
-        if comment:
-            if not comment.startswith(";"):
-                comment = "; " + comment
-            parser.set(self.SECTION_GENERAL, comment)
-        parser.set(self.SECTION_GENERAL, opt, "1" if value else "0")
+                if 'None' in vartype and val is None:
+                    setattr(self, prgname, None)
+                elif 'Boolean' in vartype and str(val).lower() in ['true', '1', 'yes', 'ja']:
+                    setattr(self, prgname, True)
+                elif 'Boolean' in vartype and str(val).lower() in ['false', '0', 'no', 'nein']:
+                    setattr(self, prgname, False)
+                elif 'Int' in vartype:
+                    setattr(self, prgname, int(val))
+                elif 'Str' in vartype:
+                    setattr(self, prgname, str(val))
+                elif 'Array' in vartype:
+                    setattr(self, prgname, str(val).strip().split(','))
+                else:
+                    raise NameError('unsupported option type `{}` specified in cfg (init) spec'.format(vartype))
 
     # Write KiBOM preferences to file
     def Write(self, file):
@@ -206,94 +238,49 @@ class BomPref:
         cf = ConfigParser.RawConfigParser(allow_no_value=True)
         cf.optionxform = str
 
-        cf.add_section(self.SECTION_GENERAL)
-        cf.set(self.SECTION_GENERAL, "; General BoM options here")
-        self.addOption(cf, self.OPT_IGNORE_DNF, self.ignoreDNF, comment="If '{opt}' option is set to 1, rows that are not to be fitted on the PCB will not be written to the BoM file".format(opt=self.OPT_IGNORE_DNF))
-        self.addOption(cf, self.OPT_USE_ALT, self.useAlt, comment="If '{opt}' option is set to 1, grouped references will be printed in the alternate compressed style eg: R1-R7,R18".format(opt=self.OPT_USE_ALT))
-        self.addOption(cf, self.OPT_ALT_WRAP, self.altWrap, comment="If '{opt}' option is set to and integer N, the references field will wrap after N entries are printed".format(opt=self.OPT_ALT_WRAP))
-        self.addOption(cf, self.OPT_NUMBER_ROWS, self.numberRows, comment="If '{opt}' option is set to 1, each row in the BoM will be prepended with an incrementing row number".format(opt=self.OPT_NUMBER_ROWS))
-        self.addOption(cf, self.OPT_GROUP_CONN, self.groupConnectors, comment="If '{opt}' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
-        self.addOption(cf, self.OPT_USE_REGEX, self.useRegex, comment="If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))
-        self.addOption(cf, self.OPT_MERGE_BLANK, self.mergeBlankFields, comment="If '{opt}' option is set to 1, component groups with blank fields will be merged into the most compatible group, where possible".format(opt=self.OPT_MERGE_BLANK))
-        
-        cf.set(self.SECTION_GENERAL, "; Specify output file name format, %O is the defined output name, %v is the version, %V is the variant name which will be ammended according to 'variant_file_name_format'.")
-        cf.set(self.SECTION_GENERAL, self.OPT_OUTPUT_FILE_NAME, self.outputFileName)
+        already_defined = []
+        for row in self.cfg_spec:
+            prgname = row[0]
+            section = row[1]
+            optname = row[2]
+            vartype = row[3]
+            default = row[4]
+            hlptext = row[5]
 
-        cf.set(self.SECTION_GENERAL, "; Specify the variant file name format, this is a unique field as the variant is not always used/specified. When it is unused you will want to strip all of this.")
-        cf.set(self.SECTION_GENERAL, self.OPT_VARIANT_FILE_NAME_FORMAT, self.variantFileNameFormat)
+            if section is None:
+                continue;
 
-        cf.set(self.SECTION_GENERAL, '; Field name used to determine if a particular part is to be fitted')
-        cf.set(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD, self.configField)
+            if section not in already_defined:
+                cf.add_section(section)
+                already_defined.append(section)
 
-        cf.set(self.SECTION_GENERAL, '; Make a backup of the bom before generating the new one, using the following template')
-        cf.set(self.SECTION_GENERAL, self.OPT_BACKUP, self.backup)
+            for hlp in hlptext.format(opt=optname).split('\n'):
+                cf.set(section, '; {}'.format(hlp.strip()))
 
-        cf.set(self.SECTION_GENERAL, '; Default number of boards to produce if none given on CLI with -n')
-        cf.set(self.SECTION_GENERAL, self.OPT_DEFAULT_BOARDS, self.boards)
+            if optname is None:
+                if 'Array' in vartype:
+                    for i in getattr(self, prgname):
+                        cf.set(section, i)
 
-        cf.set(self.SECTION_GENERAL, '; Default PCB variant if none given on CLI with -r')
-        cf.set(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG, self.pcbConfig)
+                elif 'Tabbed' in vartype:
+                    for i in getattr(self, prgname):
+                        cf.set(section, '\t'.join(i))
 
-        cf.set(self.SECTION_GENERAL, '; Whether to hide headers from output file')
-        cf.set(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS, self.hideHeaders)
-
-        cf.set(self.SECTION_GENERAL, '; Whether to hide PCB info from output file')
-        cf.set(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO, self.hidePcbInfo)
-
-        cf.add_section(self.SECTION_IGNORE)
-        cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")
-        cf.set(self.SECTION_IGNORE, "; Titles are case-insensitive")
-
-        for i in self.ignore:
-            cf.set(self.SECTION_IGNORE, i)
-
-        cf.add_section(self.SECTION_COLUMN_ORDER)
-        cf.set(self.SECTION_COLUMN_ORDER, "; Columns will apear in the order they are listed here")
-        cf.set(self.SECTION_COLUMN_ORDER, "; Titles are case-insensitive")
-
-        for i in self.corder:
-            cf.set(self.SECTION_COLUMN_ORDER, i)
-
-        # Write the component grouping fields
-        cf.add_section(self.SECTION_GROUPING_FIELDS)
-        cf.set(self.SECTION_GROUPING_FIELDS, '; List of fields used for sorting individual components into groups')
-        cf.set(self.SECTION_GROUPING_FIELDS, '; Components which match (comparing *all* fields) will be grouped together')
-        cf.set(self.SECTION_GROUPING_FIELDS, '; Field names are case-insensitive')
-
-        for i in self.groups:
-            cf.set(self.SECTION_GROUPING_FIELDS, i)
-
-        cf.add_section(self.SECTION_ALIASES)
-        cf.set(self.SECTION_ALIASES, "; A series of values which are considered to be equivalent for the part name")
-        cf.set(self.SECTION_ALIASES, "; Each line represents a list of equivalent component name values separated by white space")
-        cf.set(self.SECTION_ALIASES, "; e.g. 'c c_small cap' will ensure the equivalent capacitor symbols can be grouped together")
-        cf.set(self.SECTION_ALIASES, '; Aliases are case-insensitive')
-
-        for a in self.aliases:
-            cf.set(self.SECTION_ALIASES, "\t".join(a))
-
-        cf.add_section(self.SECTION_REGINCLUDES)
-        cf.set(self.SECTION_REGINCLUDES, '; A series of regular expressions used to include parts in the BoM')
-        cf.set(self.SECTION_REGINCLUDES, '; If there are any regex defined here, only components that match against ANY of them will be included in the BOM')
-        cf.set(self.SECTION_REGINCLUDES, '; Column names are case-insensitive')
-        cf.set(self.SECTION_REGINCLUDES, '; Format is: "[ColumName] [Regex]" (white-space separated)')
-
-        for i in self.regIncludes:
-            if not len(i) == 2:
-                continue
-            cf.set(self.SECTION_REGINCLUDES, i[0] + "\t" + i[1])
-
-        cf.add_section(self.SECTION_REGEXCLUDES)
-        cf.set(self.SECTION_REGEXCLUDES, '; A series of regular expressions used to exclude parts from the BoM')
-        cf.set(self.SECTION_REGEXCLUDES, '; If a component matches ANY of these, it will be excluded from the BoM')
-        cf.set(self.SECTION_REGEXCLUDES, '; Column names are case-insensitive')
-        cf.set(self.SECTION_REGEXCLUDES, '; Format is: "[ColumName] [Regex]" (white-space separated)')
-
-        for i in self.regExcludes:
-            if not len(i) == 2:
-                continue
-
-            cf.set(self.SECTION_REGEXCLUDES, i[0] + "\t" + i[1])
+                elif 'Regex' in vartype:
+                    for i in getattr(self, prgname):
+                        cf.set(section, '\t'.join(i))
+                else:
+                    raise NameError('unsupported option type `{}` specified in cfg (init) spec'.format(vartype))
+            else:
+                if 'Array' in vartype:
+                    cf.set(section, optname, ','.join(getattr(self, prgname)))
+                else:
+                    val = getattr(self, prgname)
+                    if val is None:
+                        cf.set(section, '; {} = {}'.format(optname, default))
+                    else:
+                        cf.set(section, optname, val)
 
         with open(file, 'wb') as configfile:
             cf.write(configfile)
+
