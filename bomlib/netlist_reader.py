@@ -133,6 +133,26 @@ class xmlElement():
         self.children.append(child)
         return self.children[len(self.children) - 1]
 
+    def addNewField(self, name, value):
+        """ Add a new field to this element
+            This function can not be moved to component.py due to it needs to create a new xmlElement, which is defined in this file.
+            Moving it to component.py would fail due to circular dependencies. """
+        fields = self.getChild('fields')
+        if not fields: # If there is no child 'flelds', then this component has no fields. Add it before adding fields
+            fields = xmlElement('fields', self)
+            self.addChild(fields)
+
+        child = self.getChild(name)
+        if child is None:
+            newChild = xmlElement('field', fields)
+            newChild.addAttribute('name', name) # Add field name
+            newChild.setChars(value) # Set field value for this component
+            fields.addChild(newChild)
+            return newChild
+        else:
+            newChild.setChars(value) # Set field value for this component
+            return child
+
     def getParent(self):
         """Get the parent of this element (Could be None)"""
         return self.parent
@@ -181,6 +201,21 @@ class xmlElement():
 
         return ""
 
+    def set(self, elemName,  value, attribute = "", attrmatch = "" ):
+        """Return the text data for either an attribute or an xmlElement
+        """
+        if (self.name == elemName):
+            if not "".__eq__(attribute):
+                try:
+                    if not "".__eq__(attrmatch):
+                        self.attributes[attribute] = attrmatch
+                        return
+                except AttributeError:
+                    pass
+            else:
+                self.chars = value
+        for child in self.children:
+            child.set(elemName, value, attribute, attrmatch)
 
 class libpart():
     """Class for a library part, aka 'libpart' in the xml netlist file.
@@ -202,11 +237,17 @@ class libpart():
     def getDescription(self):
         return self.element.get("description")
 
+    def setDescription(self, value):
+        self.element.set("description", value)
+
     def getDocs(self):
         return self.element.get("docs")
 
     def getField(self, name):
         return self.element.get("field", "name", name)
+
+    def setField(self, name, value):
+        return self.element.set("field", "name", name, value)
 
     def getFieldNames(self):
         """Return a list of field names in play for this libpart.
@@ -230,8 +271,15 @@ class libpart():
 
         return datasheet
 
+    def setDatasheet(self, value):
+
+        datasheet = self.setField("Datasheet", value)
+
     def getFootprint(self):
         return self.getField("Footprint")
+
+    def setFootprint(self, value):
+        return self.setField("Footprint", value)
 
     def getAliases(self):
         """Return a list of aliases or None"""
