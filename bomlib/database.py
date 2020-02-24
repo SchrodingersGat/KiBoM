@@ -90,7 +90,11 @@ def DBQuery(q, c, prefs):
                       print("Calling database stored procedure: "+query)
                       print("with arguments: ")
                       print(args)
-                  return_tuple = prefs.db_cursor.callproc(query, args)
+                  try:
+                      return_tuple = prefs.db_cursor.callproc(query, args)
+                  except mysql.connector.Error as err:
+                      print("Database access error: "+str(err))
+                      return ""
                   return_value=""
                   for result in prefs.db_cursor.stored_results():
                       for item in result.fetchall():
@@ -106,7 +110,11 @@ def DBQuery(q, c, prefs):
                       print("Executing database query: "+query)
                       print("with arguments: ")
                       print(params)
-                  prefs.db_cursor.execute(query, params, multi=True)
+                  try:
+                      prefs.db_cursor.execute(query, params, multi=True)
+                  except mysql.connector.Error as err:
+                      print("Database access error: "+str(err))
+                      return ""
                   return_tuple = prefs.db_cursor.fetchone()
                   if return_tuple is not None:
                       return return_tuple[0]
