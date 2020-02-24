@@ -328,6 +328,8 @@ class BomPref:
             cf.set(self.SECTION_REGEXCLUDES, i[0] + "\t" + i[1])
 
         cf.add_section(self.SECTION_DATABASE)
+        cf.set(self.SECTION_DATABASE_QUERIES, '; Database access is supported if mysql.connector python module  is installed')
+        cf.set(self.SECTION_DATABASE_QUERIES, '; See installation guide at: https://dev.mysql.com/doc/connector-python/en/connector-python-installation.html')
         cf.set(self.SECTION_DATABASE, self.OPT_DB_HOST, self.db_host )
         cf.set(self.SECTION_DATABASE, self.OPT_DB_USER, self.db_user)
         cf.set(self.SECTION_DATABASE, self.OPT_DB_PASSWORD, self.db_pass)
