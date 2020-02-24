@@ -28,12 +28,21 @@ from bomlib.netlist_reader import netlist
 from bomlib.bom_writer import WriteBoM
 from bomlib.preferences import BomPref
 
+from bomlib.database import DBConnect, DBDisconnect, DBQuery
+
 try:
     import xlsxwriter  # noqa: F401
 except:
     xlsxwriter_available = False
 else:
     xlsxwriter_available = True
+
+try:
+    import mysql.connector
+except:
+    mysql_available = False
+else:
+    mysql_available = True
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
@@ -84,11 +93,29 @@ def writeVariant(variant, subdirectory):
     # Component groups
     groups = []
 
+    # Connect to database
+    if pref.mysql_available:
+        DBConnect(pref)
+
     # Read out the netlist
     net = netlist(input_file, prefs=pref)
 
     # Extract the components
     components = net.getInterestingComponents()
+
+    if pref.mysql_available:
+        # Fill additional fields from database queries
+        for c in components:
+            for q in pref.db_queries:
+                field_name = q[0]
+                field_value = DBQuery(q[1:], c, pref)
+                if field_name.lower() !=  "none":
+                    c.setField(field_name, field_value)
+            break
+
+    # Disconnect to database
+    if pref.mysql_available:
+        DBDisconnect(pref)
 
     # Group the components
     groups = net.groupComponents(components)
@@ -180,6 +207,8 @@ if args.cfg:
 
 # Read preferences from file. If file does not exists, default preferences will be used
 pref = BomPref()
+
+pref.mysql_available = mysql_available
 
 have_cfile = os.path.exists(config_file)
 if have_cfile:
