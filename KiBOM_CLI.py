@@ -37,12 +37,21 @@ except:
 else:
     xlsxwriter_available = True
 
-try:
-    import mysql.connector
-except:
-    mysql_available = False
-else:
-    mysql_available = True
+def is_module_available(module_name):
+    if sys.version_info < (3, 0):
+        # python 2
+        import importlib
+        loader = importlib.find_loader(module_name)
+    elif sys.version_info <= (3, 3):
+        # python 3.0 to 3.3
+        import pkgutil
+        loader = pkgutil.find_loader(module_name)
+    elif sys.version_info >= (3, 4):
+        # python 3.4 and above
+        from importlib import util
+        loader = util.find_spec(module_name)
+
+    return loader is not None
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
@@ -51,7 +60,6 @@ sys.path.append(os.path.join(here, "KiBOM"))
 
 
 verbose = False
-
 
 def close(*arg):
     print(*arg)
@@ -208,7 +216,7 @@ if args.cfg:
 # Read preferences from file. If file does not exists, default preferences will be used
 pref = BomPref()
 
-pref.mysql_available = mysql_available
+pref.mysql_available = is_module_available('mysql.connector')
 
 have_cfile = os.path.exists(config_file)
 if have_cfile:
