@@ -115,7 +115,7 @@ def DBQuery(q, c, prefs):
                     print("with arguments: ")
                     print(params)
                 try:
-                    prefs.db_cursor.execute(query,params,multi = True)
+                    prefs.db_cursor.execute(query, params, multi=True)
                 except mysql.connector.Error as err:
                     print("Database access error: " + str(err))
                     return ""

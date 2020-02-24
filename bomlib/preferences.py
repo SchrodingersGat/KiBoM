@@ -389,7 +389,7 @@ class BomPref:
         cf.set(self.SECTION_DATABASE_QUERIES, ';        $component.getFootprint() : returns the footprint of the component')
         cf.set(self.SECTION_DATABASE_QUERIES, ';        $component.getField(field_name) : returns the value for this component of field named \'name\'.')
         cf.set(self.SECTION_DATABASE_QUERIES, ';     Several fields can be combined, but there should be only one \'$\' at the beginning of the expression, and no spaces between. For example:')
-        cf.set(self.SECTION_DATABASE_QUERIES, ';        $component.getValue() + '|' + component.getFootprint()   : returns a string like \'value|footprint\'')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';        $component.getValue() + \'|\' + component.getFootprint()   : returns a string like \'value|footprint\'')
         cf.set(self.SECTION_DATABASE_QUERIES, ';')
 
         with open(file, 'wb') as configfile:
