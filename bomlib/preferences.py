@@ -23,6 +23,8 @@ class BomPref:
     SECTION_GROUPING_FIELDS = "GROUP_FIELDS"
     SECTION_REGEXCLUDES = "REGEX_EXCLUDE"
     SECTION_REGINCLUDES = "REGEX_INCLUDE"
+    SECTION_DATABASE = "DATABASE"
+    SECTION_DATABASE_QUERIES = "DATABASE_QUERIES"
 
     OPT_PCB_CONFIG = "pcb_configuration"
     OPT_NUMBER_ROWS = "number_rows"
@@ -40,6 +42,10 @@ class BomPref:
     OPT_CONFIG_FIELD = "fit_field"
     OPT_HIDE_HEADERS = "hide_headers"
     OPT_HIDE_PCB_INFO = "hide_pcb_info"
+    OPT_DB_HOST = "host"
+    OPT_DB_USER = "user"
+    OPT_DB_PASSWORD = "password"
+    OPT_DB_DB = "database"
 
     def __init__(self):
         # List of headings to ignore in BoM generation
@@ -72,6 +78,16 @@ class BomPref:
 
         self.xlsxwriter_available = False
         self.xlsxwriter2_available = False
+
+        self.mysql_available = False
+
+        self.db_host = ""
+        self.db_user = ""
+        self.db_pass = ""
+        self.db_db = ""
+        self.db_cnx = None
+        self.db_cursor = None
+        self.db_queries = []
 
         # Default fields used to group components
         self.groups = [
@@ -191,6 +207,22 @@ class BomPref:
                 if len(re.split('[ \t]+', pair)) == 2:
                     self.regIncludes.append(re.split('[ \t]+', pair))
 
+        if self.SECTION_DATABASE in cf.sections():
+            if cf.has_option(self.SECTION_DATABASE, self.OPT_DB_HOST):
+                self.db_host = cf.get(self.SECTION_DATABASE, self.OPT_DB_HOST)
+            if cf.has_option(self.SECTION_DATABASE, self.OPT_DB_USER):
+                self.db_user = cf.get(self.SECTION_DATABASE, self.OPT_DB_USER)
+            if cf.has_option(self.SECTION_DATABASE, self.OPT_DB_PASSWORD):
+                self.db_pass = cf.get(self.SECTION_DATABASE, self.OPT_DB_PASSWORD)
+            if cf.has_option(self.SECTION_DATABASE, self.OPT_DB_DB):
+                self.db_db = cf.get(self.SECTION_DATABASE, self.OPT_DB_DB)
+
+        if self.SECTION_DATABASE_QUERIES in cf.sections():
+            self.regExcludes = []
+            for pair in cf.options(self.SECTION_DATABASE_QUERIES):
+                #if len(re.split('[ \t]+', pair)) == 2:
+                    self.db_queries.append(re.split('[ \t]+', pair))
+
     # Add an option to the SECTION_GENRAL group
     def addOption(self, parser, opt, value, comment=None):
         if comment:
@@ -294,6 +326,70 @@ class BomPref:
                 continue
 
             cf.set(self.SECTION_REGEXCLUDES, i[0] + "\t" + i[1])
+
+        cf.add_section(self.SECTION_DATABASE)
+        cf.set(self.SECTION_DATABASE, self.OPT_DB_HOST, self.db_host )
+        cf.set(self.SECTION_DATABASE, self.OPT_DB_USER, self.db_user)
+        cf.set(self.SECTION_DATABASE, self.OPT_DB_PASSWORD, self.db_pass)
+        cf.set(self.SECTION_DATABASE, self.OPT_DB_DATABASE, self.db_db)
+
+        cf.add_section(self.SECTION_DATABASE_QUERIES)
+        cf.set(self.SECTION_DATABASE_QUERIES, '; These database queries are called for each component.')
+        cf.set(self.SECTION_DATABASE_QUERIES, '; Using these queries allows to define new fields or modify existing fields based on database data.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';')
+        cf.set(self.SECTION_DATABASE_QUERIES, '; Two database style queries are supported: ')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   - CALL, for executing database stored procedures,')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   - SELECT style, or any other one line query, for getting values from the database.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';')
+        cf.set(self.SECTION_DATABASE_QUERIES, '; Format for calling database stored procedures:')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';    - Name of the field. An existing field with this name is modified, or a new field with this name is created.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |  The field\'s value is the output of the procedure.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |  If the procedure returns several rows or values, the output is the concatenation of those values, separated by commas.   ')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |  If the field\'s name is \'None\' (without quotes, caseless), then no field is added or created.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |     - \'CALL\' (without quotes, caseless)')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |           - Name of database stored procedure. ')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |          |           -  open parenthesis, marks beginning of arguments. Space character before and after it.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |          |          |    ---------- arguments, as many as the procedure needs, separted by spaces.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |          |          |   |   |    |  If an argument begins with \'$\' character, it will be evaluated before')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |          |          |   |   |    |  calling the procedure. For more details, see below.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |          |          |   |   |    |       - close parenthesis, marks ending of arguments')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |          |          |   |   |    |       |')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   v    v          v          v   v   v    v       v')
+        cf.set(self.SECTION_DATABASE_QUERIES, '; Field CALL Internal_procedure ( arg1 arg2 arg3 ... )')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';')
+        cf.set(self.SECTION_DATABASE_QUERIES, '; Format for executing a database query:')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';    - Name of the field. An existing field with this name is modified, or a new field with this name is created.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |  The field\'s value is the output of the query.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |  If the query returns several rows or values, only the first one is returned.   ')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |  If the field\'s name is \'None\' (without quotes, caseless), then no field is added or created.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |     - Database query. Each word separated by strings.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |                       ------ arguments, as many as the query needs, separted by spaces.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |                      |     |   if the argument is not fixed, like arg2, put its name inside parenthesis, with \'%\' character')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |                      |     |   before open parenthesis. The character after close parenthesis is the type of the argument:')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |                      |     |   s for string, i for integer,...')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |                      |     |            - open curly bracket, marks beginning of arguments. Space character before and after it.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |                      |     |           |  Inside the curly brackets, arguments are pairs of name and value, separated by spaces.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |                      |     |           |   - name of the argument to be substituted by the following value')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |                      |     |           |  |      - If an argument value begins with \'$\' character, it will be evaluated before')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |                      |     |           |  |      |   executing the query. For more details, see below.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |                      |     |           |  |      |                           - close curly bracket, marks ending of arguments')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   |    |                      |     |           |  |      |----------------|         |')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';   v    v                      v     v           v  v      v                v         v')
+        cf.set(self.SECTION_DATABASE_QUERIES, '; Field SELECT anything LIKE ( arg1 %(arg2)s... ) { arg2 mystring arg3 $expresion      }')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';')
+        cf.set(self.SECTION_DATABASE_QUERIES, '; Expresions to be evaluated:')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';     Every argument when calling database stored procedures, or every argument value if defining queries, can be evaluated before executing the query or procedure.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';     If they needs to be evaluated, their first character should be \'$\'.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';     The evaluation is done by Python, so it should be Python code, and any field in the current component can be used.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';     In order to do that, the object named \'component\' is the current component, and we can get any field defined for this component using, for example:')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';        $component.getValue()     : returns the value of the component')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';        $component.getFootprint() : returns the footprint of the component')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';        $component.getField(field_name) : returns the value for this component of field named \'name\'.')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';     Several fields can be combined, but there should be only one \'$\' at the beginning of the expression, and no spaces between. For example:')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';        $component.getValue()+'|'+component.getFootprint()   : returns a string like \'value|footprint\'')
+        cf.set(self.SECTION_DATABASE_QUERIES, ';')
 
         with open(file, 'wb') as configfile:
             cf.write(configfile)
