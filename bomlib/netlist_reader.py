@@ -138,19 +138,19 @@ class xmlElement():
             This function can not be moved to component.py due to it needs to create a new xmlElement, which is defined in this file.
             Moving it to component.py would fail due to circular dependencies. """
         fields = self.getChild('fields')
-        if not fields: # If there is no child 'flelds', then this component has no fields. Add it before adding fields
+        if not fields:  # If there is no child 'flelds', then this component has no fields. Add it before adding fields
             fields = xmlElement('fields', self)
             self.addChild(fields)
 
         child = self.getChild(name)
         if child is None:
             newChild = xmlElement('field', fields)
-            newChild.addAttribute('name', name) # Add field name
-            newChild.setChars(value) # Set field value for this component
+            newChild.addAttribute('name', name)  # Add field name
+            newChild.setChars(value)  # Set field value for this component
             fields.addChild(newChild)
             return newChild
         else:
-            newChild.setChars(value) # Set field value for this component
+            newChild.setChars(value)  # Set field value for this component
             return child
 
     def getParent(self):
@@ -201,7 +201,7 @@ class xmlElement():
 
         return ""
 
-    def set(self, elemName,  value, attribute = "", attrmatch = "" ):
+    def set(self, elemName, value, attribute="", attrmatch=""):
         """Return the text data for either an attribute or an xmlElement
         """
         if (self.name == elemName):
@@ -216,6 +216,7 @@ class xmlElement():
                 self.chars = value
         for child in self.children:
             child.set(elemName, value, attribute, attrmatch)
+
 
 class libpart():
     """Class for a library part, aka 'libpart' in the xml netlist file.

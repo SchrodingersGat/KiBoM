@@ -220,8 +220,7 @@ class BomPref:
         if self.SECTION_DATABASE_QUERIES in cf.sections():
             self.regExcludes = []
             for pair in cf.options(self.SECTION_DATABASE_QUERIES):
-                #if len(re.split('[ \t]+', pair)) == 2:
-                    self.db_queries.append(re.split('[ \t]+', pair))
+                self.db_queries.append(re.split('[ \t]+', pair))
 
     # Add an option to the SECTION_GENRAL group
     def addOption(self, parser, opt, value, comment=None):
@@ -330,7 +329,7 @@ class BomPref:
         cf.add_section(self.SECTION_DATABASE)
         cf.set(self.SECTION_DATABASE_QUERIES, '; Database access is supported if mysql.connector python module  is installed')
         cf.set(self.SECTION_DATABASE_QUERIES, '; See installation guide at: https://dev.mysql.com/doc/connector-python/en/connector-python-installation.html')
-        cf.set(self.SECTION_DATABASE, self.OPT_DB_HOST, self.db_host )
+        cf.set(self.SECTION_DATABASE, self.OPT_DB_HOST, self.db_host)
         cf.set(self.SECTION_DATABASE, self.OPT_DB_USER, self.db_user)
         cf.set(self.SECTION_DATABASE, self.OPT_DB_PASSWORD, self.db_pass)
         cf.set(self.SECTION_DATABASE, self.OPT_DB_DATABASE, self.db_db)

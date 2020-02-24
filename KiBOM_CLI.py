@@ -109,7 +109,7 @@ def writeVariant(variant, subdirectory):
             for q in pref.db_queries:
                 field_name = q[0]
                 field_value = DBQuery(q[1:], c, pref)
-                if field_name.lower() !=  "none":
+                if field_name.lower() != "none":
                     c.setField(field_name, field_value)
             break
 

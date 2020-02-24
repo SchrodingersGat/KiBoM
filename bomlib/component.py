@@ -292,7 +292,7 @@ class Component():
         # Footprint library is first element
         elif name.lower() == ColumnList.COL_FP_LIB.lower():
             fp = self.getFootprint().split(":")
-            self.setFootprint(value+':'+fp[1])
+            self.setFootprint(value + ':' + fp[1])
             return
 
         elif name.lower() == ColumnList.COL_FP.lower():
@@ -317,7 +317,7 @@ class Component():
                 if field == "" and libraryToo:
                     field = self.libpart.setField(f, value)
                 else:
-                  self.element.set("field", "", "name", value)
+                    self.element.set("field", "", "name", value)
                 return
 
         # Could not find a matching field. Add a new field
@@ -459,7 +459,7 @@ class Component():
 
     def setDatasheet(self, value, libraryToo=True):
         ret = self.element.get("datasheet")
-        if  "".__eq__(ret) and libraryToo:
+        if "".__eq__(ret) and libraryToo:
             self.libpart.setDatasheet(value)
         else:
             self.element.set("datasheet", value, "", libraryToo)
