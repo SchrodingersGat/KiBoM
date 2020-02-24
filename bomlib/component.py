@@ -162,8 +162,14 @@ class Component():
     def getPartName(self):
         return self.element.get("libsource", "part")
 
+    def setPartName(self, value):
+        self.element.set("libsource", "", "part", value)
+
     def getLibName(self):
         return self.element.get("libsource", "lib")
+
+    def setLibName(self, value):
+        self.element.set("libsource", "", "lib", value)
 
     def getDescription(self):
         try:
@@ -176,6 +182,18 @@ class Component():
                 ret = self.libpart.getDescription()
 
             return ret
+
+    def setDescription(self, value):
+        try:
+            self.element.set("libsource", "", "description", value)
+        except:
+            # Compatibility with old KiCad versions (4.x)
+            ret = self.element.get("field", "name", "description")
+
+            if ret == "":
+                self.libpart.setDescription(value)
+            else:
+                self.element.set("field", "name", "description", value)
 
     def setValue(self, value):
         """Set the value of this component"""
@@ -247,6 +265,66 @@ class Component():
         # Could not find a matching field
         return ""
 
+    def setField(self, name, value, ignoreCase=True, libraryToo=True):
+        """Set the value of a field named name. The component is first
+        checked for the field, and then the components library part is checked
+        for the field.
+
+        Keywords:
+        name -- The name of the field to return the value for
+        value -- the value to be set on that field
+        libraryToo --   look in the libpart's fields for the same name if not found
+                        in component itself
+        """
+
+        if name.lower() == ColumnList.COL_REFERENCE.lower():
+            self.setRef(value)
+            return
+
+        elif name.lower() == ColumnList.COL_DESCRIPTION.lower():
+            self.setDescription(value)
+            return
+
+        elif name.lower() == ColumnList.COL_DATASHEET.lower():
+            self.setDatasheet(value, libraryToo)
+            return
+
+        # Footprint library is first element
+        elif name.lower() == ColumnList.COL_FP_LIB.lower():
+            fp = self.getFootprint().split(":")
+            self.setFootprint(value+':'+fp[1])
+            return
+
+        elif name.lower() == ColumnList.COL_FP.lower():
+            self.setFootprint(value, True)
+            return
+
+        elif name.lower() == ColumnList.COL_VALUE.lower():
+            self.setValue(value)
+            return
+
+        elif name.lower() == ColumnList.COL_PART.lower():
+            return self.setPartName(value)
+
+        elif name.lower() == ColumnList.COL_PART_LIB.lower():
+            return self.setLibName(value)
+
+        # Other fields (case insensitive)
+        for f in self.getFieldNames():
+            if f.lower() == name.lower():
+                field = self.element.get("field", "name", f)
+
+                if field == "" and libraryToo:
+                    field = self.libpart.setField(f, value)
+                else:
+                  self.element.set("field", "", "name", value)
+                return
+
+        # Could not find a matching field. Add a new field
+        self.element.addNewField(name, value)
+
+        return
+
     def getFieldNames(self):
         """Return a list of field names in play for this component.  Mandatory
         fields are not included, and they are: Value, Footprint, Datasheet, Ref.
@@ -266,6 +344,9 @@ class Component():
 
     def getRef(self):
         return self.element.get("comp", "ref")
+
+    def setRef(self, value):
+        self.element.set("comp", "", "ref", value)
 
     # Determine if a component is FITTED or not
     def isFitted(self):
@@ -356,16 +437,32 @@ class Component():
 
     def getFootprint(self, libraryToo=True):
         ret = self.element.get("footprint")
-        if ret == "" and libraryToo:
+        if "".__eq__(ret) and libraryToo:
             if self.libpart:
                 ret = self.libpart.getFootprint()
         return ret
+
+    def setFootprint(self, value, libraryToo=True):
+        ret = self.element.get("footprint")
+        if "".__eq__(ret) and libraryToo:
+            if self.libpart:
+                self.element.setFootprint(value, libraryToo)
+                return
+        else:
+            self.element.set("footprint", value, "", "")
 
     def getDatasheet(self, libraryToo=True):
         ret = self.element.get("datasheet")
         if ret == "" and libraryToo:
             ret = self.libpart.getDatasheet()
         return ret
+
+    def setDatasheet(self, value, libraryToo=True):
+        ret = self.element.get("datasheet")
+        if  "".__eq__(ret) and libraryToo:
+            self.libpart.setDatasheet(value)
+        else:
+            self.element.set("datasheet", value, "", libraryToo)
 
     def getTimestamp(self):
         return self.element.get("tstamp")
