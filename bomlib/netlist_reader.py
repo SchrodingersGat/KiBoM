@@ -273,8 +273,7 @@ class libpart():
         return datasheet
 
     def setDatasheet(self, value):
-
-        datasheet = self.setField("Datasheet", value)
+        self.setField("Datasheet", value)
 
     def getFootprint(self):
         return self.getField("Footprint")

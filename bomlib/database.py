@@ -2,6 +2,7 @@
 
 try:
     import mysql.connector
+    from mysql.connector import errorcode
 except:
     pass
 
@@ -58,9 +59,9 @@ def DBQuery(q, c, prefs):
         if q_elem == '{':  # '{' is the mark for parameter value
             params = {}
             continue
-        if q_elem == '}': # '}' is the mark for end parameter name-value tuple, so this query ends.
+        if q_elem == '}':  # '}' is the mark for end parameter name-value tuple, so this query ends.
             break
-        if query.startswith('CALL ') and q_elem == '(':  # '{' is the mark for args 
+        if query.startswith('CALL ') and q_elem == '(':  # '{' is the mark for args
             args = []
             continue
         if args is not None and q_elem == ')':  # '}' is the mark for end parameter name-value tuple, so this query ends.
@@ -101,10 +102,10 @@ def DBQuery(q, c, prefs):
                 return_value = ""
                 for result in prefs.db_cursor.stored_results():
                     for item in result.fetchall():
-                      if "".__eq__(return_value):
-                          return_value = ' '.join(item)
-                      else:
-                          return_value = return_value + ',' + ' '.join(item)
+                        if "".__eq__(return_value):
+                            return_value = ' '.join(item)
+                        else:
+                            return_value = return_value + ',' + ' '.join(item)
                 if prefs.verbose:
                     print("Procedure returned: " + return_value)
                 return(return_value)
@@ -114,9 +115,9 @@ def DBQuery(q, c, prefs):
                     print("with arguments: ")
                     print(params)
                 try:
-                    prefs.db_cursor.execute(query, params, multi = True)
+                    prefs.db_cursor.execute(query,params,multi = True)
                 except mysql.connector.Error as err:
-                    print("Database access error: "+str(err))
+                    print("Database access error: " + str(err))
                     return ""
                 return_tuple = prefs.db_cursor.fetchone()
                 if return_tuple is not None:
