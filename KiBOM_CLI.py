@@ -37,7 +37,7 @@ except:
 else:
     xlsxwriter_available = True
 
-    
+
 def is_module_available(module_name):
     if sys.version_info < (3, 0):
         # python 2
