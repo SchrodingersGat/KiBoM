@@ -90,6 +90,8 @@ def writeVariant(variant, subdirectory):
     # Extract the components
     components = net.getInterestingComponents()
 
+    ext = args.output.split('.')[-1].lower()
+
     # Group the components
     groups = net.groupComponents(components)
 
@@ -139,6 +141,10 @@ def writeVariant(variant, subdirectory):
         output_file = os.path.abspath(output_file)
 
         say("Output:", output_file)
+
+        # Digikey P/N as URL
+        if ext in ["htm", "html"]:
+            net.digikeyLink(groups)
 
         return WriteBoM(output_file, groups, net, columns.columns, pref)
 

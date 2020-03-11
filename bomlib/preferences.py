@@ -40,6 +40,7 @@ class BomPref:
     OPT_CONFIG_FIELD = "fit_field"
     OPT_HIDE_HEADERS = "hide_headers"
     OPT_HIDE_PCB_INFO = "hide_pcb_info"
+    OPT_DIGIKEY_LINK = "digikey_link"
 
     def __init__(self):
         # List of headings to ignore in BoM generation
@@ -163,6 +164,11 @@ class BomPref:
         if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO):
             self.hidePcbInfo = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO) == '1'
 
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_DIGIKEY_LINK):
+            self.digikey_link = cf.get(self.SECTION_GENERAL, self.OPT_DIGIKEY_LINK)
+        else:
+            self.digikey_link = False
+
         # Read out grouping colums
         if self.SECTION_GROUPING_FIELDS in cf.sections():
             self.groups = [i for i in cf.options(self.SECTION_GROUPING_FIELDS)]
@@ -239,6 +245,9 @@ class BomPref:
 
         cf.set(self.SECTION_GENERAL, '; Whether to hide PCB info from output file')
         cf.set(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO, self.hidePcbInfo)
+
+        cf.set(self.SECTION_GENERAL, '; Interpret as a Digikey P/N and linkr the following field')
+        cf.set(self.SECTION_GENERAL, self.OPT_DIGIKEY_LINK, self.digikey_link)
 
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")

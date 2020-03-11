@@ -393,6 +393,17 @@ class netlist():
 
         return ret
 
+    # Post-process the digikey P/N to be an URL
+    def digikeyLink(self, groups):
+        if not self.prefs.digikey_link:
+            return ""
+        for field in self.prefs.digikey_link.split("\t"):
+            for g in groups:
+                ret = g.getField(field)
+                if ret != "":
+                    g.forceField(field, ' <a href="http://search.digikey.com/scripts/DkSearch/dksus.dll?Detail&name=' + ret + '">' + ret + '</a>')
+        return ""
+
     def groupComponents(self, components):
 
         groups = []
