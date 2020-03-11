@@ -23,6 +23,7 @@ class BomPref:
     SECTION_GROUPING_FIELDS = "GROUP_FIELDS"
     SECTION_REGEXCLUDES = "REGEX_EXCLUDE"
     SECTION_REGINCLUDES = "REGEX_INCLUDE"
+    SECTION_JOIN = "JOIN"
 
     OPT_PCB_CONFIG = "pcb_configuration"
     OPT_NUMBER_ROWS = "number_rows"
@@ -109,6 +110,9 @@ class BomPref:
             ["d", "diode", "d_small"]
         ]
 
+        # Nothing to join by default
+        self.join = []
+
     # Check an option within the SECTION_GENERAL group
     def checkOption(self, parser, opt, default=False):
         if parser.has_option(self.SECTION_GENERAL, opt):
@@ -191,6 +195,10 @@ class BomPref:
         # Read out component aliases
         if self.SECTION_ALIASES in cf.sections():
             self.aliases = [re.split('[ \t]+', a) for a in cf.options(self.SECTION_ALIASES)]
+
+        # Read out join rules
+        if self.SECTION_JOIN in cf.sections():
+            self.join = [a.split("\t") for a in cf.options(self.SECTION_JOIN)]
 
         if self.SECTION_REGEXCLUDES in cf.sections():
             self.regExcludes = []
@@ -290,6 +298,15 @@ class BomPref:
 
         for a in self.aliases:
             cf.set(self.SECTION_ALIASES, "\t".join(a))
+
+        cf.add_section(self.SECTION_JOIN)
+        cf.set(self.SECTION_JOIN, "; A list of rules to join the content of fields")
+        cf.set(self.SECTION_JOIN, "; Each line is a rule, the first name is the field that will receive the data")
+        cf.set(self.SECTION_JOIN, "; from the other fields")
+        cf.set(self.SECTION_JOIN, '; Field names are case-insensitive')
+
+        for a in self.join:
+            cf.set(self.SECTION_JOIN, "\t".join(a))
 
         cf.add_section(self.SECTION_REGINCLUDES)
         cf.set(self.SECTION_REGINCLUDES, '; A series of regular expressions used to include parts in the BoM')
