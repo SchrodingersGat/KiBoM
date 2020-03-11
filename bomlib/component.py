@@ -516,6 +516,19 @@ class ComponentGroup():
                 fld=fieldData).encode('utf-8'))
             self.fields[field] += " " + fieldData
 
+    # Like updateField, but bypassing conflicts test
+    def forceField(self, field, fieldData):
+
+        # Protected fields cannot be overwritten
+        if field in ColumnList._COLUMNS_PROTECTED:
+            return
+
+        if (field is None or field == ""):
+            return
+        elif fieldData == "" or fieldData is None:
+            return
+        self.fields[field] = fieldData
+
     def updateFields(self, usealt=False, wrapN=None):
         for c in self.components:
             for f in c.getFieldNames():

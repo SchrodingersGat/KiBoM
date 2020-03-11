@@ -145,6 +145,10 @@ def writeVariant(variant, subdirectory):
 
         say("Output:", output_file)
 
+        # Digikey P/N as URL
+        if ext in ["htm", "html"]:
+            net.digikeyLink(groups)
+
         return WriteBoM(output_file, groups, net, columns.columns, pref)
 
 
