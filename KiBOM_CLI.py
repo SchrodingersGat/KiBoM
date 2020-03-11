@@ -90,6 +90,11 @@ def writeVariant(variant, subdirectory):
     # Extract the components
     components = net.getInterestingComponents()
 
+    # Datasheet as link
+    ext = args.output.split('.')[-1].lower()
+    if ext in ["htm","html"]:
+       net.datasheetLink(components)
+
     # Group the components
     groups = net.groupComponents(components)
 

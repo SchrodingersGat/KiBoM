@@ -181,6 +181,16 @@ class xmlElement():
 
         return ""
 
+    # Is it complete? assumes the target is an user defined field
+    def setField(self, elemName, value):
+        """Sets the text of elemName field
+        """
+        for child in self.children:
+            if child.name=="fields":
+               for tg in child.children:
+                   if tg.attributes["name"]==elemName:
+                      tg.setChars(value)
+        return ""
 
 class libpart():
     """Class for a library part, aka 'libpart' in the xml netlist file.
@@ -392,6 +402,16 @@ class netlist():
         ret.sort(key=lambda g: g.getRef())
 
         return ret
+
+    # Hack to avoid an extra column for the datasheet
+    def datasheetLink(self, components):
+        if not self.prefs.as_link:
+           return ""
+        for c in components:
+            ret = c.getDatasheet()
+            if ret != "":
+               c.element.setField(self.prefs.as_link,' <a href="'+ret+'">'+c.getField(self.prefs.as_link)+'</a>')
+        return ""
 
     def groupComponents(self, components):
 
