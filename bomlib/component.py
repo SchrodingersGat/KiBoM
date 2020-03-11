@@ -280,6 +280,12 @@ class Component():
         if check == "":
             return True
 
+        # Also support space separated list (simple cases)
+        opts = check.split(" ")
+        for opt in opts:
+            if opt.lower() in DNF:
+                return False
+
         opts = check.lower().split(",")
 
         exclude = False
