@@ -186,11 +186,12 @@ class xmlElement():
         """Sets the text of elemName field
         """
         for child in self.children:
-            if child.name=="fields":
-               for tg in child.children:
-                   if tg.attributes["name"]==elemName:
-                      tg.setChars(value)
+            if child.name == "fields":
+                for tg in child.children:
+                    if tg.attributes["name"] == elemName:
+                        tg.setChars(value)
         return ""
+
 
 class libpart():
     """Class for a library part, aka 'libpart' in the xml netlist file.
@@ -406,11 +407,11 @@ class netlist():
     # Hack to avoid an extra column for the datasheet
     def datasheetLink(self, components):
         if not self.prefs.as_link:
-           return ""
+            return ""
         for c in components:
             ret = c.getDatasheet()
             if ret != "":
-               c.element.setField(self.prefs.as_link,' <a href="'+ret+'">'+c.getField(self.prefs.as_link)+'</a>')
+                c.element.setField(self.prefs.as_link, ' <a href="' + ret + '">' + c.getField(self.prefs.as_link) + '</a>')
         return ""
 
     def groupComponents(self, components):
