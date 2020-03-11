@@ -186,6 +186,53 @@ class Component():
     def getValue(self):
         return self.element.get("value")
 
+    # Try to better sort R, L and C components
+    def getValueSort(self):
+        pref = self.getPrefix()
+        v = self.getValue()
+        # Make the decimal separator uniform
+        v = v.replace(',', '.')
+        # Replace micro by u
+        v = v.replace("µ", "u")
+        # Capacitors and Inductors
+        if pref in "CL":
+            p = re.compile(r'([\d\.]+)\s*([unp])[fh]', flags=re.IGNORECASE)
+            m = p.search(v)
+            if m is not None:
+                mult = 1000
+                if m.group(2).lower() == 'n':
+                    mult = 1000000
+                if m.group(2).lower() == 'u':
+                    mult = 1000000000
+                c = "{0:15d}".format(int(float(m.group(1)) * mult))
+                v = p.sub(c, v)
+                return v
+        # Resistors
+        if pref == 'R':
+            p = re.compile(r'(\d+)([rkm])(\d+)', flags=re.IGNORECASE)
+            m = p.search(v)
+            if m is not None:
+                c = m.group(1) + '.' + m.group(3) + m.group(2)
+                v = p.sub(c, v)
+            p = re.compile(r'([\d\.]+)\s*([km])', flags=re.IGNORECASE)
+            m = p.search(v)
+            mult = 1000
+            if m is not None:
+                if m.group(2).lower() == 'k':
+                    mult = 1000000
+                if m.group(2).lower() == 'm':
+                    mult = 1000000000
+                c = "{0:15d}".format(int(float(m.group(1)) * mult))
+                v = p.sub(c, v)
+                return v
+            p = re.compile(r'([\d\.]+)', flags=re.IGNORECASE)
+            m = p.search(v)
+            if m is not None:
+                c = "{0:15d}".format(int(float(m.group(1)) * mult))
+                v = p.sub(c, v)
+                return v
+        return self.element.get("value")
+
     def getField(self, name, ignoreCase=True, libraryToo=True):
         """Return the value of a field named name. The component is first
         checked for the field, and then the components library part is checked
