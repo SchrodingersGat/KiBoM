@@ -1,0 +1,5 @@
+# Ignore generated BOM files
+
+*.csv
+*.html
+*.tmp

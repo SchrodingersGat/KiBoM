@@ -8,7 +8,9 @@ python:
   - "3.7"
 
 before_install:
-  - sudo apt-get install flake8
+  - sudo apt-get update
+  - sudo apt-get install python3-pip
+  - pip3 install -U -r test/requirements.txt
 
 script:
   - flake8 .
