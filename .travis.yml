@@ -15,7 +15,7 @@ addons:
     update: true
 
 before_install:
-  - apt-get install python3-pip python3-coverage python3-xlsxwriter
+  - sudo apt-get install python3-pip python3-coverage python3-xlsxwriter
 
 script:
   # Check Python code for style-guide 
