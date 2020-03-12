@@ -134,6 +134,50 @@ def WriteHTML(filename, groups, net, headings, prefs):
         html.write("</table>\n")
         html.write("<br><br>\n")
 
+        if prefs.generateDNF:
+            html.write("<h2>Optional components (DNF=Do Not Fit)</h2>\n")
+ 
+            # DNF component groups
+            html.write('<table border="1">\n')
+ 
+            # Row titles:
+            html.write("<tr>\n")
+            if prefs.numberRows:
+                html.write("\t<th></th>\n")
+            for i, h in enumerate(headings):
+                # Cell background color
+                bg = bgColor(h)
+                html.write('\t<th align="center"{bg}>{h}</th>\n'.format(h=h, bg=' bgcolor="{c}"'.format(c=bg) if bg else ''))
+            html.write("</tr>\n")
+ 
+            rowCount = 0
+ 
+            for i, group in enumerate(groups):
+ 
+                if not(prefs.ignoreDNF and not group.isFitted()):
+                    continue
+ 
+                row = group.getRow(headings)
+                rowCount += 1
+                html.write("<tr>\n")
+ 
+                if prefs.numberRows:
+                    html.write('\t<td align="center">{n}</td>\n'.format(n=rowCount))
+ 
+                for n, r in enumerate(row):
+ 
+                    if len(r) == 0:
+                        bg = BG_EMPTY
+                    else:
+                        bg = bgColor(headings[n])
+ 
+                    html.write('\t<td align="center"{bg}>{val}</td>\n'.format(bg=' bgcolor={c}'.format(c=bg) if bg else '', val=link(r)))
+ 
+                html.write("</tr>\n")
+
+            html.write("</table>\n")
+            html.write("<br><br>\n")
+
         html.write("</body></html>")
 
     return True

@@ -32,6 +32,7 @@ class BomPref:
     OPT_ALT_WRAP = "alt_wrap"
     OPT_MERGE_BLANK = "merge_blank_fields"
     OPT_IGNORE_DNF = "ignore_dnf"
+    OPT_GENERATE_DNF = "html_generate_dnf"
     OPT_BACKUP = "make_backup"
     OPT_OUTPUT_FILE_NAME = "output_file_name"
     OPT_VARIANT_FILE_NAME_FORMAT = "variant_file_name_format"
@@ -52,6 +53,7 @@ class BomPref:
         self.useAlt = False  # Use alternate reference representation
         self.altWrap = None  # Wrap to n items when using alt representation
         self.ignoreDNF = True  # Ignore rows for do-not-fit parts
+        self.generateDNF = True  # Generate a list of do-not-fit parts
         self.numberRows = True  # Add row-numbers to BoM output
         self.groupConnectors = True  # Group connectors and ignore component value
         self.useRegex = True  # Test various columns with regex
@@ -134,6 +136,7 @@ class BomPref:
         # Read general options
         if self.SECTION_GENERAL in cf.sections():
             self.ignoreDNF = self.checkOption(cf, self.OPT_IGNORE_DNF, default=True)
+            self.generateDNF = self.checkOption(cf, self.OPT_GENERATE_DNF, default=True)
             self.useAlt = self.checkOption(cf, self.OPT_USE_ALT, default=False)
             self.altWrap = self.checkInt(cf, self.OPT_ALT_WRAP, default=None)
             self.numberRows = self.checkOption(cf, self.OPT_NUMBER_ROWS, default=True)
@@ -209,6 +212,7 @@ class BomPref:
         cf.add_section(self.SECTION_GENERAL)
         cf.set(self.SECTION_GENERAL, "; General BoM options here")
         self.addOption(cf, self.OPT_IGNORE_DNF, self.ignoreDNF, comment="If '{opt}' option is set to 1, rows that are not to be fitted on the PCB will not be written to the BoM file".format(opt=self.OPT_IGNORE_DNF))
+        self.addOption(cf, self.OPT_GENERATE_DNF, self.generateDNF, comment="If '{opt}' option is set to 1, also generate a list of components not fitted on the PCB (HTML only)".format(opt=self.OPT_GENERATE_DNF))
         self.addOption(cf, self.OPT_USE_ALT, self.useAlt, comment="If '{opt}' option is set to 1, grouped references will be printed in the alternate compressed style eg: R1-R7,R18".format(opt=self.OPT_USE_ALT))
         self.addOption(cf, self.OPT_ALT_WRAP, self.altWrap, comment="If '{opt}' option is set to and integer N, the references field will wrap after N entries are printed".format(opt=self.OPT_ALT_WRAP))
         self.addOption(cf, self.OPT_NUMBER_ROWS, self.numberRows, comment="If '{opt}' option is set to 1, each row in the BoM will be prepended with an incrementing row number".format(opt=self.OPT_NUMBER_ROWS))
