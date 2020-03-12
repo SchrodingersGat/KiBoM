@@ -10,6 +10,7 @@
 
 from __future__ import print_function
 import sys
+import os.path
 import xml.sax as sax
 
 from bomlib.component import (Component, ComponentGroup)
@@ -353,9 +354,9 @@ class netlist():
     def getSource(self):
         """Return the source string for the design"""
         if (sys.version_info[0] >= 3):
-            return self.design.get("source")
+            return os.path.basename(self.design.get("source"))
         else:
-            return self.design.get("source").encode('ascii', 'ignore')
+            return os.path.basename(self.design.get("source").encode('ascii', 'ignore'))
 
     def getTool(self):
         """Return the tool string which was used to create the netlist tree"""
