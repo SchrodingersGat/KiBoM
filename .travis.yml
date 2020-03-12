@@ -9,7 +9,7 @@ python:
 before_install:
   - sudo apt-get update
   - sudo apt-get install python3-pip
-  - pip3 install -U -r test/requirements.txt
+  - cd test && pip3 install -U -r requirements.txt && cd ..
 
 script:
   # Check Python code for style-guide 
