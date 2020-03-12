@@ -12,7 +12,13 @@ before_install:
   - pip3 install -U -r test/requirements.txt
 
 script:
+  # Check Python code for style-guide 
   - flake8 .
-  # Test that the export script works with both Python2 and Python3
+    # Test that the export script works with both Python2 and Python3
   - python2 KiBOM_CLI.py test/kibom-test.xml test/out3.csv
   - python3 KiBOM_CLI.py test/kibom-test.xml test/out3.csv
+  # Run the coverage tests 
+  - ./run-tests.sh
+
+after_success:
+  - coveralls
