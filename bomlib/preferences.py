@@ -295,5 +295,5 @@ class BomPref:
 
             cf.set(self.SECTION_REGEXCLUDES, i[0] + "\t" + i[1])
 
-        with open(file, 'wb') as configfile:
+        with open(file, 'w') as configfile:
             cf.write(configfile)
