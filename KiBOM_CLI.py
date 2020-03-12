@@ -149,7 +149,7 @@ parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running fr
 parser.add_argument("output", default="", help='BoM output file name.\nUse "%%O" when running from within KiCad to use the default output name (csv file).\nFor e.g. HTML output, use "%%O.html"')
 parser.add_argument("-n", "--number", help="Number of boards to build (default = 1)", type=int, default=None)
 parser.add_argument("-v", "--verbose", help="Enable verbose output", action='count')
-parser.add_argument("-r", "--variant", help="Board variant(s), used to determine which components are output to the BoM. Comma-separate for multiple.", type=str, default=None)
+parser.add_argument("-r", "--variant", help="Board variant(s), used to determine which components are output to the BoM. To specify multiple variants, with a BOM file exported for each variant, separate variants with the ';' (semicolon) character.", type=str, default=None)
 parser.add_argument("-d", "--subdirectory", help="Subdirectory within which to store the generated BoM files.", type=str, default=None)
 parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
 parser.add_argument("-s", "--separator", help="CSV Separator (default ',')", type=str, default=None)
