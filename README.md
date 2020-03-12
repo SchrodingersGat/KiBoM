@@ -39,7 +39,9 @@ optional arguments:
   -v, --verbose         Enable verbose output
   -r VARIANT, --variant VARIANT
                         Board variant(s), used to determine which components
-                        are output to the BoM. Comma-separate for multiple.
+                        are output to the BoM. To specify multiple variants,
+                        with a BOM file exported for each variant, separate
+                        variants with the ';' (semicolon) character.
   -d SUBDIRECTORY, --subdirectory SUBDIRECTORY
                         Subdirectory within which to store the generated BoM
                         files.

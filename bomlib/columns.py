@@ -108,19 +108,3 @@ class ColumnList:
         # Otherwise, splice the new column in
         else:
             self.columns = self.columns[0:index] + [col] + self.columns[index:]
-
-
-if __name__ == '__main__':
-    c = ColumnList()
-
-    c.AddColumn("Test1")
-    c.AddColumn("Test1")
-    c.AddColumn("Test2")
-    c.AddColumn("Test3")
-    c.AddColumn("Test4")
-    c.AddColumn("Test2")
-
-    c.RemoveColumn("Test2")
-    c.RemoveColumn("Part")
-    c.RemoveColumn(2)
-    c.RemoveColumn(5)

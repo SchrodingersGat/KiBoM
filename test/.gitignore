@@ -1,0 +1,10 @@
+# Ignore generated BOM files
+
+bom.ini
+
+*.csv
+*.html
+*.tmp
+*.xls
+*.xlsx
+*.xml
