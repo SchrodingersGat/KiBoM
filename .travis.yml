@@ -4,7 +4,6 @@ language:
   - python
 
 python:
-  - "2.7"
   - "3.7"
 
 before_install:
@@ -14,3 +13,6 @@ before_install:
 
 script:
   - flake8 .
+  # Test that the export script works with both Python2 and Python3
+  - python2 KiBOM_CLI.py test/kibom-test.xml test/out3.csv
+  - python3 KiBOM_CLI.py test/kibom-test.xml test/out3.csv
