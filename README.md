@@ -437,3 +437,4 @@ With thanks to the following contributors:
 * https://github.com/Ximi1970
 * https://github.com/AngusP
 * https://github.com/trentks
+* https://github.com/set-soft
