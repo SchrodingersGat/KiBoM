@@ -20,7 +20,7 @@ The *KiBOM_CLI* script can be run directly from KiCad or from the command line. 
 
 ~~~~
 usage: KiBOM_CLI.py [-h] [-n NUMBER] [-v] [-r VARIANT] [-d SUBDIRECTORY]
-                    [--cfg CFG] [-s SEPARATOR]
+                    [--cfg CFG] [-s SEPARATOR] [--version]
                     netlist output
 
 KiBOM Bill of Materials generator script
@@ -28,8 +28,8 @@ KiBOM Bill of Materials generator script
 positional arguments:
   netlist               xml netlist file. Use "%I" when running from within
                         KiCad
-  output                BoM output file name. Use "%O" when running from
-                        within KiCad to use the default output name (csv
+  output                BoM output file name. Use "%O" when running from   
+                        within KiCad to use the default output name (csv   
                         file). For e.g. HTML output, use "%O.html"
 
 optional arguments:
@@ -49,8 +49,7 @@ optional arguments:
                         not specified here)
   -s SEPARATOR, --separator SEPARATOR
                         CSV Separator (default ',')
-
-
+  --version             show program's version number and exit
 ~~~~                        
 
 
