@@ -18,7 +18,7 @@ script:
   - python2 KiBOM_CLI.py test/kibom-test.xml test/out3.csv
   - python3 KiBOM_CLI.py test/kibom-test.xml test/out3.csv
   # Run the coverage tests 
-  - sudo ./run-tests.sh
+  - sudo bash ./run-tests.sh
 
 after_success:
   - coveralls
