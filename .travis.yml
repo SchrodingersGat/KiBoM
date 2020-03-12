@@ -1,15 +1,21 @@
 # travis-ci integration for KiBOM
 
-language:
-  - python
+dist: xenial
+
+language: python
 
 python:
-  - "3.7"
+  - 3.6
+
+install:
+  - pip3 -r test/requirements.txt
+
+addons:
+  apt:
+    update: true
 
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install python3-pip
-  - cd test && pip3 install -U -r requirements.txt && cd ..
+  - sudo apt-get install python3-pip python3-xlsxwriter
 
 script:
   # Check Python code for style-guide 
