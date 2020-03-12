@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# delete the 'default' BOM file so it gets created
+rm test/bom.ini
+
 coverage erase
 
 # Run a simple test
