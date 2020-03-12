@@ -8,14 +8,14 @@ python:
   - 3.6
 
 install:
-  - sudo pip3 install -r test/requirements.txt
+  - pip3 install -r test/requirements.txt
 
 addons:
   apt:
     update: true
 
 before_install:
-  - sudo apt-get install python3-pip python3-coverage python3-xlsxwriter
+  - apt-get install python3-pip python3-coverage python3-xlsxwriter
 
 script:
   # Check Python code for style-guide 
@@ -24,7 +24,7 @@ script:
   - python2 KiBOM_CLI.py test/kibom-test.xml test/out3.csv
   - python3 KiBOM_CLI.py test/kibom-test.xml test/out3.csv
   # Run the coverage tests 
-  - sudo bash ./run-tests.sh
+  - bash ./run-tests.sh
 
 after_success:
   - coveralls
