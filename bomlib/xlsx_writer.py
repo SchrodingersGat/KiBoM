@@ -60,7 +60,7 @@ else:
 
             for columnCount in range(len(row)):
                 
-                cell = row[columnCount].decode('utf-8')
+                cell = row[columnCount]
                 
                 worksheet.write_string(rowCount, columnCount, cell, cellformats[columnCount])
                         

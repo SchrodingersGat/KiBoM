@@ -373,6 +373,10 @@ class netlist():
             return self.design.get("date").encode('ascii', 'ignore')
 
     def getSource(self):
+
+        path = self.design.get("source").replace("\\", "/")
+        path = os.path.basename(path)
+
         """Return the source string for the design"""
 
         path = self.design.get("source").replace("\\", "/")

@@ -1,0 +1,4 @@
+[run]
+source = 
+    KiBOM_CLI.py
+    ./bomlib

@@ -8,6 +8,7 @@ from bomlib.sort import natural_sort
 import re
 import sys
 
+# String matches for marking a component as "do not fit"
 DNF = [
     "dnf",
     "dnl",
@@ -32,6 +33,7 @@ DNC = [
     "no change",
     "fixed"
 ]
+
 
 class Component():
     """Class for a component, aka 'comp' in the xml netlist file.
@@ -107,6 +109,10 @@ class Component():
         
         # 'fitted' value must be the same for both parts
         if self.isFitted() != other.isFitted():
+            return False
+
+        # 'fixed' value must be the same for both parts
+        if self.isFixed() != other.isFixed():
             return False
 
         if len(self.prefs.groups) == 0:

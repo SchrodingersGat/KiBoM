@@ -54,7 +54,7 @@ def WriteXML(filename, groups, net, headings, prefs):
             h = h.replace('"', '')
             h = h.replace("'", '')
 
-            attrib[h] = str(row[i]).decode('ascii', errors='ignore')
+            attrib[h] = str(row[i])
 
         # sub = ElementTree.SubElement(xml, "group", attrib=attrib)
 

@@ -1,6 +1,6 @@
 # KiBoM
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  [![Travis Status](https://api.travis-ci.org/SchrodingersGat/KiBoM.svg?branch=master)](https://travis-ci.org/SchrodingersGat/KiBoM)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  [![Travis Status](https://api.travis-ci.org/SchrodingersGat/KiBoM.svg?branch=master)](https://travis-ci.org/SchrodingersGat/KiBoM)  [![Coverage Status](https://coveralls.io/repos/github/SchrodingersGat/KiBoM/badge.svg?branch=master)](https://coveralls.io/github/SchrodingersGat/KiBoM?branch=master)
 
 Configurable BoM generation tool for KiCad EDA (http://kicad-pcb.org/)
 
@@ -20,7 +20,7 @@ The *KiBOM_CLI* script can be run directly from KiCad or from the command line. 
 
 ~~~~
 usage: KiBOM_CLI.py [-h] [-n NUMBER] [-v] [-r VARIANT] [-d SUBDIRECTORY]
-                    [--cfg CFG] [-s SEPARATOR]
+                    [--cfg CFG] [-s SEPARATOR] [--version]
                     netlist output
 
 KiBOM Bill of Materials generator script
@@ -28,8 +28,8 @@ KiBOM Bill of Materials generator script
 positional arguments:
   netlist               xml netlist file. Use "%I" when running from within
                         KiCad
-  output                BoM output file name. Use "%O" when running from
-                        within KiCad to use the default output name (csv
+  output                BoM output file name. Use "%O" when running from   
+                        within KiCad to use the default output name (csv   
                         file). For e.g. HTML output, use "%O.html"
 
 optional arguments:
@@ -39,7 +39,9 @@ optional arguments:
   -v, --verbose         Enable verbose output
   -r VARIANT, --variant VARIANT
                         Board variant(s), used to determine which components
-                        are output to the BoM. Comma-separate for multiple.
+                        are output to the BoM. To specify multiple variants,
+                        with a BOM file exported for each variant, separate
+                        variants with the ';' (semicolon) character.
   -d SUBDIRECTORY, --subdirectory SUBDIRECTORY
                         Subdirectory within which to store the generated BoM
                         files.
@@ -47,8 +49,7 @@ optional arguments:
                         not specified here)
   -s SEPARATOR, --separator SEPARATOR
                         CSV Separator (default ',')
-
-
+  --version             show program's version number and exit
 ~~~~                        
 
 
@@ -146,6 +147,10 @@ To specify a part as DNF (do not fit), the *fit_field* field can be set to one o
 * "nostuff"
 * "noload"
 * "do not load"
+
+**DNC Parts**
+
+Parts can be marked as *do not change* or *fixed* by specifying the `dnc` attribute in the *fit_field* field.
 
 **Note:**
 
@@ -437,3 +442,4 @@ With thanks to the following contributors:
 * https://github.com/Ximi1970
 * https://github.com/AngusP
 * https://github.com/trentks
+* https://github.com/set-soft
