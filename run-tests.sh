@@ -17,6 +17,9 @@ coverage run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.xml
 # Generate an XLSX file
 coverage run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.xlsx
 
+# Run the sanity checker on the output BOM files
+coverage run -a test/test_bom.py
+
 # Generate HTML code coverage output
 coverage html
 

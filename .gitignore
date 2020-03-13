@@ -3,7 +3,7 @@ __pycache__/
 *$py.class
 *.pyc
 
-*.kicad_mod
+*.patch
 .idea/
 
 .env

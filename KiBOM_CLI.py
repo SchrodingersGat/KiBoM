@@ -35,7 +35,7 @@ except:
 else:
     xlsxwriter_available = True
 
-KIBOM_VERSION = "1.6.0"
+KIBOM_VERSION = "1.6.1"
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
