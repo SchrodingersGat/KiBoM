@@ -8,6 +8,7 @@ from bomlib.sort import natural_sort
 import re
 import sys
 
+# String matches for marking a component as "do not fit"
 DNF = [
     "dnf",
     "dnl",
@@ -24,6 +25,9 @@ DNF = [
     "not placed",
     "no stuff",
 ]
+
+# String matches for marking a component as "do not change"
+DNC = ["dnc", "do not change"]
 
 
 class Component():
@@ -100,6 +104,10 @@ class Component():
         
         # 'fitted' value must be the same for both parts
         if self.isFitted() != other.isFitted():
+            return False
+
+        # 'fixed' value must be the same for both parts
+        if self.isFixed() != other.isFixed():
             return False
 
         if len(self.prefs.groups) == 0:
@@ -301,6 +309,41 @@ class Component():
 
         return include and not exclude
 
+    # Determine if a component is FIXED or not
+    def isFixed(self):
+
+        check = self.getField(self.prefs.configField).lower()
+
+        # Check the value field first
+        if self.getValue().lower() in DNC:
+            return False
+
+        # Empty is not fixed
+        if check == "":
+            return True
+
+        opts = check.split(" ")
+        for opt in opts:
+            if opt.lower() in DNC:
+                return False
+
+        opts = check.split(",")
+
+        result = False
+
+        for opt in opts:
+            # Options that start with '-' are explicitly removed from certain configurations
+            if opt.startswith('-') and opt[1:].lower() == self.prefs.pcbConfig.lower():
+                result = False
+                break
+            if opt.startswith("+"):
+                result = False
+                if opt[1:].lower() == self.prefs.pcbConfig.lower():
+                    result = True
+
+        # by default, part is not fixed
+        return result
+
     # Test if this part should be included, based on any regex expressions provided in the preferences
     def testRegExclude(self):
 
@@ -475,6 +518,9 @@ class ComponentGroup():
     def isFitted(self):
         return any([c.isFitted() for c in self.components])
 
+    def isFixed(self):
+        return any([c.isFixed() for c in self.components])
+
     def getRefs(self):
         # Return a list of the components
         return " ".join([c.getRef() for c in self.components])
@@ -533,9 +579,10 @@ class ComponentGroup():
             self.fields[ColumnList.COL_REFERENCE] = self.getRefs()
 
         q = self.getCount()
-        self.fields[ColumnList.COL_GRP_QUANTITY] = "{n}{dnf}".format(
+        self.fields[ColumnList.COL_GRP_QUANTITY] = "{n}{dnf}{dnc}".format(
             n=q,
-            dnf=" (DNF)" if not self.isFitted() else "")
+            dnf=" (DNF)" if not self.isFitted() else "",
+            dnc=" (DNC)" if not self.isFixed() else "")
 
         self.fields[ColumnList.COL_GRP_BUILD_QUANTITY] = str(q * self.prefs.boards) if self.isFitted() else "0"
         self.fields[ColumnList.COL_VALUE] = self.components[0].getValue()
