@@ -2,7 +2,7 @@
 <export version="D">
   <design>
     <source>C:\KiCad\KiBoM\test\kibom-test.sch</source>
-    <date>12/03/2020 11:34:46 PM</date>
+    <date>13/03/2020 12:28:18 PM</date>
     <tool>Eeschema (5.1.5)-2</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
@@ -20,7 +20,7 @@
   </design>
   <components>
     <comp ref="R1">
-      <value>10K</value>
+      <value>10000</value>
       <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
       <datasheet>~</datasheet>
       <libsource lib="Device" part="R" description="Resistor"/>
@@ -63,6 +63,9 @@
       <value>4K7</value>
       <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
       <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">DNF</field>
+      </fields>
       <libsource lib="Device" part="R" description="Resistor"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamp>5E6A3CA0</tstamp>
@@ -71,6 +74,9 @@
       <value>4700</value>
       <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
       <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">DNC</field>
+      </fields>
       <libsource lib="Device" part="R" description="Resistor"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamp>5E6A3F38</tstamp>
