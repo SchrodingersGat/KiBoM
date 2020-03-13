@@ -148,6 +148,10 @@ To specify a part as DNF (do not fit), the *fit_field* field can be set to one o
 * "noload"
 * "do not load"
 
+**DNC Parts**
+
+Parts can be marked as *do not change* or *fixed* by specifying the `dnc` attribute in the *fit_field* field.
+
 **Note:**
 
 If the *Value* field for the component contains any of these values, the component will also not be included
