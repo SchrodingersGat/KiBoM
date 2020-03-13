@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import io
 import os
+import re
+import sys
 from distutils.core import setup
 
 # Package meta-data.
@@ -8,20 +10,30 @@ NAME = 'kibom'
 NAME_PKG = 'bomlib'
 DESCRIPTION = 'Configurable BoM generation tool for KiCad'
 URL = 'https://github.com/INTI-CMNB/KiBoM/'
-EMAIL = 'unknown'
-AUTHOR = 'Oliver'
+EMAIL = 'oliver.henry.walters@gmail.com'
+AUTHOR = 'Oliver Henry Walters'
 
 here = os.path.abspath(os.path.dirname(__file__))
 # Import the README and use it as the long-description.
 # Note: this will only work if 'README.md' is present in your MANIFEST.in file!
 with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = '\n' + f.read()
-about = {}
-with open(os.path.join(here, NAME_PKG, 'version.py')) as f:
-    exec(f.read(), about)
+
+# Find the version
+with open('KiBOM_CLI.py') as f:
+    for line in f:
+        z=re.match('KIBOM_VERSION\s+=\s+\"([\d\.]+)\"',line)
+        if z:
+           version=z.groups()[0]
+           break
+try:
+    print('Version is '+version)
+except:
+    print('Can\'t find version!')
+    sys.exit(1)
 
 setup(name=NAME,
-      version=about['KIBOM_VERSION'],
+      version=version,
       description=DESCRIPTION,
       long_description=long_description,
       long_description_content_type='text/markdown',
