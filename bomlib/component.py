@@ -24,8 +24,14 @@ DNF = [
     "not placed",
     "no stuff",
 ]
-DNC = ["dnc", "do not change"]
 
+# String matches for marking a component as "do not change" or "fixed"
+DNC = [
+    "dnc",
+    "do not change",
+    "no change",
+    "fixed"
+]
 
 class Component():
     """Class for a component, aka 'comp' in the xml netlist file.
