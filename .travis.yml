@@ -5,10 +5,11 @@ dist: xenial
 language: python
 
 python:
+  - 2.7
   - 3.6
 
 install:
-  - pip3 install -r test/requirements.txt
+  - pip install -r test/requirements.txt
 
 addons:
   apt:
@@ -20,9 +21,6 @@ before_install:
 script:
   # Check Python code for style-guide 
   - flake8 .
-    # Test that the export script works with both Python2 and Python3
-  - python2 KiBOM_CLI.py test/kibom-test.xml test/out2.csv
-  - python3 KiBOM_CLI.py test/kibom-test.xml test/out3.csv
   # Run the coverage tests 
   - bash ./run-tests.sh
 
