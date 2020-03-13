@@ -374,10 +374,14 @@ class netlist():
 
     def getSource(self):
         """Return the source string for the design"""
+
+        path = self.design.get("source").replace("\\", "/")
+        path = os.path.basename(path)
+
         if (sys.version_info[0] >= 3):
-            return os.path.basename(self.design.get("source"))
+            return path
         else:
-            return os.path.basename(self.design.get("source").encode('ascii', 'ignore'))
+            return path.encode('ascii', 'ignore')
 
     def getTool(self):
         """Return the tool string which was used to create the netlist tree"""
