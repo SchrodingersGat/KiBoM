@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from bomlib.csv_writer import WriteCSV
-from bomlib.xml_writer import WriteXML
-from bomlib.html_writer import WriteHTML
-from bomlib.xlsx_writer import WriteXLSX
+from .csv_writer import WriteCSV
+from .xml_writer import WriteXML
+from .html_writer import WriteHTML
+from .xlsx_writer import WriteXLSX
 
-import bomlib.columns as columns
-from bomlib.preferences import BomPref
+from . import columns
+from . import debug
+from .preferences import BomPref
 
 import os
 import shutil
@@ -54,33 +55,33 @@ def WriteBoM(filename, groups, net, headings=columns.ColumnList._COLUMNS_DEFAULT
     # CSV file writing
     if ext in ["csv", "tsv", "txt"]:
         if WriteCSV(filename, groups, net, headings, prefs):
-            print("CSV Output -> {fn}".format(fn=filename))
+            debug.info("CSV Output -> {fn}".format(fn=filename))
             result = True
         else:
-            print("Error writing CSV output")
+            debug.error("Error writing CSV output")
 
     elif ext in ["htm", "html"]:
         if WriteHTML(filename, groups, net, headings, prefs):
-            print("HTML Output -> {fn}".format(fn=filename))
+            debug.info("HTML Output -> {fn}".format(fn=filename))
             result = True
         else:
-            print("Error writing HTML output")
+            debug.error("Error writing HTML output")
 
     elif ext in ["xml"]:
         if WriteXML(filename, groups, net, headings, prefs):
-            print("XML Output -> {fn}".format(fn=filename))
+            debug.info("XML Output -> {fn}".format(fn=filename))
             result = True
         else:
-            print("Error writing XML output")
+            debug.error("Error writing XML output")
 
-    elif ext in ["xlsx"] and prefs.xlsxwriter_available:
+    elif ext in ["xlsx"]:
         if WriteXLSX(filename, groups, net, headings, prefs):
-            print("XLSX Output -> {fn}".format(fn=filename))
+            debug.info("XLSX Output -> {fn}".format(fn=filename))
             result = True
         else:
-            print("Error writing XLSX output")
+            debug.error("Error writing XLSX output")
 
     else:
-        print("Unsupported file extension: {ext}".format(ext=ext))
+        debug.error("Unsupported file extension: {ext}".format(ext=ext))
 
     return result

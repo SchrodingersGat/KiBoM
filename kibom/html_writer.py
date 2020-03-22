@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from bomlib.component import ColumnList
+from .component import ColumnList
+from . import debug
 
 BG_GEN = "#E6FFEE"
 BG_KICAD = "#FFE6B3"
@@ -42,7 +43,7 @@ def WriteHTML(filename, groups, net, headings, prefs):
     """
 
     if not filename.endswith(".html") and not filename.endswith(".htm"):
-        print("{fn} is not a valid html file".format(fn=filename))
+        debug.error("{fn} is not a valid html file".format(fn=filename))
         return False
 
     nGroups = len(groups)

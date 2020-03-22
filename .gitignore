@@ -19,4 +19,9 @@ venv.bak/
 .coverage
 htmlcov/
 
+# PIP build
+build/
+dist/
+kibom.egg-info/
+
 .python-version

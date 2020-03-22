@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from bomlib.columns import ColumnList
-from bomlib.preferences import BomPref
-import bomlib.units as units
-from bomlib.sort import natural_sort
 import re
 import sys
+
+from .columns import ColumnList
+from .preferences import BomPref
+from . import units
+from . import debug
+from .sort import natural_sort
 
 # String matches for marking a component as "do not fit"
 DNF = [
@@ -372,12 +374,12 @@ class Component():
                     pass
 
                 if re.search(regex, field_value, flags=re.IGNORECASE) is not None:
-                    if self.prefs.verbose:
-                        print("Excluding '{ref}': Field '{field}' ({value}) matched '{reg}'".format(
-                            ref=self.getRef(),
-                            field=field_name,
-                            value=field_value,
-                            reg=regex).encode('utf-8'))
+                    debug.info("Excluding '{ref}': Field '{field}' ({value}) matched '{reg}'".format(
+                        ref=self.getRef(),
+                        field=field_name,
+                        value=field_value,
+                        reg=regex).encode('utf-8')
+                    )
 
                     # Found a match
                     return True
@@ -396,11 +398,9 @@ class Component():
                 field_name, regex = reg
                 field_value = self.getField(field_name)
 
-                print(field_name, field_value, regex)
+                debug.info(field_name, field_value, regex)
 
                 if re.search(regex, field_value, flags=re.IGNORECASE) is not None:
-                    if self.prefs.verbose:
-                        print("")
 
                     # Found a match
                     return True
@@ -566,7 +566,7 @@ class ComponentGroup():
         elif fieldData.lower() in self.fields[field].lower():
             return
         else:
-            print("Field conflict: ({refs}) [{name}] : '{flds}' <- '{fld}'".format(
+            debug.warning("Field conflict: ({refs}) [{name}] : '{flds}' <- '{fld}'".format(
                 refs=self.getRefs(),
                 name=field,
                 flds=self.fields[field],
