@@ -175,7 +175,7 @@ def main():
         if not result:
             sys.exit(-1)
 
-    sys.exit(0)
+    sys.exit(debug.getErrorCount())
 
 
 if __name__ == '__main__':
