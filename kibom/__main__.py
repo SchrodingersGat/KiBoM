@@ -99,7 +99,7 @@ def writeVariant(input_file, output_file, variant, subdirectory, pref):
 
 def main():
 
-    parser = argparse.ArgumentParser(description="KiBOM Bill of Materials generator script")
+    parser = argparse.ArgumentParser(prog="python -m kibom", description="KiBOM Bill of Materials generator script")
 
     parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running from within KiCad')
     parser.add_argument("output", default="", help='BoM output file name.\nUse "%%O" when running from within KiCad to use the default output name (csv file).\nFor e.g. HTML output, use "%%O.html"')
