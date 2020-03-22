@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from .component import ColumnList
+from . import debug
 
 BG_GEN = "#E6FFEE"
 BG_KICAD = "#FFE6B3"

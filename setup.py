@@ -12,6 +12,8 @@ setuptools.setup(
 
     version=KIBOM_VERSION,
 
+    author="Oliver Walters",
+
     author_email="oliver.henry.walters@gmail.com",
 
     description="Bill of Materials generation tool for KiCad EDA",
@@ -31,7 +33,7 @@ setuptools.setup(
     install_requires=[
         "xlsxwriter",
         "colorama",
-    ]
+    ],
 
     python_requires=">=2.7"
 )

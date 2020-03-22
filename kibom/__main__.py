@@ -27,9 +27,9 @@ from .columns import ColumnList
 from .netlist_reader import netlist
 from .bom_writer import WriteBoM
 from .preferences import BomPref
+from .version import KIBOM_VERSION
 from . import debug
 
-KIBOM_VERSION = "1.7.0"
 
 def writeVariant(input_file, output_file, variant, subdirectory, pref):
     if variant is not None:
@@ -164,8 +164,6 @@ def main():
 
     pref.separatorCSV = args.separator
 
-    write_to_bom = True
-
     if args.variant is not None:
         variants = args.variant.split(';')
     else:
@@ -178,6 +176,7 @@ def main():
             sys.exit(-1)
 
     sys.exit(0)
+
 
 if __name__ == '__main__':
     main()

@@ -6,10 +6,11 @@ language: python
 
 python:
   - 2.7
-  - 3.6
+  - 3.7
 
 install:
   - pip install -r test/requirements.txt
+  - pip install wheel
 
 addons:
   apt:
@@ -23,6 +24,8 @@ script:
   - flake8 .
   # Run the coverage tests 
   - bash ./run-tests.sh
+  # Ensure the module can actually build
+  - python setup.py bdist_wheel --universal
 
 after_success:
   - coveralls
