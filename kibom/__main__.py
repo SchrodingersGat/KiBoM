@@ -125,9 +125,11 @@ def main():
     if args.subdirectory is not None:
         output_file = os.path.join(args.subdirectory, output_file)
 
+    output_dir = os.path.dirname(os.path.abspath(output_file))
+
     # Make the directory if it does not exist
-    if not os.path.exists(os.path.abspath(output_file)):
-        os.makedirs(os.path.abspath(output_file))
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     if not input_file.endswith(".xml"):
         debug.error("Input file '{f}' is not an xml file".format(f=input_file), fail=True)
