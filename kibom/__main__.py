@@ -109,12 +109,14 @@ def main():
     parser.add_argument("-d", "--subdirectory", help="Subdirectory within which to store the generated BoM files.", type=str, default=None)
     parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
     parser.add_argument("-s", "--separator", help="CSV Separator (default ',')", type=str, default=None)
-    parser.add_argument('--version', action='version', version="KiBom Version: {v}".format(v=KIBOM_VERSION))
+    parser.add_argument('--version', action='version', version="KiBOM Version: {v}".format(v=KIBOM_VERSION))
 
     args = parser.parse_args()
 
     # Set the global debugging level
     debug.setDebugLevel(int(args.verbose) if args.verbose is not None else debug.MSG_ERROR)
+
+    debug.message("KiBOM version {v}".format(v=KIBOM_VERSION))
     
     input_file = os.path.abspath(args.netlist)
 

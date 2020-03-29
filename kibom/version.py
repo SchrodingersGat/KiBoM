@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-KIBOM_VERSION = "1.7.0"
+KIBOM_VERSION = "1.7.1pre"
