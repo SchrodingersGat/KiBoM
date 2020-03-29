@@ -35,12 +35,12 @@ def getErrorCount():
     return ERR_COUNT
 
 
-def _msg(color, prefix, *arg):
+def _msg(prefix, *arg):
     """
     Display a message with the given color.
     """
 
-    msg = color
+    msg = ""
     
     if prefix:
         msg += prefix
@@ -53,7 +53,7 @@ def message(*arg):
     Display a message
     """
 
-    _msg(*arg)
+    _msg("", *arg)
 
 
 def debug(*arg):

@@ -109,12 +109,14 @@ def main():
     parser.add_argument("-d", "--subdirectory", help="Subdirectory within which to store the generated BoM files.", type=str, default=None)
     parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
     parser.add_argument("-s", "--separator", help="CSV Separator (default ',')", type=str, default=None)
-    parser.add_argument('--version', action='version', version="KiBom Version: {v}".format(v=KIBOM_VERSION))
+    parser.add_argument('--version', action='version', version="KiBOM Version: {v}".format(v=KIBOM_VERSION))
 
     args = parser.parse_args()
 
     # Set the global debugging level
     debug.setDebugLevel(int(args.verbose) if args.verbose is not None else debug.MSG_ERROR)
+
+    debug.message("KiBOM version {v}".format(v=KIBOM_VERSION))
     
     input_file = os.path.abspath(args.netlist)
 
@@ -123,9 +125,11 @@ def main():
     if args.subdirectory is not None:
         output_file = os.path.join(args.subdirectory, output_file)
 
+    output_dir = os.path.dirname(os.path.abspath(output_file))
+
     # Make the directory if it does not exist
-    if not os.path.exists(os.path.abspath(output_file)):
-        os.makedirs(os.path.abspath(output_file))
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     if not input_file.endswith(".xml"):
         debug.error("Input file '{f}' is not an xml file".format(f=input_file), fail=True)

@@ -68,7 +68,7 @@ class ColumnList:
 
     def _hasColumn(self, col):
         # Col can either be <str> or <Column>
-        return col.lower() in [c.lower() for c in self.columns]
+        return str(col) in [str(c) for c in self.columns]
 
     """
     Remove a column from the list. Specify either the heading or the index
