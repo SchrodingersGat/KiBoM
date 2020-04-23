@@ -2,16 +2,15 @@ Source: kibom.inti-cmnb
 Section: electronics
 Priority: optional
 Maintainer: Salvador Eduardo Tropea <salvador@inti.gob.ar>
-Build-Depends: debhelper (>=11~), dh-python, python-all, python3-all
+Build-Depends: debhelper (>=11~), dh-python, python3-all
 Standards-Version: 4.1.4
 Homepage: https://github.com/INTI-CMNB/KiBoM
-X-Python-Version: >= 2.6
 X-Python3-Version: >= 3.2
 
 Package: kibom.inti-cmnb
 Architecture: all
 Multi-Arch: foreign
-Depends: ${misc:Depends}, ${python:Depends}
+Depends: ${misc:Depends}, ${python3:Depends}
 Description: Configurable BoM generation tool for KiCad
  Can generate CSV, HTML, XML and XLSX Bill of Materials for KiCad projects.
  The script can be used from the command line or as a KiCad BoM generator.

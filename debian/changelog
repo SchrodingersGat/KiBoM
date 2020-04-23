@@ -1,3 +1,9 @@
+kibom.inti-cmnb (1.6.2-1) stable; urgency=medium
+
+  * Switched dependencies to Python 3
+
+ -- Salvador E. Tropea <salvador@kaira.inti.gov.ar>  Thu, 23 Apr 2020 14:52:02 -0300
+
 kibom.inti-cmnb (1.6.1-1) testing; urgency=medium
 
   * New upstream version. Note that the style changed.
