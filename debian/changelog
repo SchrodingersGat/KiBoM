@@ -1,3 +1,9 @@
+kibom.inti-cmnb (1.6.3-1) stable; urgency=medium
+
+  * Fixed problem when no INI file (digikey_link not defined)
+
+ -- Salvador E. Tropea <salvador@kaira.inti.gov.ar>  Fri, 24 Apr 2020 17:41:06 -0300
+
 kibom.inti-cmnb (1.6.2-1) stable; urgency=medium
 
   * Switched dependencies to Python 3
