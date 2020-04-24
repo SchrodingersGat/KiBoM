@@ -65,6 +65,7 @@ class BomPref:
         self.mergeBlankFields = True  # Blanks fields will be merged when possible
         self.hideHeaders = False
         self.hidePcbInfo = False
+        self.digikey_link = False
         self.verbose = False  # By default, is not verbose
         self.configField = "Config"  # Default field used for part fitting config
         self.pcbConfig = ["default"]
@@ -268,7 +269,7 @@ class BomPref:
         cf.set(self.SECTION_GENERAL, '; Whether to hide PCB info from output file')
         cf.set(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO, self.hidePcbInfo)
 
-        cf.set(self.SECTION_GENERAL, '; Interpret as a Digikey P/N and linkr the following field')
+        cf.set(self.SECTION_GENERAL, '; Interpret as a Digikey P/N and link the following field')
         cf.set(self.SECTION_GENERAL, self.OPT_DIGIKEY_LINK, self.digikey_link)
 
         cf.add_section(self.SECTION_IGNORE)
