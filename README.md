@@ -22,7 +22,7 @@ KiBom can be installed through the PIP package manager:
 
 ## Usage
 
-The *KiBOM_CLI* script can be run directly from KiCad or from the command line, e.g.
+The KiBoM script can be run directly from KiCad or from the command line, e.g.
 
 `python -m kibom "%I" "%O.csv"`
 
