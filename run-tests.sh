@@ -1,25 +1,27 @@
 #!/bin/bash
-
+# python3-coverage libjs-jquery-throttle-debounce libjs-jquery-isonscreen libjs-jquery-tablesorter
 # delete the 'default' BOM file so it gets created
 rm test/bom.ini
 
-coverage erase
+COVERAGE=python3-coverage
+
+$COVERAGE erase
 
 # Run a simple test
-coverage run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.csv
+$COVERAGE run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.csv
 
 # Generate a html file
-coverage run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.html
+$COVERAGE run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.html
 
 # Generate an XML file
-coverage run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.xml
+$COVERAGE run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.xml
 
 # Generate an XLSX file
-coverage run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.xlsx
+$COVERAGE run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.xlsx
 
 # Run the sanity checker on the output BOM files
-coverage run -a test/test_bom.py
+$COVERAGE run -a test/test_bom.py
 
 # Generate HTML code coverage output
-coverage html
+$COVERAGE html
 
