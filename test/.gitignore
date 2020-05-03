@@ -8,3 +8,6 @@ bom.ini
 *.xls
 *.xlsx
 *.xml
+
+# Ignore back-ups
+*-bak
