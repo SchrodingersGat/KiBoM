@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import csv
 import os
-import sys
 
 
 def check_files_exist():
@@ -19,6 +18,7 @@ def check_files_exist():
 
     assert(os.path.exists('test/bomsubdir/bom-dir_bom_A.csv'))
     assert(os.path.exists('test/bomsubdir/secondsubdir/bom-dir2_bom_A.html'))
+
 
 def check_csv_data():
     """
