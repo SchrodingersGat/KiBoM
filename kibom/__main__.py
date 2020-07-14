@@ -27,9 +27,8 @@ from .columns import ColumnList
 from .netlist_reader import netlist
 from .bom_writer import WriteBoM
 from .preferences import BomPref
+from .version import KIBOM_VERSION
 from . import debug
-
-KIBOM_VERSION = "1.7.0"
 
 def writeVariant(input_file, output_file, variant, subdirectory, pref):
     if variant is not None:
