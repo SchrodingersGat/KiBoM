@@ -13,11 +13,9 @@ import sys
 import os.path
 import xml.sax as sax
 
-from bomlib.component import (Component, ComponentGroup)
-
-from bomlib.preferences import BomPref
-
-# -----</Configure>---------------------------------------------------------------
+from .component import Component, ComponentGroup
+from .preferences import BomPref
+from . import debug
 
 
 class xmlElement():
@@ -281,7 +279,7 @@ class netlist():
                             break
 
             if not c.getLibPart():
-                print('missing libpart for ref:', c.getRef(), c.getPartName(), c.getLibName())
+                debug.warning('missing libpart for ref:', c.getRef(), c.getPartName(), c.getLibName())
 
     def aliasMatch(self, partName, aliasList):
         for alias in aliasList:
@@ -432,7 +430,7 @@ class netlist():
             self._reader.setContentHandler(_gNetReader(self))
             self._reader.parse(fname)
         except IOError as e:
-            print(__file__, ":", e, file=sys.stderr)
+            debug.error(__file__, ":", e)
             sys.exit(-1)
 
 

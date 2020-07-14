@@ -5,7 +5,7 @@ import sys
 import re
 import os
 
-from bomlib.columns import ColumnList
+from .columns import ColumnList
 
 # Check python version to determine which version of ConfirParser to import
 if sys.version_info.major >= 3:
@@ -66,7 +66,6 @@ class BomPref:
         self.hideHeaders = False
         self.hidePcbInfo = False
         self.digikey_link = False
-        self.verbose = False  # By default, is not verbose
         self.configField = "Config"  # Default field used for part fitting config
         self.pcbConfig = ["default"]
 
@@ -76,9 +75,6 @@ class BomPref:
         self.separatorCSV = None
         self.outputFileName = "%O_bom_%v%V"
         self.variantFileNameFormat = "_(%V)"
-
-        self.xlsxwriter_available = False
-        self.xlsxwriter2_available = False
 
         # Default fields used to group components
         self.groups = [
@@ -133,7 +129,7 @@ class BomPref:
     def Read(self, file, verbose=False):
         file = os.path.abspath(file)
         if not os.path.exists(file) or not os.path.isfile(file):
-            print("{f} is not a valid file!".format(f=file))
+            debug.error("{f} is not a valid file!".format(f=file))
             return
 
         cf = ConfigParser.RawConfigParser(allow_no_value=True)

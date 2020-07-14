@@ -8,16 +8,16 @@ COVERAGE=python3-coverage
 $COVERAGE erase
 
 # Run a simple test
-$COVERAGE run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.csv
+$COVERAGE run -a -m kibom test/kibom-test.xml test/bom-out.csv
 
 # Generate a html file
-$COVERAGE run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.html
+$COVERAGE run -a -m kibom test/kibom-test.xml test/bom-out.html
 
 # Generate an XML file
-$COVERAGE run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.xml
+$COVERAGE run -a -m kibom test/kibom-test.xml test/bom-out.xml
 
 # Generate an XLSX file
-$COVERAGE run -a KiBOM_CLI.py test/kibom-test.xml test/bom-out.xlsx
+$COVERAGE run -a -m kibom test/kibom-test.xml test/bom-out.xlsx
 
 # Run the sanity checker on the output BOM files
 $COVERAGE run -a test/test_bom.py
