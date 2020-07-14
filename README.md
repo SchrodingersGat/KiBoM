@@ -1,6 +1,6 @@
 # KiBoM
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  [![Travis Status](https://api.travis-ci.org/SchrodingersGat/KiBoM.svg?branch=master)](https://travis-ci.org/SchrodingersGat/KiBoM)  [![Coverage Status](https://coveralls.io/repos/github/SchrodingersGat/KiBoM/badge.svg?branch=master)](https://coveralls.io/github/SchrodingersGat/KiBoM?branch=master)
+[![PyPi version](https://pypip.in/v/kibom/badge.png)](https://pypi.org/project/kibom/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  [![Travis Status](https://api.travis-ci.org/SchrodingersGat/KiBoM.svg?branch=master)](https://travis-ci.org/SchrodingersGat/KiBoM)  [![Coverage Status](https://coveralls.io/repos/github/SchrodingersGat/KiBoM/badge.svg?branch=master)](https://coveralls.io/github/SchrodingersGat/KiBoM?branch=master)
 
 Configurable BoM generation tool for KiCad EDA (http://kicad-pcb.org/)
 
@@ -12,14 +12,42 @@ KiBoM intelligently groups components based on multiple factors, and can generat
 
 BoM options are user-configurable in a per-project configuration file.
 
+## Installation
+
+KiBom can be installed through the PIP package manager:
+
+```pip install kibom```
+
+*Note: Take note of which python executable you use when installing kibom - this is the same executable you must use when running the KiBom script from KiCAD (more details below under "Usage")*
+
 ## Usage
 
-The *KiBOM_CLI* script can be run directly from KiCad or from the command line. For command help, run the script with the *-h* flag e.g.
+The *KiBOM_CLI* script can be run directly from KiCad or from the command line, e.g.
 
-`python KiBOM_CLI.py -h`
+`python -m kibom "%I" "%O.csv"`
+
+**Note: Selecting python executable**
+
+The python executable you choose (i.e. the *python* part of the command above) **must** be the same as the one you used to install kibom (using pip).
+
+By default KiCad uses the version of python packaged with the KiCad application (i.e. kicad/bin/python).
+
+**Example: Install kibom under python3 on windows**
+
+You have installed kibom using Python3: `pip3 install kibom`
+
+To launch the script correctly from the KiCad BOM window, use the command:
+
+`python3.exe -m kibom "%I" "%O.csv"`
+
+If you are running a different python version, select that accordingly.
+
+For command help, run the script with the *-h* flag e.g.
+
+`python -m kibom -h`
 
 ~~~~
-usage: KiBOM_CLI.py [-h] [-n NUMBER] [-v] [-r VARIANT] [-d SUBDIRECTORY]
+usage: python -m kibom [-h] [-n NUMBER] [-v] [-r VARIANT] [-d SUBDIRECTORY]
                     [--cfg CFG] [-s SEPARATOR] [--version]
                     netlist output
 
@@ -363,17 +391,6 @@ C3 and C5 have the same value and footprint
 
 **C4**
 C4 has a different footprint to C3 and C5, and thus is grouped separately
-
-A HTML BoM file is generated as follows:
-
-![alt tag](example/bom.png?raw=True "BoM")
-
-To add the BoM script, the Command Line options should be configured as follows:
-* path-to-python-script (KiBOM_CLI.py)
-* netlist-file "%I"
-* output_path "%O_bom.html" (replace file extension for different output file formats)
-
-Hit the "Generate" button, and the output window should show that the BoM generation was successful.
 
 ### HTML Output
 The output HTML file is generated as follows:

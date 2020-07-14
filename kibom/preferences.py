@@ -6,6 +6,7 @@ import re
 import os
 
 from .columns import ColumnList
+from . import debug
 
 # Check python version to determine which version of ConfirParser to import
 if sys.version_info.major >= 3:

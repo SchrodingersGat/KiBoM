@@ -30,6 +30,7 @@ from .preferences import BomPref
 from .version import KIBOM_VERSION
 from . import debug
 
+
 def writeVariant(input_file, output_file, variant, subdirectory, pref):
     if variant is not None:
         pref.pcbConfig = variant.strip().split(',')
@@ -107,7 +108,7 @@ def writeVariant(input_file, output_file, variant, subdirectory, pref):
 
 def main():
 
-    parser = argparse.ArgumentParser(description="KiBOM Bill of Materials generator script")
+    parser = argparse.ArgumentParser(prog="python -m kibom", description="KiBOM Bill of Materials generator script")
 
     parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running from within KiCad')
     parser.add_argument("output", default="", help='BoM output file name.\nUse "%%O" when running from within KiCad to use the default output name (csv file).\nFor e.g. HTML output, use "%%O.html"')
@@ -117,12 +118,14 @@ def main():
     parser.add_argument("-d", "--subdirectory", help="Subdirectory within which to store the generated BoM files.", type=str, default=None)
     parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
     parser.add_argument("-s", "--separator", help="CSV Separator (default ',')", type=str, default=None)
-    parser.add_argument('--version', action='version', version="KiBom Version: {v}".format(v=KIBOM_VERSION))
+    parser.add_argument('--version', action='version', version="KiBOM Version: {v}".format(v=KIBOM_VERSION))
 
     args = parser.parse_args()
 
     # Set the global debugging level
     debug.setDebugLevel(int(args.verbose) if args.verbose is not None else debug.MSG_ERROR)
+
+    debug.message("KiBOM version {v}".format(v=KIBOM_VERSION))
     
     input_file = os.path.abspath(args.netlist)
 
@@ -172,8 +175,6 @@ def main():
 
     pref.separatorCSV = args.separator
 
-    write_to_bom = True
-
     if args.variant is not None:
         variants = args.variant.split(';')
     else:
@@ -185,7 +186,8 @@ def main():
         if not result:
             sys.exit(-1)
 
-    sys.exit(0)
+    sys.exit(debug.getErrorCount())
+
 
 if __name__ == '__main__':
     main()
