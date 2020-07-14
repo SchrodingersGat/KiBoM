@@ -4,28 +4,31 @@
 rm test/bom.ini
 
 COVERAGE=python3-coverage
+KIBOM=./KiBOM_CLI.py
+PYTHON=python3
+BROWSER=x-www-browser
 
 $COVERAGE erase
 
 # Run a simple test
-$COVERAGE run -a -m kibom test/kibom-test.xml test/bom-out.csv
+$COVERAGE run -a $KIBOM test/kibom-test.xml test/bom-out.csv
 
 # Generate a html file
-$COVERAGE run -a -m kibom test/kibom-test.xml test/bom-out.html
+$COVERAGE run -a $KIBOM test/kibom-test.xml test/bom-out.html
 
 # Generate an XML file
-$COVERAGE run -a -m kibom test/kibom-test.xml test/bom-out.xml
+$COVERAGE run -a $KIBOM test/kibom-test.xml test/bom-out.xml
 
 # Generate an XLSX file
-$COVERAGE run -a -m kibom test/kibom-test.xml test/bom-out.xlsx
+$COVERAGE run -a $KIBOM test/kibom-test.xml test/bom-out.xlsx
 # Generate a BOM file in a subdirectory
-$COVERAGE run -a -m kibom test/kibom-test.xml bom-dir.csv -d bomsubdir -vvv
-$COVERAGE run -a -m kibom test/kibom-test.xml bom-dir2.html -d bomsubdir/secondsubdir -vvv
+$COVERAGE run -a $KIBOM test/kibom-test.xml bom-dir.csv -d bomsubdir -vvv
+$COVERAGE run -a $KIBOM test/kibom-test.xml bom-dir2.html -d bomsubdir/secondsubdir -vvv
 
 
 # Run the sanity checker on the output BOM files
-$COVERAGE run -a test/test_bom.py
+$PYTHON test/test_bom.py
 
 # Generate HTML code coverage output
 $COVERAGE html
-
+$BROWSER htmlcov/index.html
