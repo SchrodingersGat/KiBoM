@@ -38,78 +38,6 @@ class xmlElement():
         """
         return self.name + "[" + self.chars + "]" + " attr_count:" + str(len(self.attributes))
 
-    def formatXML(self, nestLevel=0, amChild=False):
-        """Return this element formatted as XML
-
-        Keywords:
-        nestLevel -- increases by one for each level of nesting.
-        amChild -- If set to True, the start of document is not returned.
-
-        """
-        s = ""
-        indent = "    " * nestLevel
-
-        if not amChild:
-            s = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-
-        s += indent + "<" + self.name
-        for a in self.attributes:
-            s += " " + a + "=\"" + self.attributes[a] + "\""
-
-        if (len(self.chars) == 0) and (len(self.children) == 0):
-            s += "/>"
-        else:
-            s += ">" + self.chars
-
-        for c in self.children:
-            s += "\n"
-            s += c.formatXML(nestLevel + 1, True)
-
-        if (len(self.children) > 0):
-            s += "\n" + indent
-
-        if (len(self.children) > 0) or (len(self.chars) > 0):
-            s += "</" + self.name + ">"
-
-        return s
-
-    def formatHTML(self, amChild=False):
-        """Return this element formatted as HTML
-
-        Keywords:
-        amChild -- If set to True, the start of document is not returned
-
-        """
-        s = ""
-
-        if not amChild:
-            s = """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-                <html xmlns="http://www.w3.org/1999/xhtml">
-                <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-                <title></title>
-                </head>
-                <body>
-                <table>
-                """
-
-        s += "<tr><td><b>" + self.name + "</b><br>" + self.chars + "</td><td><ul>"
-        for a in self.attributes:
-            s += "<li>" + a + " = " + self.attributes[a] + "</li>"
-
-        s += "</ul></td></tr>\n"
-
-        for c in self.children:
-            s += c.formatHTML(True)
-
-        if not amChild:
-            s += """</table>
-                </body>
-                </html>"""
-
-        return s
-
     def addAttribute(self, attr, value):
         """Add an attribute to this element"""
         self.attributes[attr] = value
@@ -491,14 +419,6 @@ class netlist():
         groups = sorted(groups, key=lambda g: [g.components[0].getPrefix(), g.components[0].getValueSort()])
 
         return groups
-
-    def formatXML(self):
-        """Return the whole netlist formatted in XML"""
-        return self.tree.formatXML()
-
-    def formatHTML(self):
-        """Return the whole netlist formatted in HTML"""
-        return self.tree.formatHTML()
 
     def load(self, fname):
         """Load a KiCad generic netlist
