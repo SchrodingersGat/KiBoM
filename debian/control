@@ -10,7 +10,7 @@ X-Python3-Version: >= 3.2
 Package: kibom.inti-cmnb
 Architecture: all
 Multi-Arch: foreign
-Depends: ${misc:Depends}, python3-colorama, python3:any (>= 3.2~)
+Depends: ${misc:Depends}, python3:any (>= 3.2~)
 Recommends: python3-xlsxwriter
 Description: Configurable BoM generation tool for KiCad
  Can generate CSV, HTML, XML and XLSX Bill of Materials for KiCad projects.
