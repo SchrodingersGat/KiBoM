@@ -2,6 +2,13 @@
 
 import setuptools
 
+import os
+import sys
+here = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, here)
+print(here)
+#sys.path.append(os.path.join(here, "KiBOM"))
+
 from kibom.version import KIBOM_VERSION
 
 with open("README.md", "r") as readme:
@@ -12,7 +19,7 @@ setuptools.setup(
 
     version=KIBOM_VERSION,
 
-    author = "Oliver Henry Walters"
+    author = "Oliver Henry Walters",
 
     author_email="oliver.henry.walters@gmail.com",
 
@@ -31,6 +38,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     #packages=['bomlib'],
     #package_dir={'bomlib': 'bomlib'},
+
+    scripts=['KiBOM_CLI.py'],
 
     install_requires=[
         "xlsxwriter",
