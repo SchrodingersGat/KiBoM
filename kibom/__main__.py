@@ -31,11 +31,12 @@ from .version import KIBOM_VERSION
 from . import debug
 
 
-def writeVariant(input_file, output_file, variant, subdirectory, pref):
+def writeVariant(input_file, output_dir, output_file, variant, preferences):
+    
     if variant is not None:
-        pref.pcbConfig = variant.strip().split(',')
+        preferences.pcbConfig = variant.strip().split(',')
         
-    debug.message("PCB variant:", ", ".join(pref.pcbConfig))
+    debug.message("PCB variant:", ", ".join(preferences.pcbConfig))
 
     # Individual components
     components = []
@@ -44,7 +45,7 @@ def writeVariant(input_file, output_file, variant, subdirectory, pref):
     groups = []
 
     # Read out the netlist
-    net = netlist(input_file, prefs=pref)
+    net = netlist(input_file, prefs=preferences)
 
     # Extract the components
     components = net.getInterestingComponents()
@@ -57,7 +58,7 @@ def writeVariant(input_file, output_file, variant, subdirectory, pref):
     # Group the components
     groups = net.groupComponents(components)
 
-    columns = ColumnList(pref.corder)
+    columns = ColumnList(preferences.corder)
 
     # Read out all available fields
     for g in groups:
@@ -65,14 +66,14 @@ def writeVariant(input_file, output_file, variant, subdirectory, pref):
             columns.AddColumn(f)
 
     # Don't add 'boards' column if only one board is specified
-    if pref.boards <= 1:
+    if preferences.boards <= 1:
         columns.RemoveColumn(ColumnList.COL_GRP_BUILD_QUANTITY)
         debug.info("Removing:", ColumnList.COL_GRP_BUILD_QUANTITY)
 
     if output_file is None:
         output_file = input_file.replace(".xml", ".csv")
 
-    output_path, output_name = os.path.split(output_file)
+    output_name = os.path.basename(output_file)
     output_name, output_ext = os.path.splitext(output_name)
 
     # KiCad BOM dialog by default passes "%O" without an extension. Append our default
@@ -84,26 +85,27 @@ def writeVariant(input_file, output_file, variant, subdirectory, pref):
         debug.warning("Unknown extension '{e}' supplied - using .csv".format(e=output_ext))
 
     # Make replacements to custom file_name.
-    file_name = pref.outputFileName
+    file_name = preferences.outputFileName
 
     file_name = file_name.replace("%O", output_name)
     file_name = file_name.replace("%v", net.getVersion())
+
     if variant is not None:
-        file_name = file_name.replace("%V", pref.variantFileNameFormat)
+        file_name = file_name.replace("%V", preferences.variantFileNameFormat)
         file_name = file_name.replace("%V", variant)
     else:
         file_name = file_name.replace("%V", "")
 
-    output_file = os.path.join(output_path, file_name + output_ext)
+    output_file = os.path.join(output_dir, file_name + output_ext)
     output_file = os.path.abspath(output_file)
 
-    debug.message("Output:", output_file)
+    debug.message("Saving BOM File:", output_file)
 
     # Digikey P/N as URL
     if ext in ["htm", "html"]:
         net.digikeyLink(groups)
 
-    return WriteBoM(output_file, groups, net, columns.columns, pref)
+    return WriteBoM(output_file, groups, net, columns.columns, preferences)
 
 
 def main():
@@ -129,14 +131,25 @@ def main():
     
     input_file = os.path.abspath(args.netlist)
 
-    output_file = args.output
+    input_dir = os.path.abspath(os.path.dirname(input_file))
+
+    output_file = os.path.basename(args.output)
 
     if args.subdirectory is not None:
-        output_file = os.path.join(args.subdirectory, output_file)
+        output_dir = args.subdirectory
 
-    # Make the directory if it does not exist
-    if not os.path.exists(os.path.abspath(output_file)):
-        os.makedirs(os.path.abspath(output_file))
+        if not os.path.isabs(output_dir):
+            output_dir = os.path.join(input_dir, output_dir)
+
+        # Make the directory if it does not exist
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+            debug.message("Creating subdirectory: '{d}'".format(d=output_dir))
+    else:
+        output_dir = os.path.abspath(os.path.dirname(input_file))
+
+    debug.message("Output directory: '{d}'".format(d=output_dir))
 
     if not input_file.endswith(".xml"):
         debug.error("Input file '{f}' is not an xml file".format(f=input_file), fail=True)
@@ -182,8 +195,9 @@ def main():
 
     # Generate BOMs for each specified variant
     for variant in variants:
-        result = writeVariant(input_file, output_file, variant, args, pref)
+        result = writeVariant(input_file, output_dir, output_file, variant, pref)
         if not result:
+            debug.error("Error writing variant '{v}'".format(v=variant))
             sys.exit(-1)
 
     sys.exit(debug.getErrorCount())
