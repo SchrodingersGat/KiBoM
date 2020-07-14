@@ -49,7 +49,7 @@ def writeVariant(input_file, output_file, variant, subdirectory, pref):
     components = net.getInterestingComponents()
 
     # Datasheet as link
-    ext = args.output.split('.')[-1].lower()
+    ext = output_file.split('.')[-1].lower()
     if ext in ["htm", "html"]:
         net.datasheetLink(components)
 
