@@ -10,7 +10,8 @@
     - Rows are automatically sorted by component reference(s)
     - Supports board variants
 
-    Extended options are available in the "bom.ini" config file in the PCB directory (this file is auto-generated with default options the first time the script is executed).
+    Extended options are available in the "bom.ini" config file in the PCB directory
+    (this file is auto-generated with default options the first time the script is executed).
 
     For usage help:
     python -m kibom -h
@@ -22,6 +23,6 @@ import os
 here = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, here)
 
-from kibom.__main__ import main
+from kibom.__main__ import main  # noqa: E402
 
 main()

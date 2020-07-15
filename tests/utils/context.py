@@ -47,7 +47,7 @@ class TestContext(object):
     def _get_netlist_file(self):
         self.netlist_file = os.path.abspath(os.path.join(self.get_board_dir(), self.prj_name + KICAD_NETLIST_EXT))
         self.sch_file = os.path.abspath(os.path.join(self.get_board_dir(), self.prj_name + KICAD_SCH_EXT))
-        logging.info('KiCad file: '+self.netlist_file)
+        logging.info('KiCad file: ' + self.netlist_file)
         assert os.path.isfile(self.netlist_file)
 
     def _get_config_dir(self):
@@ -57,10 +57,10 @@ class TestContext(object):
     def _get_config_name(self, name):
         skip_test = False
         if not name:
-           name = 'bom'
-           skip_test = True
-        self.config_file = os.path.abspath(os.path.join(self._get_config_dir(), name+'.ini'))
-        logging.info('Config file: '+self.config_file)
+            name = 'bom'
+            skip_test = True
+        self.config_file = os.path.abspath(os.path.join(self._get_config_dir(), name + '.ini'))
+        logging.info('Config file: ' + self.config_file)
         assert skip_test or os.path.isfile(self.config_file)
 
     def _set_up_output_dir(self, test_dir):
@@ -70,9 +70,9 @@ class TestContext(object):
             self._del_dir_after = False
         else:
             # create a tmp dir
-            self.output_dir = tempfile.mkdtemp(prefix='tmp-kiplot-'+self.test_name+'-')
+            self.output_dir = tempfile.mkdtemp(prefix='tmp-kiplot-' + self.test_name + '-')
             self._del_dir_after = True
-        logging.info('Output dir: '+self.output_dir)
+        logging.info('Output dir: ' + self.output_dir)
 
     def clean_up(self):
         logging.debug('Clean-up')
@@ -80,7 +80,7 @@ class TestContext(object):
             logging.debug('Removing dir')
             shutil.rmtree(self.output_dir)
         # We don't have a project, and we don't want one
-        pro = os.path.join(self.get_board_dir(), self.prj_name+'.pro')
+        pro = os.path.join(self.get_board_dir(), self.prj_name + '.pro')
         if os.path.isfile(pro):
             os.remove(pro)
         # We don't have a footprint cache, and we don't want one
@@ -95,7 +95,7 @@ class TestContext(object):
         file = self.get_out_path(filename)
         assert os.path.isfile(file), file
         assert os.path.getsize(file) > 0
-        logging.debug(filename+' OK')
+        logging.debug(filename + ' OK')
         return file
 
     def load_csv(self, filename):
@@ -124,8 +124,8 @@ class TestContext(object):
         components_dnf = []
         prev = 0
         dnf = False
-        for entry in re.finditer(r'<tr>\s+<td.*>(\d+)<\/td>\s+<td.*>([^<]+)</td>\s+'+
-            r'<td.*>([^<]+)</td>\s+<td.*>([^<]+)</td>\s+<td.*>([^<]+)</td>\s+', html):
+        for entry in re.finditer(r'<tr>\s+<td.*>(\d+)<\/td>\s+<td.*>([^<]+)</td>\s+'
+                                 + r'<td.*>([^<]+)</td>\s+<td.*>([^<]+)</td>\s+<td.*>([^<]+)</td>\s+', html):
             cur = int(entry.group(1))
             if cur < prev:
                 dnf = True
@@ -199,25 +199,25 @@ class TestContext(object):
 
     def run(self, ret_val=None, extra=None, use_a_tty=False, filename=None, no_subdir=False,
             no_config_file=False, chdir_out=False, no_verbose=False):
-        logging.debug('Running '+self.test_name)
+        logging.debug('Running ' + self.test_name)
         # Change the command to be local and add the board and output arguments
         cmd = [COVERAGE_SCRIPT, 'run', '-a']
         if chdir_out:
             cmd.append('--rcfile=../../.coveragerc')
             os.environ['COVERAGE_FILE'] = os.path.join(os.getcwd(), '.coverage')
-        cmd.append(os.path.abspath(os.path.dirname(os.path.abspath(__file__))+'/../../KiBOM_CLI.py'))
+        cmd.append(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../KiBOM_CLI.py'))
         if not no_verbose:
             cmd.append('-vv')
         if not no_config_file:
-            cmd = cmd+['--cfg', self.config_file]
+            cmd = cmd + ['--cfg', self.config_file]
         if extra is not None:
-            cmd = cmd+extra
+            cmd = cmd + extra
         if not no_subdir:
             # This changed in 1.7.x the path indicated in the output name is ignored.
             # The only way is specify an absolute path here.
-            cmd = cmd+['-d', os.path.abspath(self.output_dir)]
+            cmd = cmd + ['-d', os.path.abspath(self.output_dir)]
         cmd.append(filename if filename else self.netlist_file)
-        cmd.append(self.prj_name+'.'+self.ext)
+        cmd.append(self.prj_name + '.' + self.ext)
         logging.debug(cmd)
         out_filename = self.get_out_path('output.txt')
         err_filename = self.get_out_path('error.txt')
@@ -239,7 +239,7 @@ class TestContext(object):
             os.chdir(cwd)
             del os.environ['COVERAGE_FILE']
         ret_code = process.wait()
-        logging.debug('ret_code '+str(ret_code))
+        logging.debug('ret_code ' + str(ret_code))
         if use_a_tty:
             self.err = os.read(master, 10000)
             self.err = self.err.decode()
@@ -277,12 +277,12 @@ class TestContext(object):
         return m
 
     def search_in_file(self, file, texts):
-        logging.debug('Searching in "'+file+'" output')
+        logging.debug('Searching in "' + file + '" output')
         with open(self.get_out_path(file)) as f:
             txt = f.read()
         res = []
         for t in texts:
-            logging.debug('- r"'+t+'"')
+            logging.debug('- r"' + t + '"')
             m = re.search(t, txt, re.MULTILINE)
             assert m
             # logging.debug(' '+m.group(0))
@@ -290,20 +290,20 @@ class TestContext(object):
         return res
 
     def search_not_in_file(self, file, texts):
-        logging.debug('Searching not in "'+file+'" output')
+        logging.debug('Searching not in "' + file + '" output')
         with open(self.get_out_path(file)) as f:
             txt = f.read()
         for t in texts:
-            logging.debug('- r"'+t+'"')
+            logging.debug('- r"' + t + '"')
             m = re.search(t, txt, re.MULTILINE)
             assert m is None
 
     def compare_txt(self, text, reference=None, diff='diff.txt'):
         if reference is None:
             reference = text
-        cmd = ['/bin/sh', '-c', 'diff -ub '+os.path.join(REF_DIR, reference)+' ' +
-               self.get_out_path(text)+' > '+self.get_out_path(diff)]
-        logging.debug('Comparing texts with: '+str(cmd))
+        cmd = ['/bin/sh', '-c', 'diff -ub ' + os.path.join(REF_DIR, reference) + ' '
+               + self.get_out_path(text) + ' > ' + self.get_out_path(diff)]
+        logging.debug('Comparing texts with: ' + str(cmd))
         res = subprocess.call(cmd)
         assert res == 0
 
@@ -313,4 +313,3 @@ class TestContext(object):
             txt = f.read()
         with open(fname, 'w') as f:
             f.write(re.sub(pattern, repl, txt))
-

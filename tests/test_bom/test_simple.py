@@ -20,13 +20,12 @@ pytest-3 --log-cli-level debug
 import os
 import sys
 import shutil
-import logging
 # Look for the 'utils' module from where the script is running
 prev_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if prev_dir not in sys.path:
     sys.path.insert(0, prev_dir)
 # Utils import
-from utils import context
+from utils import context  # noqa: E402
 
 BOM_DIR = 'BoM'
 KIBOM_TEST_COMPONENTS = ['C1', 'C2', 'C3', 'C4', 'R1', 'R2', 'R3', 'R4', 'R5', 'R7', 'R8', 'R9', 'R10']
@@ -50,7 +49,7 @@ def test_bom_simple_csv():
     ext = 'csv'
     ctx = context.TestContext('BoMSimpleCSV', prj, ext)
     ctx.run(no_config_file=True)
-    out = prj+'_bom_A.'+ext
+    out = prj + '_bom_A.' + ext
     rows, components = ctx.load_csv(out)
     check_kibom_test_netlist(rows, components)
     ctx.clean_up()
@@ -61,7 +60,7 @@ def test_bom_simple_html():
     ext = 'html'
     ctx = context.TestContext('BoMSimpleHTML', prj, ext)
     ctx.run(no_config_file=True)
-    out = prj+'_bom_A.'+ext
+    out = prj + '_bom_A.' + ext
     rows, components, dnf = ctx.load_html(out)
     check_kibom_test_netlist(rows, components, 6)
     assert len(dnf) == 1
@@ -74,7 +73,7 @@ def test_bom_simple_xml():
     ext = 'xml'
     ctx = context.TestContext('BoMSimpleXML', prj, ext)
     ctx.run(no_config_file=True)
-    out = prj+'_bom_A.'+ext
+    out = prj + '_bom_A.' + ext
     rows, components = ctx.load_xml(out)
     check_kibom_test_netlist(rows, components)
     ctx.clean_up()
@@ -85,7 +84,7 @@ def test_bom_simple_xlsx():
     ext = 'xlsx'
     ctx = context.TestContext('BoMSimpleXLSX', prj, ext)
     ctx.run(no_config_file=True)
-    out = prj+'_bom_A.'+ext
+    out = prj + '_bom_A.' + ext
     rows, components = ctx.load_xlsx(out)
     check_kibom_test_netlist(rows, components)
     ctx.clean_up()
@@ -95,10 +94,10 @@ def test_bom_deep_subdir():
     prj = 'kibom-test'
     ext = 'csv'
     ctx = context.TestContext('BoMDeepSubdir', prj, ext)
-    sub_dir = os.path.join('1','2','3')
+    sub_dir = os.path.join('1', '2', '3')
     extra = ['-d', os.path.abspath(os.path.join(ctx.output_dir, sub_dir))]
     ctx.run(no_config_file=True, no_subdir=True, extra=extra)
-    out = os.path.join(sub_dir, prj+'_bom_A.'+ext)
+    out = os.path.join(sub_dir, prj + '_bom_A.' + ext)
     rows, components = ctx.load_csv(out)
     check_kibom_test_netlist(rows, components)
     ctx.clean_up()
@@ -110,7 +109,7 @@ def test_bom_same_dir():
     ext = 'csv'
     ctx = context.TestContext('BoMSameDir', prj, ext)
     ctx.run(no_config_file=True, no_subdir=True)
-    fn = prj+'_bom_A.'+ext
+    fn = prj + '_bom_A.' + ext
     out = os.path.join(ctx.get_board_dir(), fn)
     rows, components = ctx.load_csv(out)
     check_kibom_test_netlist(rows, components)
@@ -124,10 +123,10 @@ def test_bom_rel_dir():
     prj = 'kibom-test'
     ext = 'csv'
     ctx = context.TestContext('BoMRelSubDir', prj, ext)
-    sub_dir = os.path.join('1','2','3')
+    sub_dir = os.path.join('1', '2', '3')
     extra = ['-d', sub_dir]
     ctx.run(no_config_file=True, no_subdir=True, extra=extra)
-    fn = prj+'_bom_A.'+ext
+    fn = prj + '_bom_A.' + ext
     out = os.path.join(ctx.get_board_dir(), sub_dir, fn)
     rows, components = ctx.load_csv(out)
     check_kibom_test_netlist(rows, components)

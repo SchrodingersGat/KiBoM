@@ -84,7 +84,7 @@ def groupString(group):  # Return a reg-ex string for a list of values
 
 
 def matchString():
-    return "^([0-9\.]+)(" + groupString(PREFIX_ALL) + ")*(" + groupString(UNIT_ALL) + ")*(\d*)$"
+    return r"^([0-9\.]+)(" + groupString(PREFIX_ALL) + ")*(" + groupString(UNIT_ALL) + r")*(\d*)$"
 
 
 def compMatch(component):
