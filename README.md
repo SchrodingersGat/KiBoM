@@ -1,6 +1,6 @@
 # KiBoM
 
-[![PyPi version](https://pypip.in/v/kibom/badge.png)](https://pypi.org/project/kibom/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  ![Python application](https://github.com/INTI-CMNB/KiBoM/workflows/Python%20application/badge.svg)  [![Coverage Status](https://coveralls.io/repos/github/INTI-CMNB/KiBoM/badge.svg?branch=master)](https://coveralls.io/github/SchrodingersGat/KiBoM?branch=master)
+[![PyPi version](https://pypip.in/v/kibom/badge.png)](https://pypi.org/project/kibom/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  ![Python application](https://github.com/INTI-CMNB/KiBoM/workflows/Python%20application/badge.svg)  [![Coverage Status](https://coveralls.io/repos/github/INTI-CMNB/KiBoM/badge.svg?branch=master)](https://coveralls.io/github/INTI-CMNB/KiBoM?branch=master)
 
 Configurable BoM generation tool for KiCad EDA (http://kicad-pcb.org/)
 
