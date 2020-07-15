@@ -3,6 +3,7 @@
 
 name: Python application
 
+
 on:
   push:
     paths:
