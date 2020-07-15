@@ -3,18 +3,7 @@
 
 name: Python application
 
-
-on:
-  push:
-    paths:
-    - '**.py'
-    - 'tests/**'
-    - '.github/workflows/python-app.yml'
-  pull_request:
-    paths:
-    - '**.py'
-    - 'tests/**'
-    - '.github/workflows/python-app.yml'
+on: [push, pull_request]
 
 jobs:
   test:
