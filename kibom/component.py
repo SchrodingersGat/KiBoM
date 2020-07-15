@@ -363,40 +363,30 @@ class Component():
 
         return True
 
-    # Determine if a component is FIXED or not
     def isFixed(self):
-
-        check = self.getField(self.prefs.configField).lower()
+        """ Determine if a component is FIXED or not.
+            Fixed components shouldn't be replaced without express authorization """
 
         # Check the value field first
         if self.getValue().lower() in DNC:
-            return False
+            return True
 
+        check = self.getField(self.prefs.configField).lower()
         # Empty is not fixed
         if check == "":
-            return True
+            return False
 
         opts = check.split(" ")
         for opt in opts:
             if opt.lower() in DNC:
-                return False
+                return True
 
         opts = check.split(",")
-
-        result = False
-
         for opt in opts:
-            # Options that start with '-' are explicitly removed from certain configurations
-            if opt.startswith('-') and opt[1:].lower() == self.prefs.pcbConfig.lower():
-                result = False
-                break
-            if opt.startswith("+"):
-                result = False
-                if opt[1:].lower() == self.prefs.pcbConfig.lower():
-                    result = True
+            if opt.lower() in DNC:
+                return True
 
-        # by default, part is not fixed
-        return result
+        return False
 
     # Test if this part should be included, based on any regex expressions provided in the preferences
     def testRegExclude(self):
@@ -647,7 +637,7 @@ class ComponentGroup():
         self.fields[ColumnList.COL_GRP_QUANTITY] = "{n}{dnf}{dnc}".format(
             n=q,
             dnf=" (DNF)" if not self.isFitted() else "",
-            dnc=" (DNC)" if not self.isFixed() else "")
+            dnc=" (DNC)" if self.isFixed() else "")
 
         self.fields[ColumnList.COL_GRP_BUILD_QUANTITY] = str(q * self.prefs.boards) if self.isFitted() else "0"
         self.fields[ColumnList.COL_VALUE] = self.components[0].getValue()

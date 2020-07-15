@@ -32,7 +32,7 @@ F 0 "R2" V 2580 2550 50  0000 C CNN
 F 1 "10K" V 2500 2550 50  0000 C CNN
 F 2 "Resistor_SMD:R_0805_2012Metric" V 2430 2550 50  0001 C CNN
 F 3 "~" H 2500 2550 50  0001 C CNN
-F 4 "-V2,-V3" V 2500 2550 50  0001 C CNN "Config"
+F 4 "-V2,-V3,DNC" V 2500 2550 50  0001 C CNN "Config"
 	1    2500 2550
 	1    0    0    -1  
 $EndComp
@@ -242,7 +242,7 @@ F 0 "R19" V 2830 4350 50  0000 C CNN
 F 1 "10K" V 2750 4350 50  0000 C CNN
 F 2 "Resistor_SMD:R_0805_2012Metric" V 2680 4350 50  0001 C CNN
 F 3 "~" H 2750 4350 50  0001 C CNN
-F 4 "bla bla DNF ble ble" V 2750 4350 50  0001 C CNN "Config"
+F 4 "bla bla DNF ble DNC ble " V 2750 4350 50  0001 C CNN "Config"
 	1    2750 4350
 	1    0    0    -1  
 $EndComp

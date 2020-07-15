@@ -20,6 +20,7 @@ pytest-3 --log-cli-level debug
 import os
 import sys
 import shutil
+import logging
 # Look for the 'utils' module from where the script is running
 prev_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if prev_dir not in sys.path:
@@ -35,13 +36,26 @@ def check_kibom_test_netlist(rows, components, groups=5):
     """ Checks the kibom-test.xml expected results """
     # 5/6 groups
     assert len(rows) == groups
+    logging.debug(str(groups) + " groups OK")
     # 13 components
     assert len(components) == 13
+    logging.debug("13 components OK")
     # R6 excluded
     assert 'R6' not in components
+    logging.debug("R6 not fitted OK")
     # All the other components
     for c in KIBOM_TEST_COMPONENTS:
         assert c in components
+    logging.debug("list of components OK")
+
+
+def check_dnc(rows, comp):
+    for row in rows:
+        if row.find(comp) != -1:
+            fields = row.split(',')
+            assert fields[6] == '1 (DNC)'
+            logging.debug(comp + " is DNC OK")
+            return
 
 
 def test_bom_simple_csv():
@@ -52,6 +66,7 @@ def test_bom_simple_csv():
     out = prj + '_bom_A.' + ext
     rows, components = ctx.load_csv(out)
     check_kibom_test_netlist(rows, components)
+    check_dnc(rows, 'R7')
     ctx.clean_up()
 
 
@@ -144,12 +159,13 @@ def test_variant_t1_1():
     ctx.run(no_config_file=True, extra=extra)
     out = prj + '_bom_A_(V1).' + ext
     rows, components = ctx.load_csv(out)
-    assert len(rows) == 1
+    assert len(rows) == 2
     assert len(components) == 2
     assert 'R1' in components
     assert 'R2' in components
     assert 'R3' not in components
     assert 'R4' not in components
+    check_dnc(rows, 'R2')
     ctx.clean_up()
 
 
@@ -194,12 +210,13 @@ def test_variant_t1_4():
     ctx.run(no_config_file=True)
     out = prj + '_bom_A.' + ext
     rows, components = ctx.load_csv(out)
-    assert len(rows) == 1
+    assert len(rows) == 2
     assert len(components) == 3
     assert 'R1' in components
     assert 'R2' in components
     assert 'R3' in components
     assert 'R4' not in components
+    check_dnc(rows, 'R2')
     ctx.clean_up()
 
 

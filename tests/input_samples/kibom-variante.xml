@@ -2,7 +2,7 @@
 <export version="D">
   <design>
     <source>/home/salvador/0Data/Eccosur/kibom.INTI-CMNB/tests/input_samples/kibom-variante.sch</source>
-    <date>mié 15 jul 2020 18:15:36 -03</date>
+    <date>mié 15 jul 2020 19:27:04 -03</date>
     <tool>Eeschema 5.1.6+dfsg1-1~bpo10+1</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
@@ -32,7 +32,7 @@
       <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
       <datasheet>~</datasheet>
       <fields>
-        <field name="Config">-V2,-V3</field>
+        <field name="Config">-V2,-V3,DNC</field>
       </fields>
       <libsource lib="Device" part="R" description="Resistor"/>
       <sheetpath names="/" tstamps="/"/>
@@ -219,7 +219,7 @@
       <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
       <datasheet>~</datasheet>
       <fields>
-        <field name="Config">bla bla DNF ble ble</field>
+        <field name="Config">bla bla DNF ble DNC ble </field>
       </fields>
       <libsource lib="Device" part="R" description="Resistor"/>
       <sheetpath names="/" tstamps="/"/>
