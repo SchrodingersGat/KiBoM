@@ -6,10 +6,8 @@ import os
 import sys
 here = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, here)
-print(here)
-#sys.path.append(os.path.join(here, "KiBOM"))
 
-from kibom.version import KIBOM_VERSION
+from kibom.version import KIBOM_VERSION  # noqa: E402
 
 long_description = "KiBoM is a configurable BOM (Bill of Materials) generation tool for KiCad EDA. Written in Python, it can be used directly with KiCad software without the need for any external libraries or plugins. KiBoM intelligently groups components based on multiple factors, and can generate BoM files in multiple output formats. For futher information see the KiBom project page"
 
@@ -34,8 +32,6 @@ setuptools.setup(
     license="MIT",
 
     packages=setuptools.find_packages(),
-    #packages=['bomlib'],
-    #package_dir={'bomlib': 'bomlib'},
 
     scripts=['KiBOM_CLI.py'],
 
