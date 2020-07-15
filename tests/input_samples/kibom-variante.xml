@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>/home/salvador/0Data/Eccosur/kibom.INTI-CMNB/tests/input_samples/kibom-variante.sch</source>
+    <date>mié 15 jul 2020 18:15:36 -03</date>
+    <tool>Eeschema 5.1.6+dfsg1-1~bpo10+1</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>KiBom Test Schematic</title>
+        <company>https://github.com/SchrodingersGat/KiBom</company>
+        <rev>A</rev>
+        <date>2020-03-12</date>
+        <source>kibom-variante.sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="R1">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5E6A2873</tstamp>
+    </comp>
+    <comp ref="R2">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">-V2,-V3</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5E6A330D</tstamp>
+    </comp>
+    <comp ref="R3">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">-V1,-V3</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5E6A35E1</tstamp>
+    </comp>
+    <comp ref="R4">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">+V3</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5E6A37B2</tstamp>
+    </comp>
+    <comp ref="R5">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">DNF</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0F7340</tstamp>
+    </comp>
+    <comp ref="R6">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">DNL</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0F734B</tstamp>
+    </comp>
+    <comp ref="R7">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">DNP</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0F7356</tstamp>
+    </comp>
+    <comp ref="R8">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">Do not fit</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0F7361</tstamp>
+    </comp>
+    <comp ref="R9">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">Do not place</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0F7FE1</tstamp>
+    </comp>
+    <comp ref="R10">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">Do not load</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0F7FEC</tstamp>
+    </comp>
+    <comp ref="R11">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">nofit</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0F7FF7</tstamp>
+    </comp>
+    <comp ref="R12">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">nostuff</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0F8002</tstamp>
+    </comp>
+    <comp ref="R13">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">noplace</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0FA280</tstamp>
+    </comp>
+    <comp ref="R14">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">noload</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0FA28B</tstamp>
+    </comp>
+    <comp ref="R15">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">not fitted</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0FA296</tstamp>
+    </comp>
+    <comp ref="R16">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">not loaded</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0FA2A1</tstamp>
+    </comp>
+    <comp ref="R17">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">not placed</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0FCAA9</tstamp>
+    </comp>
+    <comp ref="R18">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">no stuff</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0FCAB4</tstamp>
+    </comp>
+    <comp ref="R19">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">bla bla DNF ble ble</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0FCABF</tstamp>
+    </comp>
+    <comp ref="R20">
+      <value>10K</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Config">bla,bla,DNF,ble</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5F0FCACA</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="Device" part="R">
+      <description>Resistor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="Device">
+      <uri>/usr/share/kicad/library/Device.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="Net-(R16-Pad1)">
+      <node ref="R16" pin="1"/>
+    </net>
+    <net code="2" name="Net-(R11-Pad2)">
+      <node ref="R11" pin="2"/>
+    </net>
+    <net code="3" name="Net-(R12-Pad1)">
+      <node ref="R12" pin="1"/>
+    </net>
+    <net code="4" name="Net-(R12-Pad2)">
+      <node ref="R12" pin="2"/>
+    </net>
+    <net code="5" name="Net-(R13-Pad1)">
+      <node ref="R13" pin="1"/>
+    </net>
+    <net code="6" name="Net-(R13-Pad2)">
+      <node ref="R13" pin="2"/>
+    </net>
+    <net code="7" name="Net-(R14-Pad1)">
+      <node ref="R14" pin="1"/>
+    </net>
+    <net code="8" name="Net-(R14-Pad2)">
+      <node ref="R14" pin="2"/>
+    </net>
+    <net code="9" name="Net-(R15-Pad1)">
+      <node ref="R15" pin="1"/>
+    </net>
+    <net code="10" name="Net-(R15-Pad2)">
+      <node ref="R15" pin="2"/>
+    </net>
+    <net code="11" name="Net-(R11-Pad1)">
+      <node ref="R11" pin="1"/>
+    </net>
+    <net code="12" name="Net-(R16-Pad2)">
+      <node ref="R16" pin="2"/>
+    </net>
+    <net code="13" name="Net-(R17-Pad1)">
+      <node ref="R17" pin="1"/>
+    </net>
+    <net code="14" name="Net-(R17-Pad2)">
+      <node ref="R17" pin="2"/>
+    </net>
+    <net code="15" name="Net-(R18-Pad1)">
+      <node ref="R18" pin="1"/>
+    </net>
+    <net code="16" name="Net-(R18-Pad2)">
+      <node ref="R18" pin="2"/>
+    </net>
+    <net code="17" name="Net-(R19-Pad1)">
+      <node ref="R19" pin="1"/>
+    </net>
+    <net code="18" name="Net-(R19-Pad2)">
+      <node ref="R19" pin="2"/>
+    </net>
+    <net code="19" name="Net-(R20-Pad1)">
+      <node ref="R20" pin="1"/>
+    </net>
+    <net code="20" name="Net-(R20-Pad2)">
+      <node ref="R20" pin="2"/>
+    </net>
+    <net code="21" name="Net-(R6-Pad1)">
+      <node ref="R6" pin="1"/>
+    </net>
+    <net code="22" name="Net-(R1-Pad2)">
+      <node ref="R1" pin="2"/>
+    </net>
+    <net code="23" name="Net-(R2-Pad1)">
+      <node ref="R2" pin="1"/>
+    </net>
+    <net code="24" name="Net-(R2-Pad2)">
+      <node ref="R2" pin="2"/>
+    </net>
+    <net code="25" name="Net-(R3-Pad1)">
+      <node ref="R3" pin="1"/>
+    </net>
+    <net code="26" name="Net-(R3-Pad2)">
+      <node ref="R3" pin="2"/>
+    </net>
+    <net code="27" name="Net-(R4-Pad1)">
+      <node ref="R4" pin="1"/>
+    </net>
+    <net code="28" name="Net-(R4-Pad2)">
+      <node ref="R4" pin="2"/>
+    </net>
+    <net code="29" name="Net-(R5-Pad1)">
+      <node ref="R5" pin="1"/>
+    </net>
+    <net code="30" name="Net-(R5-Pad2)">
+      <node ref="R5" pin="2"/>
+    </net>
+    <net code="31" name="Net-(R1-Pad1)">
+      <node ref="R1" pin="1"/>
+    </net>
+    <net code="32" name="Net-(R6-Pad2)">
+      <node ref="R6" pin="2"/>
+    </net>
+    <net code="33" name="Net-(R7-Pad1)">
+      <node ref="R7" pin="1"/>
+    </net>
+    <net code="34" name="Net-(R7-Pad2)">
+      <node ref="R7" pin="2"/>
+    </net>
+    <net code="35" name="Net-(R8-Pad1)">
+      <node ref="R8" pin="1"/>
+    </net>
+    <net code="36" name="Net-(R8-Pad2)">
+      <node ref="R8" pin="2"/>
+    </net>
+    <net code="37" name="Net-(R9-Pad1)">
+      <node ref="R9" pin="1"/>
+    </net>
+    <net code="38" name="Net-(R9-Pad2)">
+      <node ref="R9" pin="2"/>
+    </net>
+    <net code="39" name="Net-(R10-Pad1)">
+      <node ref="R10" pin="1"/>
+    </net>
+    <net code="40" name="Net-(R10-Pad2)">
+      <node ref="R10" pin="2"/>
+    </net>
+  </nets>
+</export>

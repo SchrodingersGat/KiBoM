@@ -134,3 +134,88 @@ def test_bom_rel_dir():
     os.rename(out, ctx.get_out_path(fn))
     shutil.rmtree(os.path.join(ctx.get_board_dir(), '1'))
     ctx.clean_up()
+
+
+def test_variant_t1_1():
+    prj = 'kibom-variante'
+    ext = 'csv'
+    ctx = context.TestContext('BoMVar_t1_1', prj, ext)
+    extra = ['-r', 'V1']
+    ctx.run(no_config_file=True, extra=extra)
+    out = prj + '_bom_A_(V1).' + ext
+    rows, components = ctx.load_csv(out)
+    assert len(rows) == 1
+    assert len(components) == 2
+    assert 'R1' in components
+    assert 'R2' in components
+    assert 'R3' not in components
+    assert 'R4' not in components
+    ctx.clean_up()
+
+
+def test_variant_t1_2():
+    prj = 'kibom-variante'
+    ext = 'csv'
+    ctx = context.TestContext('BoMVar_t1_2', prj, ext)
+    extra = ['-r', 'V2']
+    ctx.run(no_config_file=True, extra=extra)
+    out = prj + '_bom_A_(V2).' + ext
+    rows, components = ctx.load_csv(out)
+    assert len(rows) == 1
+    assert len(components) == 2
+    assert 'R1' in components
+    assert 'R2' not in components
+    assert 'R3' in components
+    assert 'R4' not in components
+    ctx.clean_up()
+
+
+def test_variant_t1_3():
+    prj = 'kibom-variante'
+    ext = 'csv'
+    ctx = context.TestContext('BoMVar_t1_3', prj, ext)
+    extra = ['-r', 'V3']
+    ctx.run(no_config_file=True, extra=extra)
+    out = prj + '_bom_A_(V3).' + ext
+    rows, components = ctx.load_csv(out)
+    assert len(rows) == 1
+    assert len(components) == 2
+    assert 'R1' in components
+    assert 'R2' not in components
+    assert 'R3' not in components
+    assert 'R4' in components
+    ctx.clean_up()
+
+
+def test_variant_t1_4():
+    prj = 'kibom-variante'
+    ext = 'csv'
+    ctx = context.TestContext('BoMVar_t1_4', prj, ext)
+    ctx.run(no_config_file=True)
+    out = prj + '_bom_A.' + ext
+    rows, components = ctx.load_csv(out)
+    assert len(rows) == 1
+    assert len(components) == 3
+    assert 'R1' in components
+    assert 'R2' in components
+    assert 'R3' in components
+    assert 'R4' not in components
+    ctx.clean_up()
+
+
+def test_variant_t1_5():
+    """ default union V3 """
+    prj = 'kibom-variante'
+    ext = 'csv'
+    ctx = context.TestContext('BoMVar_t1_1', prj, ext)
+    extra = ['-r', 'V1,V3']
+    ctx.run(no_config_file=True, extra=extra)
+    out = prj + '_bom_A_(V1,V3).' + ext
+    rows, components = ctx.load_csv(out)
+    assert len(rows) == 1
+    assert len(components) == 2
+    assert 'R1' in components
+    assert 'R2' not in components
+    assert 'R3' not in components
+    assert 'R4' in components
+    ctx.clean_up()
