@@ -56,7 +56,7 @@ def WriteXML(filename, groups, net, headings, prefs):
 
             attrib[h] = str(row[i])
 
-        # sub = ElementTree.SubElement(xml, "group", attrib=attrib)
+        ElementTree.SubElement(xml, "group", attrib=attrib)
 
     with open(filename, "w") as output:
         out = ElementTree.tostring(xml, encoding="utf-8")
