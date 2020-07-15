@@ -226,8 +226,8 @@ class TestContext(object):
             f_out = slave
         else:
             # Redirect stdout and stderr to files
-            f_out = os.open(out_filename, os.O_RDWR | os.O_CREAT)
-            f_err = os.open(err_filename, os.O_RDWR | os.O_CREAT)
+            f_out = os.open(out_filename, os.O_RDWR | os.O_CREAT, mode=0o664)
+            f_err = os.open(err_filename, os.O_RDWR | os.O_CREAT, mode=0o664)
         # Run the process
         if chdir_out:
             cwd = os.getcwd()
