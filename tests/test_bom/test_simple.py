@@ -65,3 +65,18 @@ def test_bom_simple_xml():
         assert c in components
     ctx.clean_up()
 
+
+def test_bom_simple_xlsx():
+    prj = 'kibom-test'
+    ext = 'xlsx'
+    ctx = context.TestContext('BoMSimpleXLSX', prj, ext)
+    ctx.run(no_config_file=True)
+    out = prj+'_bom_A.'+ext
+    rows, components = ctx.load_xlsx(out)
+    assert len(rows) == 5
+    assert len(components) == 13
+    assert 'R6' not in components
+    for c in KIBOM_TEST_COMPONENTS:
+        assert c in components
+    ctx.clean_up()
+

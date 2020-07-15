@@ -150,6 +150,42 @@ class TestContext(object):
                     components.extend(m.group(1).split(' '))
         return rows, components
 
+    def load_xlsx(self, filename):
+        """ Assumes the components are in column D of sheet1 """
+        file = self.expect_out_file(filename)
+        subprocess.run(['unzip', file, '-d', self.get_out_path('desc')])
+        worksheet = self.get_out_path(os.path.join('desc', 'xl', 'worksheets', 'sheet1.xml'))
+        rows = []
+        comp_strs = []
+        with open(worksheet) as f:
+            xml = f.read()
+        re_dcol = re.compile(r'<c r="D\d+"[^>]+><v>(\d+)</v></c>')
+        for entry in re.finditer(r'<row r="(\d+)"[^>]+>(.*?)<\/row>', xml):
+            row = entry.group(0)
+            m = re_dcol.search(row)
+            if m:
+                rows.append(row)
+                comp_strs.append(m.group(1))
+                # logging.debug(row+" -> "+m.group(1))
+            else:
+                break
+        # Remove the row 1
+        rows.pop(0)
+        comp_strs.pop(0)
+        # Translate the indexes to strings
+        # 1) Get the list of strings
+        strings = self.get_out_path(os.path.join('desc', 'xl', 'sharedStrings.xml'))
+        with open(strings) as f:
+            xml = f.read()
+        strs = [entry.group(1) for entry in re.finditer(r'<si><t>(.*?)<\/t><\/si>', xml)]
+        # 2) Replace the strings and get the components
+        components = []
+        for idx in comp_strs:
+            cell = strs[int(idx)]
+            # logging.debug(str(idx)+' -> '+cell)
+            components.extend(cell.split(' '))
+        return rows, components
+
     def dont_expect_out_file(self, filename):
         file = self.get_out_path(filename)
         assert not os.path.isfile(file)
