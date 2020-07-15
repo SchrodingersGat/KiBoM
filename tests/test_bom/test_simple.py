@@ -1,6 +1,17 @@
 """
 Simple tests
 
+- Simple cases for:
+  - CSV
+  - HTML
+  - XML
+  - XLSX
+- Output in:
+  - Same dir as netlist
+  - Subdir relative to netlist
+  - Unrelated dir (most test are this case)
+  - Unrelated deep subdir
+
 For debug information use:
 pytest-3 --log-cli-level debug
 
@@ -8,6 +19,7 @@ pytest-3 --log-cli-level debug
 
 import os
 import sys
+import shutil
 import logging
 # Look for the 'utils' module from where the script is running
 prev_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,6 +31,20 @@ from utils import context
 BOM_DIR = 'BoM'
 KIBOM_TEST_COMPONENTS = ['C1', 'C2', 'C3', 'C4', 'R1', 'R2', 'R3', 'R4', 'R5', 'R7', 'R8', 'R9', 'R10']
 
+
+def check_kibom_test_netlist(rows, components, groups=5):
+    """ Checks the kibom-test.xml expected results """
+    # 5/6 groups
+    assert len(rows) == groups
+    # 13 components
+    assert len(components) == 13
+    # R6 excluded
+    assert 'R6' not in components
+    # All the other components
+    for c in KIBOM_TEST_COMPONENTS:
+        assert c in components
+
+
 def test_bom_simple_csv():
     prj = 'kibom-test'
     ext = 'csv'
@@ -26,11 +52,7 @@ def test_bom_simple_csv():
     ctx.run(no_config_file=True)
     out = prj+'_bom_A.'+ext
     rows, components = ctx.load_csv(out)
-    assert len(rows) == 5
-    assert len(components) == 13
-    assert 'R6' not in components
-    for c in KIBOM_TEST_COMPONENTS:
-        assert c in components
+    check_kibom_test_netlist(rows, components)
     ctx.clean_up()
 
 
@@ -41,11 +63,7 @@ def test_bom_simple_html():
     ctx.run(no_config_file=True)
     out = prj+'_bom_A.'+ext
     rows, components, dnf = ctx.load_html(out)
-    assert len(rows) == 6
-    assert len(components) == 13
-    assert 'R6' not in components
-    for c in KIBOM_TEST_COMPONENTS:
-        assert c in components
+    check_kibom_test_netlist(rows, components, 6)
     assert len(dnf) == 1
     assert 'R6' in dnf
     ctx.clean_up()
@@ -58,11 +76,7 @@ def test_bom_simple_xml():
     ctx.run(no_config_file=True)
     out = prj+'_bom_A.'+ext
     rows, components = ctx.load_xml(out)
-    assert len(rows) == 5
-    assert len(components) == 13
-    assert 'R6' not in components
-    for c in KIBOM_TEST_COMPONENTS:
-        assert c in components
+    check_kibom_test_netlist(rows, components)
     ctx.clean_up()
 
 
@@ -73,10 +87,51 @@ def test_bom_simple_xlsx():
     ctx.run(no_config_file=True)
     out = prj+'_bom_A.'+ext
     rows, components = ctx.load_xlsx(out)
-    assert len(rows) == 5
-    assert len(components) == 13
-    assert 'R6' not in components
-    for c in KIBOM_TEST_COMPONENTS:
-        assert c in components
+    check_kibom_test_netlist(rows, components)
     ctx.clean_up()
 
+
+def test_bom_deep_subdir():
+    prj = 'kibom-test'
+    ext = 'csv'
+    ctx = context.TestContext('BoMDeepSubdir', prj, ext)
+    sub_dir = os.path.join('1','2','3')
+    extra = ['-d', os.path.abspath(os.path.join(ctx.output_dir, sub_dir))]
+    ctx.run(no_config_file=True, no_subdir=True, extra=extra)
+    out = os.path.join(sub_dir, prj+'_bom_A.'+ext)
+    rows, components = ctx.load_csv(out)
+    check_kibom_test_netlist(rows, components)
+    ctx.clean_up()
+
+
+def test_bom_same_dir():
+    """ The default behavior: put the output along with the netlist """
+    prj = 'kibom-test'
+    ext = 'csv'
+    ctx = context.TestContext('BoMSameDir', prj, ext)
+    ctx.run(no_config_file=True, no_subdir=True)
+    fn = prj+'_bom_A.'+ext
+    out = os.path.join(ctx.get_board_dir(), fn)
+    rows, components = ctx.load_csv(out)
+    check_kibom_test_netlist(rows, components)
+    # Move the result to the output dir, avoid pollution
+    os.rename(out, ctx.get_out_path(fn))
+    ctx.clean_up()
+
+
+def test_bom_rel_dir():
+    """ Relative sub directory (from netlist) """
+    prj = 'kibom-test'
+    ext = 'csv'
+    ctx = context.TestContext('BoMRelSubDir', prj, ext)
+    sub_dir = os.path.join('1','2','3')
+    extra = ['-d', sub_dir]
+    ctx.run(no_config_file=True, no_subdir=True, extra=extra)
+    fn = prj+'_bom_A.'+ext
+    out = os.path.join(ctx.get_board_dir(), sub_dir, fn)
+    rows, components = ctx.load_csv(out)
+    check_kibom_test_netlist(rows, components)
+    # Move the result to the output dir, avoid pollution
+    os.rename(out, ctx.get_out_path(fn))
+    shutil.rmtree(os.path.join(ctx.get_board_dir(), '1'))
+    ctx.clean_up()

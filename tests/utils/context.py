@@ -195,7 +195,7 @@ class TestContext(object):
         with open(file, 'w') as f:
             f.write('Dummy file\n')
 
-    def run(self, ret_val=None, extra=None, use_a_tty=False, filename=None,
+    def run(self, ret_val=None, extra=None, use_a_tty=False, filename=None, no_subdir=False,
             no_config_file=False, chdir_out=False, no_verbose=False):
         logging.debug('Running '+self.test_name)
         # Change the command to be local and add the board and output arguments
@@ -210,9 +210,10 @@ class TestContext(object):
             cmd = cmd+['--cfg', self.config_file]
         if extra is not None:
             cmd = cmd+extra
-        # This changed in 1.7.x the path indicated in the output name is ignored.
-        # The only way is specify an absolute path here.
-        cmd = cmd+['-d', os.path.abspath(self.output_dir)]
+        if not no_subdir:
+            # This changed in 1.7.x the path indicated in the output name is ignored.
+            # The only way is specify an absolute path here.
+            cmd = cmd+['-d', os.path.abspath(self.output_dir)]
         cmd.append(filename if filename else self.netlist_file)
         cmd.append(self.prj_name+'.'+self.ext)
         logging.debug(cmd)
@@ -261,6 +262,9 @@ class TestContext(object):
             self.err = os.read(f_err, 10000)
             os.close(f_err)
             self.err = self.err.decode()
+        # Check for infamous .tmp files
+        tmps = glob(os.path.join(self.get_board_dir(), '*.tmp'))
+        assert len(tmps) == 0, str(tmps)
 
     def search_out(self, text):
         m = re.search(text, self.out, re.MULTILINE)
