@@ -207,7 +207,7 @@ class TestContext(object):
             os.environ['COVERAGE_FILE'] = os.path.join(os.getcwd(), '.coverage')
         cmd.append(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../KiBOM_CLI.py'))
         if not no_verbose:
-            cmd.append('-vv')
+            cmd.append('-vvv')
         if not no_config_file:
             cmd = cmd + ['--cfg', self.config_file]
         if extra is not None:
