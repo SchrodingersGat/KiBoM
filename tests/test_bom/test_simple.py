@@ -22,7 +22,7 @@ KIBOM_TEST_COMPONENTS = ['C1', 'C2', 'C3', 'C4', 'R1', 'R2', 'R3', 'R4', 'R5', '
 def test_bom_simple_csv():
     prj = 'kibom-test'
     ext = 'csv'
-    ctx = context.TestContext('BoMSimpleCSV', prj, ext, BOM_DIR)
+    ctx = context.TestContext('BoMSimpleCSV', prj, ext)
     ctx.run(no_config_file=True)
     out = prj+'_bom_A.'+ext
     rows, components = ctx.load_csv(out)
@@ -37,7 +37,7 @@ def test_bom_simple_csv():
 def test_bom_simple_html():
     prj = 'kibom-test'
     ext = 'html'
-    ctx = context.TestContext('BoMSimpleHTML', prj, ext, BOM_DIR)
+    ctx = context.TestContext('BoMSimpleHTML', prj, ext)
     ctx.run(no_config_file=True)
     out = prj+'_bom_A.'+ext
     rows, components, dnf = ctx.load_html(out)
@@ -48,5 +48,20 @@ def test_bom_simple_html():
         assert c in components
     assert len(dnf) == 1
     assert 'R6' in dnf
+    ctx.clean_up()
+
+
+def test_bom_simple_xml():
+    prj = 'kibom-test'
+    ext = 'xml'
+    ctx = context.TestContext('BoMSimpleXML', prj, ext)
+    ctx.run(no_config_file=True)
+    out = prj+'_bom_A.'+ext
+    rows, components = ctx.load_xml(out)
+    assert len(rows) == 5
+    assert len(components) == 13
+    assert 'R6' not in components
+    for c in KIBOM_TEST_COMPONENTS:
+        assert c in components
     ctx.clean_up()
 

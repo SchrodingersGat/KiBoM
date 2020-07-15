@@ -20,7 +20,7 @@ MODE_PCB = 0
 
 class TestContext(object):
 
-    def __init__(self, test_name, prj_name, ext, sub_dir, config_name=None):
+    def __init__(self, test_name, prj_name, ext, config_name=None):
         # We are using PCBs
         self.mode = MODE_PCB
         # The name used for the test output dirs and other logging
@@ -136,6 +136,19 @@ class TestContext(object):
                 components.extend(entry.group(4).split(' '))
             prev = cur
         return rows, components, components_dnf
+
+    def load_xml(self, filename):
+        file = self.expect_out_file(filename)
+        rows = []
+        components = []
+        line_re = re.compile(r'\s+<group.*References="([^"]+)"')
+        with open(file) as f:
+            for line in f:
+                m = line_re.match(line)
+                if m:
+                    rows.append(line)
+                    components.extend(m.group(1).split(' '))
+        return rows, components
 
     def dont_expect_out_file(self, filename):
         file = self.get_out_path(filename)
