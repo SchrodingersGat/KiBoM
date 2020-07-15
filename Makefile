@@ -25,5 +25,6 @@ single_test:
 	rm -rf pp
 	$(PYTEST) --log-cli-level debug -k "$(SINGLE_TEST)" --test_dir pp
 	cat pp/*/output.txt
+	rm tests/input_samples/bom.ini
 
 .PHONY: deb deb_clean
