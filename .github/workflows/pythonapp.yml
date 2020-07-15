@@ -7,13 +7,11 @@ on:
   push:
     paths:
     - '**.py'
-    - 'src/kiplot'
     - 'tests/**'
     - '.github/workflows/pythonapp.yml'
   pull_request:
     paths:
     - '**.py'
-    - 'src/kiplot'
     - 'tests/**'
     - '.github/workflows/pythonapp.yml'
 
