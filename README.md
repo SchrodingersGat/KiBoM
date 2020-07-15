@@ -26,6 +26,10 @@ The KiBoM script can be run directly from KiCad or from the command line, e.g.
 
 `python -m kibom "%I" "%O.csv"`
 
+or
+
+`KiBOM_CLI.py "%I" "%O.csv"`
+
 **Note: Selecting python executable**
 
 The python executable you choose (i.e. the *python* part of the command above) **must** be the same as the one you used to install kibom (using pip).
