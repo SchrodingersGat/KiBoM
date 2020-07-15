@@ -154,6 +154,8 @@ class TestContext(object):
         """ Assumes the components are in column D of sheet1 """
         file = self.expect_out_file(filename)
         subprocess.run(['unzip', file, '-d', self.get_out_path('desc')])
+        # Some XMLs are stored with 0600 preventing them to be read by next CI/CD stage
+        subprocess.run(['chmod', '-R', 'og+r', self.get_out_path('desc')])
         worksheet = self.get_out_path(os.path.join('desc', 'xl', 'worksheets', 'sheet1.xml'))
         rows = []
         comp_strs = []
