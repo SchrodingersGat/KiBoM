@@ -17,7 +17,7 @@ PREFIX_MILLI = ["milli", "m"]
 PREFIX_NANO = ["nano", "n"]
 PREFIX_PICO = ["pico", "p"]
 PREFIX_KILO = ["kilo", "k"]
-PREFIX_MEGA = ["mega", "meg"]
+PREFIX_MEGA = ["mega", "meg", "M"]
 PREFIX_GIGA = ["giga", "g"]
 
 # All prefixes
@@ -59,7 +59,8 @@ def getPrefix(prefix):
     if not prefix:
         return 1
 
-    prefix = prefix.lower()
+    if prefix != 'M':
+        prefix = prefix.lower()
 
     if prefix in PREFIX_PICO:
         return 1.0e-12
@@ -95,11 +96,11 @@ def compMatch(component):
     """
 
     # Remove any commas
-    component = component.strip().replace(",", "").lower()
+    component = component.strip().replace(",", "")
 
     match = matchString()
 
-    result = re.search(match, component)
+    result = re.search(match, component, flags=re.IGNORECASE)
 
     if not result:
         return None
