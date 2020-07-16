@@ -78,6 +78,7 @@ F 0 "R6" V 2280 3100 50  0000 C CNN
 F 1 "4K7" V 2200 3100 50  0000 C CNN
 F 2 "Resistor_SMD:R_0805_2012Metric" V 2130 3100 50  0001 C CNN
 F 3 "~" H 2200 3100 50  0001 C CNN
+F 4 "DNF" V 2200 3100 50  0001 C CNN "Config"
 	1    2200 3100
 	1    0    0    -1  
 $EndComp
@@ -89,6 +90,7 @@ F 0 "R7" V 2580 3100 50  0000 C CNN
 F 1 "4700" V 2500 3100 50  0000 C CNN
 F 2 "Resistor_SMD:R_0805_2012Metric" V 2430 3100 50  0001 C CNN
 F 3 "~" H 2500 3100 50  0001 C CNN
+F 4 "DNC" V 2500 3100 50  0001 C CNN "Config"
 	1    2500 3100
 	1    0    0    -1  
 $EndComp
@@ -130,7 +132,7 @@ $EndComp
 Text Notes 3500 3650 0    50   ~ 0
 3 x 4K7 resistors in 0603 package
 Text Notes 550  950  0    50   ~ 0
-This schematic serves as a test-file for the KiBom export script.\n\nAfter making a change to the schematic, remember to re-export the netlist\n\n(The testing framework cannot perform the netlist-export step!)
+This schematic serves as a test-file for the KiBom export script.\n\nAfter making a change to the schematic, remember to re-export the BOM to generate the intermediate .xml file\n\n(The testing framework cannot perform the netlist-export step!)
 $Comp
 L Device:C C1
 U 1 1 5E6A62CC

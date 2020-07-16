@@ -1,6 +1,6 @@
 # KiBoM
 
-[![PyPi version](https://pypip.in/v/kibom/badge.png)](https://pypi.org/project/kibom/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  [![Travis Status](https://api.travis-ci.org/SchrodingersGat/KiBoM.svg?branch=master)](https://travis-ci.org/SchrodingersGat/KiBoM)  [![Coverage Status](https://coveralls.io/repos/github/SchrodingersGat/KiBoM/badge.svg?branch=master)](https://coveralls.io/github/SchrodingersGat/KiBoM?branch=master)
+[![PyPi version](https://pypip.in/v/kibom/badge.png)](https://pypi.org/project/kibom/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  ![Python application](https://github.com/INTI-CMNB/KiBoM/workflows/Python%20application/badge.svg)  [![Coverage Status](https://coveralls.io/repos/github/INTI-CMNB/KiBoM/badge.svg?branch=master)](https://coveralls.io/github/INTI-CMNB/KiBoM?branch=master)
 
 Configurable BoM generation tool for KiCad EDA (http://kicad-pcb.org/)
 
@@ -11,6 +11,10 @@ KiBoM is a configurable BOM (Bill of Materials) generation tool for KiCad EDA. W
 KiBoM intelligently groups components based on multiple factors, and can generate BoM files in multiple output formats.
 
 BoM options are user-configurable in a per-project configuration file.
+
+This is a fork of the [original KiBoM project](https://github.com/SchrodingersGat/KiBoM/).
+The changes for this fork can be found [here](doc/Fork_PRs.md).
+You can find interesting information in the changes, not documented in other place.
 
 ## Installation
 
@@ -25,6 +29,10 @@ KiBom can be installed through the PIP package manager:
 The KiBoM script can be run directly from KiCad or from the command line, e.g.
 
 `python -m kibom "%I" "%O.csv"`
+
+or
+
+`KiBOM_CLI.py "%I" "%O.csv"`
 
 **Note: Selecting python executable**
 

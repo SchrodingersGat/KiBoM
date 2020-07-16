@@ -201,6 +201,53 @@ class Component():
     def getValue(self):
         return self.element.get("value")
 
+    # Try to better sort R, L and C components
+    def getValueSort(self):
+        pref = self.getPrefix()
+        v = self.getValue()
+        # Make the decimal separator uniform
+        v = v.replace(',', '.')
+        # Replace micro by u
+        v = v.replace("µ", "u")
+        # Capacitors and Inductors
+        if pref in "CL":
+            p = re.compile(r'([\d\.]+)\s*([unp])[fh]', flags=re.IGNORECASE)
+            m = p.search(v)
+            if m is not None:
+                mult = 1000
+                if m.group(2).lower() == 'n':
+                    mult = 1000000
+                if m.group(2).lower() == 'u':
+                    mult = 1000000000
+                c = "{0:15d}".format(int(float(m.group(1)) * mult))
+                v = p.sub(c, v)
+                return v
+        # Resistors
+        if pref == 'R':
+            p = re.compile(r'(\d+)([rkm])(\d+)', flags=re.IGNORECASE)
+            m = p.search(v)
+            if m is not None:
+                c = m.group(1) + '.' + m.group(3) + m.group(2)
+                v = p.sub(c, v)
+            p = re.compile(r'([\d\.]+)\s*([km])', flags=re.IGNORECASE)
+            m = p.search(v)
+            mult = 1000
+            if m is not None:
+                if m.group(2).lower() == 'k':
+                    mult = 1000000
+                if m.group(2).lower() == 'm':
+                    mult = 1000000000
+                c = "{0:15d}".format(int(float(m.group(1)) * mult))
+                v = p.sub(c, v)
+                return v
+            p = re.compile(r'([\d\.]+)', flags=re.IGNORECASE)
+            m = p.search(v)
+            if m is not None:
+                c = "{0:15d}".format(int(float(m.group(1)) * mult))
+                v = p.sub(c, v)
+                return v
+        return self.element.get("value")
+
     def getField(self, name, ignoreCase=True, libraryToo=True):
         """Return the value of a field named name. The component is first
         checked for the field, and then the components library part is checked
@@ -282,15 +329,14 @@ class Component():
     def getRef(self):
         return self.element.get("comp", "ref")
 
-    # Determine if a component is FITTED or not
     def isFitted(self):
-
-        check = self.getField(self.prefs.configField).lower()
+        """ Determine if a component is FITTED or not """
 
         # Check the value field first
         if self.getValue().lower() in DNF:
             return False
 
+        check = self.getField(self.prefs.configField).lower()
         # Empty value means part is fitted
         if check == "":
             return True
@@ -301,26 +347,21 @@ class Component():
             if opt.lower() in DNF:
                 return False
 
-        opts = check.lower().split(",")
-
-        exclude = False
-        include = True
-
+        # Variants logic
+        opts = check.split(",")
         for opt in opts:
             opt = opt.strip()
             # Any option containing a DNF is not fitted
             if opt in DNF:
-                exclude = True
-                break
-            
+                return False
             # Options that start with '-' are explicitly removed from certain configurations
-            if opt.startswith("-") and str(opt[1:]) in [str(cfg) for cfg in self.prefs.pcbConfig]:
-                exclude = True
-                break
-            if opt.startswith("+"):
-                include = include or opt[1:] in [str(cfg) for cfg in self.prefs.pcbConfig]
+            if opt.startswith("-") and str(opt[1:]) in self.prefs.pcbConfig:
+                return False
+            # Options that start with '+' are fitted only for certain configurations
+            if opt.startswith("+") and opt[1:] not in self.prefs.pcbConfig:
+                return False
 
-        return include and not exclude
+        return True
 
     def isFixed(self):
         """ Determine if a component is FIXED or not.
@@ -562,6 +603,19 @@ class ComponentGroup():
                 flds=self.fields[field],
                 fld=fieldData).encode('utf-8'))
             self.fields[field] += " " + fieldData
+
+    # Like updateField, but bypassing conflicts test
+    def forceField(self, field, fieldData):
+
+        # Protected fields cannot be overwritten
+        if field in ColumnList._COLUMNS_PROTECTED:
+            return
+
+        if (field is None or field == ""):
+            return
+        elif fieldData == "" or fieldData is None:
+            return
+        self.fields[field] = fieldData
 
     def updateFields(self, usealt=False, wrapN=None):
         for c in self.components:

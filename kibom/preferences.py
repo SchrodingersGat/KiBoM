@@ -24,6 +24,7 @@ class BomPref:
     SECTION_GROUPING_FIELDS = "GROUP_FIELDS"
     SECTION_REGEXCLUDES = "REGEX_EXCLUDE"
     SECTION_REGINCLUDES = "REGEX_INCLUDE"
+    SECTION_JOIN = "JOIN"
 
     OPT_PCB_CONFIG = "pcb_configuration"
     OPT_NUMBER_ROWS = "number_rows"
@@ -42,6 +43,8 @@ class BomPref:
     OPT_CONFIG_FIELD = "fit_field"
     OPT_HIDE_HEADERS = "hide_headers"
     OPT_HIDE_PCB_INFO = "hide_pcb_info"
+    OPT_DATASHEET_AS_LINK = "datasheet_as_link"
+    OPT_DIGIKEY_LINK = "digikey_link"
 
     def __init__(self):
         # List of headings to ignore in BoM generation
@@ -63,10 +66,12 @@ class BomPref:
         self.mergeBlankFields = True  # Blanks fields will be merged when possible
         self.hideHeaders = False
         self.hidePcbInfo = False
+        self.digikey_link = False
         self.configField = "Config"  # Default field used for part fitting config
         self.pcbConfig = ["default"]
 
         self.backup = "%O.tmp"
+        self.as_link = False
 
         self.separatorCSV = None
         self.outputFileName = "%O_bom_%v%V"
@@ -104,6 +109,9 @@ class BomPref:
             ["zener", "zenersmall"],
             ["d", "diode", "d_small"]
         ]
+
+        # Nothing to join by default
+        self.join = []
 
     # Check an option within the SECTION_GENERAL group
     def checkOption(self, parser, opt, default=False):
@@ -157,11 +165,21 @@ class BomPref:
         else:
             self.backup = False
 
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_DATASHEET_AS_LINK):
+            self.as_link = cf.get(self.SECTION_GENERAL, self.OPT_DATASHEET_AS_LINK)
+        else:
+            self.as_link = False
+
         if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS):
             self.hideHeaders = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS) == '1'
 
         if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO):
             self.hidePcbInfo = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO) == '1'
+
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_DIGIKEY_LINK):
+            self.digikey_link = cf.get(self.SECTION_GENERAL, self.OPT_DIGIKEY_LINK)
+        else:
+            self.digikey_link = False
 
         # Read out grouping colums
         if self.SECTION_GROUPING_FIELDS in cf.sections():
@@ -178,6 +196,10 @@ class BomPref:
         # Read out component aliases
         if self.SECTION_ALIASES in cf.sections():
             self.aliases = [re.split('[ \t]+', a) for a in cf.options(self.SECTION_ALIASES)]
+
+        # Read out join rules
+        if self.SECTION_JOIN in cf.sections():
+            self.join = [a.split("\t") for a in cf.options(self.SECTION_JOIN)]
 
         if self.SECTION_REGEXCLUDES in cf.sections():
             self.regExcludes = []
@@ -229,6 +251,9 @@ class BomPref:
         cf.set(self.SECTION_GENERAL, '; Make a backup of the bom before generating the new one, using the following template')
         cf.set(self.SECTION_GENERAL, self.OPT_BACKUP, self.backup)
 
+        cf.set(self.SECTION_GENERAL, '; Put the datasheet as a link for the following field')
+        cf.set(self.SECTION_GENERAL, self.OPT_DATASHEET_AS_LINK, self.as_link)
+
         cf.set(self.SECTION_GENERAL, '; Default number of boards to produce if none given on CLI with -n')
         cf.set(self.SECTION_GENERAL, self.OPT_DEFAULT_BOARDS, self.boards)
 
@@ -240,6 +265,9 @@ class BomPref:
 
         cf.set(self.SECTION_GENERAL, '; Whether to hide PCB info from output file')
         cf.set(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO, self.hidePcbInfo)
+
+        cf.set(self.SECTION_GENERAL, '; Interpret as a Digikey P/N and link the following field')
+        cf.set(self.SECTION_GENERAL, self.OPT_DIGIKEY_LINK, self.digikey_link)
 
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")
@@ -272,6 +300,15 @@ class BomPref:
 
         for a in self.aliases:
             cf.set(self.SECTION_ALIASES, "\t".join(a))
+
+        cf.add_section(self.SECTION_JOIN)
+        cf.set(self.SECTION_JOIN, "; A list of rules to join the content of fields")
+        cf.set(self.SECTION_JOIN, "; Each line is a rule, the first name is the field that will receive the data")
+        cf.set(self.SECTION_JOIN, "; from the other fields")
+        cf.set(self.SECTION_JOIN, '; Field names are case-insensitive')
+
+        for a in self.join:
+            cf.set(self.SECTION_JOIN, "\t".join(a))
 
         cf.add_section(self.SECTION_REGINCLUDES)
         cf.set(self.SECTION_REGINCLUDES, '; A series of regular expressions used to include parts in the BoM')

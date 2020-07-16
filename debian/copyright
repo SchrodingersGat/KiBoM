@@ -1,0 +1,35 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: kibom.inti-cmnb
+Source: https://github.com/INTI-CMNB/KiBoM
+#
+# Please double check copyright with the licensecheck(1) command.
+
+Files:     KiBOM_CLI.py
+           MANIFEST.in
+           README.md
+           bomlib/__init__.py
+           bomlib/bom_writer.py
+           bomlib/columns.py
+           bomlib/component.py
+           bomlib/csv_writer.py
+           bomlib/html_writer.py
+           bomlib/netlist_reader.py
+           bomlib/preferences.py
+           bomlib/sort.py
+           bomlib/units.py
+           bomlib/version.py
+           bomlib/xlsx_writer.py
+           bomlib/xml_writer.py
+           example/bom.png
+           example/html.png
+           example/html_ex.png
+           example/ini.png
+           example/schem.png
+           example/usage.png
+           setup.cfg
+           setup.py
+           tests/common.bash
+           tests/sanity.bash
+Copyright: 2016 KiBOM
+License:   MIT
+

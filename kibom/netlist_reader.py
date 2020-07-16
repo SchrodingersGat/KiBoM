@@ -108,6 +108,27 @@ class xmlElement():
 
         return ""
 
+    # Is it complete? assumes the target is an user defined field
+    def setField(self, elemName, value):
+        """Sets the text of elemName field
+        """
+        for child in self.children:
+            if child.name == "fields":
+                for tg in child.children:
+                    if tg.attributes["name"] == elemName:
+                        tg.setChars(value)
+        return ""
+
+    # Is it complete? Assumes the destination is a KiCad base field
+    def append(self, elemName, value):
+        """Appends text to the indicated elemName
+        """
+        for child in self.children:
+            ret = child.get(elemName)
+            if ret != "":
+                child.addChars(value)
+        return ""
+
 
 class libpart():
     """Class for a library part, aka 'libpart' in the xml netlist file.
@@ -283,6 +304,10 @@ class netlist():
         path = os.path.basename(path)
 
         """Return the source string for the design"""
+
+        path = self.design.get("source").replace("\\", "/")
+        path = os.path.basename(path)
+
         if (sys.version_info[0] >= 3):
             return path
         else:
@@ -324,9 +349,40 @@ class netlist():
 
         return ret
 
+    # Hack to avoid an extra column for the datasheet
+    def datasheetLink(self, components):
+        if not self.prefs.as_link:
+            return ""
+        for c in components:
+            ret = c.getDatasheet()
+            if ret != "":
+                c.element.setField(self.prefs.as_link, ' <a href="' + ret + '">' + c.getField(self.prefs.as_link) + '</a>')
+        return ""
+
+    # Post-process the digikey P/N to be an URL
+    def digikeyLink(self, groups):
+        if not self.prefs.digikey_link:
+            return ""
+        for field in self.prefs.digikey_link.split("\t"):
+            for g in groups:
+                ret = g.getField(field)
+                if ret != "":
+                    g.forceField(field, ' <a href="http://search.digikey.com/scripts/DkSearch/dksus.dll?Detail&name=' + ret + '">' + ret + '</a>')
+        return ""
+
     def groupComponents(self, components):
 
         groups = []
+
+        # Join fields like voltage, current, power and tolerance with the value
+        for join_l in self.prefs.join:
+            elements = len(join_l)
+            if elements > 1:
+                for j in range(1, elements):
+                    for c in components:
+                        ret = c.getField(join_l[j])
+                        if ret != "":
+                            c.element.append(join_l[0], ' ' + ret)
 
         # Iterate through each component, and test whether a group for these already exists
         for c in components:
@@ -358,7 +414,7 @@ class netlist():
 
         # Sort the groups
         # First priority is the Type of component (e.g. R?, U?, L?)
-        groups = sorted(groups, key=lambda g: [g.components[0].getPrefix(), g.components[0].getValue()])
+        groups = sorted(groups, key=lambda g: [g.components[0].getPrefix(), g.components[0].getValueSort()])
 
         return groups
 
