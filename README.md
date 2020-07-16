@@ -12,6 +12,10 @@ KiBoM intelligently groups components based on multiple factors, and can generat
 
 BoM options are user-configurable in a per-project configuration file.
 
+This is a fork of the [original KiBoM project](https://github.com/SchrodingersGat/KiBoM/).
+The changes for this fork can be found [here](doc/Fork_PRs.md).
+You can find interesting information in the changes, not documented in other place.
+
 ## Installation
 
 KiBom can be installed through the PIP package manager:
