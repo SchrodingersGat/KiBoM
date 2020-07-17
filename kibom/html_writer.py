@@ -51,6 +51,10 @@ def WriteHTML(filename, groups, net, headings, prefs):
     nFitted = sum([g.getCount() for g in groups if g.isFitted()])
     nBuild = nFitted * prefs.boards
 
+    link_digikey = None
+    if prefs.digikey_link:
+        link_digikey = prefs.digikey_link.split("\t")
+
     with open(filename, "w") as html:
 
         # HTML Header
@@ -122,6 +126,8 @@ def WriteHTML(filename, groups, net, headings, prefs):
                 html.write('\t<td align="center">{n}</td>\n'.format(n=rowCount))
 
             for n, r in enumerate(row):
+                if link_digikey and headings[n] in link_digikey:
+                    r = '<a href="http://search.digikey.com/scripts/DkSearch/dksus.dll?Detail&name=' + r + '">' + r + '</a>'
 
                 if (len(r) == 0) or (r.strip() == "~"):
                     bg = BG_EMPTY
@@ -166,7 +172,9 @@ def WriteHTML(filename, groups, net, headings, prefs):
                     html.write('\t<td align="center">{n}</td>\n'.format(n=rowCount))
  
                 for n, r in enumerate(row):
- 
+                    if link_digikey and headings[n] in link_digikey:
+                        r = '<a href="http://search.digikey.com/scripts/DkSearch/dksus.dll?Detail&name=' + r + '">' + r + '</a>'
+
                     if len(r) == 0:
                         bg = BG_EMPTY
                     else:
