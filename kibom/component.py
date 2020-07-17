@@ -612,6 +612,18 @@ class ComponentGroup():
         for key in columns:
             val = self.getField(key)
 
+            # Join fields (appending to current value) (#81)
+            for join_l in self.prefs.join:
+                # Each list is "target, source..." so we need at least 2 elements
+                elements = len(join_l)
+                target = join_l[0]
+                if elements > 1 and target == key:
+                    # Append data from the other fields
+                    for source in join_l[1:]:
+                        v = self.getField(source)
+                        if v:
+                            val = val + ' ' + v
+
             if val is None:
                 val = ""
             else:
