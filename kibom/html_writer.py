@@ -135,7 +135,7 @@ def WriteHTML(filename, groups, net, headings, prefs):
         html.write("</table>\n")
         html.write("<br><br>\n")
 
-        if prefs.generateDNF:
+        if prefs.generateDNF and rowCount != len(groups):
             html.write("<h2>Optional components (DNF=Do Not Fit)</h2>\n")
  
             # DNF component groups
