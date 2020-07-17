@@ -282,15 +282,14 @@ class Component():
     def getRef(self):
         return self.element.get("comp", "ref")
 
-    # Determine if a component is FITTED or not
     def isFitted(self):
-
-        check = self.getField(self.prefs.configField).lower()
+        """ Determine if a component is FITTED or not """
 
         # Check the value field first
         if self.getValue().lower() in DNF:
             return False
 
+        check = self.getField(self.prefs.configField).lower()
         # Empty value means part is fitted
         if check == "":
             return True
@@ -301,26 +300,21 @@ class Component():
             if opt.lower() in DNF:
                 return False
 
-        opts = check.lower().split(",")
-
-        exclude = False
-        include = True
-
+        # Variants logic
+        opts = check.split(",")
         for opt in opts:
             opt = opt.strip()
             # Any option containing a DNF is not fitted
             if opt in DNF:
-                exclude = True
-                break
-            
+                return False
             # Options that start with '-' are explicitly removed from certain configurations
-            if opt.startswith("-") and str(opt[1:]) in [str(cfg) for cfg in self.prefs.pcbConfig]:
-                exclude = True
-                break
-            if opt.startswith("+"):
-                include = include or opt[1:] in [str(cfg) for cfg in self.prefs.pcbConfig]
+            if opt.startswith("-") and str(opt[1:]) in self.prefs.pcbConfig:
+                return False
+            # Options that start with '+' are fitted only for certain configurations
+            if opt.startswith("+") and opt[1:] not in self.prefs.pcbConfig:
+                return False
 
-        return include and not exclude
+        return True
 
     def isFixed(self):
         """ Determine if a component is FIXED or not.
