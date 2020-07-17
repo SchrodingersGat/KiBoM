@@ -238,6 +238,24 @@ Multiple BoM output formats are supported:
 
 Output file format selection is set by the output filename. e.g. "bom.html" will be written to a HTML file, "bom.csv" will be written to a CSV file.
 
+### Digi-Key Linking
+
+If you have a field containing the Digi-Key part number you can make its column to contain links to the Digi-Key web page for this component. (*Note: Digi-Key links will only be generated for the HTML output format*).
+
+**Instructions**
+
+Specify a column (field) to use as the `digikey_link` field in the configuration file (ie. `bom.ini`). The value for this option is the column you want to convert into a link to the Digi-Key. Note that this field must contian a valid Digi-Key part number in each row. 
+
+For example:
+
+`digikey_link = digikeypn`
+
+This will render entries in the column *digikeypn* as hyperlinks to the component webpage on the Digi-Key website.
+
+**Limitations**
+
+Note that Digi-Key URL rendering will only be rendered for HTML file outputs.
+
 ### Configuration File
 BoM generation options can be configured (on a per-project basis) by editing the *bom.ini* file in the PCB project directory. This file is generated the first time that the KiBoM script is run, and allows configuration of the following options.
 * `ignore_dnf` : Component groups designated as 'DNF' (do not fit) will be excluded from the BoM output
@@ -447,6 +465,7 @@ An XLSX file output can be generated simply by changing the file extension
 
 With thanks to the following contributors:
 
+* https://github.com/set-soft
 * https://github.com/bootchk
 * https://github.com/diegoherranz
 * https://github.com/kylemanna
