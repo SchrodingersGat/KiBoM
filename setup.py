@@ -27,6 +27,8 @@ setuptools.setup(
     license="MIT",
 
     packages=setuptools.find_packages(),
+ 
+    scripts=['KiBOM_CLI.py'],
 
     install_requires=[
         "xlsxwriter",

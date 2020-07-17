@@ -103,7 +103,10 @@ def writeVariant(input_file, output_dir, output_file, variant, preferences):
 def main():
     locale.setlocale(locale.LC_ALL, '')
 
-    parser = argparse.ArgumentParser(prog="python -m kibom", description="KiBOM Bill of Materials generator script")
+    prog = 'KiBOM_CLI.py'
+    if __name__ == '__main__':
+        prog = "python -m kibom"
+    parser = argparse.ArgumentParser(prog=prog, description="KiBOM Bill of Materials generator script")
 
     parser.add_argument("netlist", help='xml netlist file. Use "%%I" when running from within KiCad')
     parser.add_argument("output", default="", help='BoM output file name.\nUse "%%O" when running from within KiCad to use the default output name (csv file).\nFor e.g. HTML output, use "%%O.html"')
