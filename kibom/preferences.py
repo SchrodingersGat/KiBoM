@@ -31,7 +31,6 @@ class BomPref:
     OPT_GROUP_CONN = "group_connectors"
     OPT_USE_REGEX = "test_regex"
     OPT_USE_ALT = "use_alt"
-    OPT_ALT_WRAP = "alt_wrap"
     OPT_MERGE_BLANK = "merge_blank_fields"
     OPT_IGNORE_DNF = "ignore_dnf"
     OPT_GENERATE_DNF = "html_generate_dnf"
@@ -53,7 +52,6 @@ class BomPref:
 
         self.corder = ColumnList._COLUMNS_DEFAULT
         self.useAlt = False  # Use alternate reference representation
-        self.altWrap = None  # Wrap to n items when using alt representation
         self.ignoreDNF = True  # Ignore rows for do-not-fit parts
         self.generateDNF = True  # Generate a list of do-not-fit parts
         self.numberRows = True  # Add row-numbers to BoM output
@@ -137,7 +135,6 @@ class BomPref:
             self.ignoreDNF = self.checkOption(cf, self.OPT_IGNORE_DNF, default=True)
             self.generateDNF = self.checkOption(cf, self.OPT_GENERATE_DNF, default=True)
             self.useAlt = self.checkOption(cf, self.OPT_USE_ALT, default=False)
-            self.altWrap = self.checkInt(cf, self.OPT_ALT_WRAP, default=None)
             self.numberRows = self.checkOption(cf, self.OPT_NUMBER_ROWS, default=True)
             self.groupConnectors = self.checkOption(cf, self.OPT_GROUP_CONN, default=True)
             self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
@@ -218,7 +215,6 @@ class BomPref:
         self.addOption(cf, self.OPT_IGNORE_DNF, self.ignoreDNF, comment="If '{opt}' option is set to 1, rows that are not to be fitted on the PCB will not be written to the BoM file".format(opt=self.OPT_IGNORE_DNF))
         self.addOption(cf, self.OPT_GENERATE_DNF, self.generateDNF, comment="If '{opt}' option is set to 1, also generate a list of components not fitted on the PCB (HTML only)".format(opt=self.OPT_GENERATE_DNF))
         self.addOption(cf, self.OPT_USE_ALT, self.useAlt, comment="If '{opt}' option is set to 1, grouped references will be printed in the alternate compressed style eg: R1-R7,R18".format(opt=self.OPT_USE_ALT))
-        self.addOption(cf, self.OPT_ALT_WRAP, self.altWrap, comment="If '{opt}' option is set to and integer N, the references field will wrap after N entries are printed".format(opt=self.OPT_ALT_WRAP))
         self.addOption(cf, self.OPT_NUMBER_ROWS, self.numberRows, comment="If '{opt}' option is set to 1, each row in the BoM will be prepended with an incrementing row number".format(opt=self.OPT_NUMBER_ROWS))
         self.addOption(cf, self.OPT_GROUP_CONN, self.groupConnectors, comment="If '{opt}' option is set to 1, connectors with the same footprints will be grouped together, independent of the name of the connector".format(opt=self.OPT_GROUP_CONN))
         self.addOption(cf, self.OPT_USE_REGEX, self.useRegex, comment="If '{opt}' option is set to 1, each component group will be tested against a number of regular-expressions (specified, per column, below). If any matches are found, the row is ignored in the output file".format(opt=self.OPT_USE_REGEX))

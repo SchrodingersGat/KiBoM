@@ -520,14 +520,14 @@ class ComponentGroup():
         # Return a list of the components
         return " ".join([c.getRef() for c in self.components])
 
-    def getAltRefs(self, wrapN=None):
+    def getAltRefs(self):
         S = joiner()
 
         for n in self.components:
             P, N = (n.getPrefix(), n.getSuffix())
             S.add(P, N)
 
-        return S.flush(' ', N=wrapN)
+        return S.flush(' ')
 
     # Sort the components in correct order
     def sortComponents(self):
