@@ -25,6 +25,7 @@ class BomPref:
     SECTION_REGEXCLUDES = "REGEX_EXCLUDE"
     SECTION_REGINCLUDES = "REGEX_INCLUDE"
 
+    OPT_DIGIKEY_LINK = "digikey_link"
     OPT_PCB_CONFIG = "pcb_configuration"
     OPT_NUMBER_ROWS = "number_rows"
     OPT_GROUP_CONN = "group_connectors"
@@ -59,6 +60,7 @@ class BomPref:
         self.groupConnectors = True  # Group connectors and ignore component value
         self.useRegex = True  # Test various columns with regex
 
+        self.digikey_link = False  # Columns to link to Digi-Key
         self.boards = 1  # Quantity of boards to be made
         self.mergeBlankFields = True  # Blanks fields will be merged when possible
         self.hideHeaders = False
@@ -163,6 +165,11 @@ class BomPref:
         if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO):
             self.hidePcbInfo = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO) == '1'
 
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_DIGIKEY_LINK):
+            self.digikey_link = cf.get(self.SECTION_GENERAL, self.OPT_DIGIKEY_LINK)
+        else:
+            self.digikey_link = False
+
         # Read out grouping colums
         if self.SECTION_GROUPING_FIELDS in cf.sections():
             self.groups = [i for i in cf.options(self.SECTION_GROUPING_FIELDS)]
@@ -240,6 +247,9 @@ class BomPref:
 
         cf.set(self.SECTION_GENERAL, '; Whether to hide PCB info from output file')
         cf.set(self.SECTION_GENERAL, self.OPT_HIDE_PCB_INFO, self.hidePcbInfo)
+
+        cf.set(self.SECTION_GENERAL, '; Interpret as a Digikey P/N and link the following field')
+        cf.set(self.SECTION_GENERAL, self.OPT_DIGIKEY_LINK, self.digikey_link)
 
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")
