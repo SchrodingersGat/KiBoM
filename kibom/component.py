@@ -201,6 +201,22 @@ class Component():
     def getValue(self):
         return self.element.get("value")
 
+    # Try to better sort R, L and C components
+    def getValueSort(self):
+        pref = self.getPrefix()
+        if pref in 'RLC' or pref == 'RV':
+            res = units.compMatch(self.getValue())
+            if res:
+                value, mult, unit = res
+                if pref in "CL":
+                    # fempto Farads
+                    value = "{0:15d}".format(int(value * 1e15 * mult + 0.1))
+                else:
+                    # milli Ohms
+                    value = "{0:15d}".format(int(value * 1000 * mult + 0.1))
+                return value
+        return self.element.get("value")
+
     def getField(self, name, ignoreCase=True, libraryToo=True):
         """Return the value of a field named name. The component is first
         checked for the field, and then the components library part is checked
