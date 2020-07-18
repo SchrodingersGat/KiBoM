@@ -354,7 +354,7 @@ class netlist():
         # Sort the references within each group
         for g in groups:
             g.sortComponents()
-            g.updateFields(self.prefs.useAlt, self.prefs.altWrap)
+            g.updateFields(self.prefs.useAlt)
 
         # Sort the groups
         # First priority is the Type of component (e.g. R?, U?, L?)
