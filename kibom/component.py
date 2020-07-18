@@ -569,7 +569,7 @@ class ComponentGroup():
 
         # Update 'global' fields
         if usealt:
-            self.fields[ColumnList.COL_REFERENCE] = self.getAltRefs(wrapN)
+            self.fields[ColumnList.COL_REFERENCE] = self.getAltRefs()
         else:
             self.fields[ColumnList.COL_REFERENCE] = self.getRefs()
 
