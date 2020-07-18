@@ -89,14 +89,14 @@ def groupString(group):  # Return a reg-ex string for a list of values
 
 
 def matchString():
-    return "^([0-9\.]+)(" + groupString(PREFIX_ALL) + ")*(" + groupString(UNIT_ALL) + ")*(\d*)$"
+    return r"^([0-9\.]+)\s*(" + groupString(PREFIX_ALL) + ")*(" + groupString(UNIT_ALL) + r")*(\d*)$"
 
 
 def compMatch(component):
     """
     Return a normalized value and units for a given component value string
-    e.g. compMatch("10R2") returns (10, R)
-    e.g. compMatch("3.3mOhm") returns (0.0033, R)
+    e.g. compMatch('10R2') returns (10, R)
+    e.g. compMatch('3.3mOhm') returns (0.0033, R)
     """
 
     # Convert the decimal point from the current locale to a '.'
