@@ -155,6 +155,23 @@ The following default fields are extracted and can be added to the output BoM fi
 
 If any components have custom fields added, these are available to the output BoM file.
 
+**Joining Fields**
+
+The user may wish to have separate fields in the output BOM file. For example, multiple component parameters such as [Voltage / Current / Tolerance] could be joined into the *Value* field in the generated BOM file.
+
+Field joining is configured in the `bom.ini` file. Under the `[JOIN]` section in the file, multiple join entries can be specified by the user to be joined. Each line is a separate entry, which contains two or more tab-separated field names.
+
+The first name specifies the primary field which be displayed in the output file. The following names specifiy fields which will be joined into the primary field.
+
+Example:
+
+```
+[JOIN]
+Value    Voltage  Current  Tolerance
+```
+
+This entry will append the `voltage`, `current` and `tolerance` values into the `value` field.
+
 ### Multiple PCB Configurations
 
 KiBoM allows for arbitrary PCB configurations, which means that the user can specify that individual components will be included or excluded from the BoM in certain circumstances.
