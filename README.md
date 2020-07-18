@@ -14,41 +14,37 @@ BoM options are user-configurable in a per-project configuration file.
 
 ## Installation
 
-KiBom can be installed through the PIP package manager:
+KiBoM can be installed via multiple methods:
+
+**A. Download**
+
+Download the KiBoM [package from github](https://github.com/SchrodingersGat/KiBoM/archive/master.zip) and extract the .zip archive to a location on your computer.
+
+**B. Git Clone**
+
+Use git to clone the source code to your computer:
+
+`git clone https://github.com/SchrodingersGat/kibom`
+
+**C. PIP**
+
+KiBom can also be installed through the PIP package manager:
 
 ```pip install kibom```
 
 *Note: Take note of which python executable you use when installing kibom - this is the same executable you must use when running the KiBom script from KiCAD (more details below under "Usage")*
 
+Installing under PIP is recommended for advanced users only, as the exact location of the installed module must be known to properly run the script from within KiCad.
+
 ## Usage
 
-The KiBoM script can be run directly from KiCad or from the command line, e.g.
+The *KiBOM_CLI* script can be run directly from KiCad or from the command line. For command help, run the script with the *-h* flag e.g.
 
-`python -m kibom "%I" "%O.csv"`
-
-**Note: Selecting python executable**
-
-The python executable you choose (i.e. the *python* part of the command above) **must** be the same as the one you used to install kibom (using pip).
-
-By default KiCad uses the version of python packaged with the KiCad application (i.e. kicad/bin/python).
-
-**Example: Install kibom under python3 on windows**
-
-You have installed kibom using Python3: `pip3 install kibom`
-
-To launch the script correctly from the KiCad BOM window, use the command:
-
-`python3.exe -m kibom "%I" "%O.csv"`
-
-If you are running a different python version, select that accordingly.
-
-For command help, run the script with the *-h* flag e.g.
-
-`python -m kibom -h`
+`python KiBOM_CLI.py -h`
 
 ~~~~
-usage: python -m kibom [-h] [-n NUMBER] [-v] [-r VARIANT] [-d SUBDIRECTORY]
-                    [--cfg CFG] [-s SEPARATOR] [--version]
+usage: KiBOM_CLI.py [-h] [-n NUMBER] [-v] [-r VARIANT] [--cfg CFG]
+                    [-s SEPARATOR]
                     netlist output
 
 KiBOM Bill of Materials generator script
@@ -56,8 +52,8 @@ KiBOM Bill of Materials generator script
 positional arguments:
   netlist               xml netlist file. Use "%I" when running from within
                         KiCad
-  output                BoM output file name. Use "%O" when running from   
-                        within KiCad to use the default output name (csv   
+  output                BoM output file name. Use "%O" when running from
+                        within KiCad to use the default output name (csv
                         file). For e.g. HTML output, use "%O.html"
 
 optional arguments:
@@ -66,20 +62,18 @@ optional arguments:
                         Number of boards to build (default = 1)
   -v, --verbose         Enable verbose output
   -r VARIANT, --variant VARIANT
-                        Board variant(s), used to determine which components
-                        are output to the BoM. To specify multiple variants,
-                        with a BOM file exported for each variant, separate
-                        variants with the ';' (semicolon) character.
+                        Board variant(s), used to determine which components are
+                        output to the BoM
   -d SUBDIRECTORY, --subdirectory SUBDIRECTORY
-                        Subdirectory within which to store the generated BoM
-                        files.
+                        Subdirectory (relative to output file) within which the
+                        BoM(s) should be written.
   --cfg CFG             BoM config file (script will try to use 'bom.ini' if
                         not specified here)
   -s SEPARATOR, --separator SEPARATOR
                         CSV Separator (default ',')
-  --version             show program's version number and exit
-~~~~                        
 
+
+~~~~                        
 
 **netlist** The netlist must be provided to the script. When running from KiCad use "%I"
 
