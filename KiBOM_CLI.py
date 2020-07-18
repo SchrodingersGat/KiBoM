@@ -14,7 +14,7 @@
     (this file is auto-generated with default options the first time the script is executed).
 
     For usage help:
-    python -m kibom -h
+    python KiBOM_CLI.py -h
 """
 
 import sys
