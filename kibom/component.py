@@ -556,11 +556,12 @@ class ComponentGroup():
         elif fieldData.lower() in self.fields[field].lower():
             return
         else:
-            debug.warning("Field conflict: ({refs}) [{name}] : '{flds}' <- '{fld}'".format(
-                refs=self.getRefs(),
-                name=field,
-                flds=self.fields[field],
-                fld=fieldData).encode('utf-8'))
+            if field != self.prefs.configField:
+                debug.warning("Field conflict: ({refs}) [{name}] : '{flds}' <- '{fld}'".format(
+                    refs=self.getRefs(),
+                    name=field,
+                    flds=self.fields[field],
+                    fld=fieldData).encode('utf-8'))
             self.fields[field] += " " + fieldData
 
     def updateFields(self, usealt=False, wrapN=None):
