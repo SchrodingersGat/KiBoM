@@ -143,8 +143,10 @@ class BomPref:
             self.groupConnectors = self.checkOption(cf, self.OPT_GROUP_CONN, default=True)
             self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
             self.mergeBlankFields = self.checkOption(cf, self.OPT_MERGE_BLANK, default=True)
-            self.outputFileName = cf.get(self.SECTION_GENERAL, self.OPT_OUTPUT_FILE_NAME)
-            self.variantFileNameFormat = cf.get(self.SECTION_GENERAL, self.OPT_VARIANT_FILE_NAME_FORMAT)
+            self.outputFileName = cf.get(self.SECTION_GENERAL, self.OPT_OUTPUT_FILE_NAME,
+                                         fallback=self.outputFileName)
+            self.variantFileNameFormat = cf.get(self.SECTION_GENERAL, self.OPT_VARIANT_FILE_NAME_FORMAT,
+                                                fallback=self.variantFileNameFormat)
 
         if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
             self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
