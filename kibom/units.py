@@ -31,6 +31,8 @@ UNIT_L = ["henry", "h"]
 
 UNIT_ALL = UNIT_R + UNIT_C + UNIT_L
 
+# Compiled regex to match the values
+match = None
 # Current locale decimal point value
 decimal_point = None
 
@@ -109,9 +111,12 @@ def compMatch(component):
     # Remove any commas
     component = component.strip().replace(",", "")
 
-    match = matchString()
+    global match
+    if not match:
+        match = re.compile(matchString(), flags=re.IGNORECASE)
 
-    result = re.search(match, component, flags=re.IGNORECASE)
+    # Not lower, but ignore case
+    result = match.search(component)
 
     if not result:
         return None
