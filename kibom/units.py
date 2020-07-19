@@ -144,9 +144,7 @@ def compMatch(component):
     except:
         return None
 
-    val = "{0:.15f}".format(val * 1.0 * getPrefix(prefix))
-
-    return (val, getUnit(units))
+    return (val, getPrefix(prefix), getUnit(units))
 
 
 def componentValue(valString):
@@ -173,8 +171,11 @@ def compareValues(c1, c2):
     if not r1 or not r2:
         return False
 
-    (v1, u1) = r1
-    (v2, u2) = r2
+    (v1, p1, u1) = r1
+    (v2, p2, u2) = r2
+
+    v1 = "{0:.15f}".format(v1 * 1.0 * p1)
+    v2 = "{0:.15f}".format(v2 * 1.0 * p2)
 
     if v1 == v2:
         # Values match
