@@ -80,6 +80,7 @@ class BomPref:
             ColumnList.COL_VALUE,
             ColumnList.COL_FP,
             ColumnList.COL_FP_LIB,
+            ColumnList.COL_SHEETPATH
             # User can add custom grouping columns in bom.ini
         ]
 
