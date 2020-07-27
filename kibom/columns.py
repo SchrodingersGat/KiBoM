@@ -11,7 +11,7 @@ class ColumnList:
     COL_FP_LIB = 'Footprint Lib'
     COL_PART = 'Part'
     COL_PART_LIB = 'Part Lib'
-    COL_SHEETPATH = 'Sheet'
+    COL_SHEETPATH = 'Sheetpath'
     COL_DATASHEET = 'Datasheet'
 
     # Default columns for groups
