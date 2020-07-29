@@ -49,6 +49,7 @@ class BomPref:
         self.ignore = [
             ColumnList.COL_PART_LIB,
             ColumnList.COL_FP_LIB,
+            ColumnList.COL_SHEETPATH,
         ]
 
         self.corder = ColumnList._COLUMNS_DEFAULT
@@ -80,7 +81,6 @@ class BomPref:
             ColumnList.COL_VALUE,
             ColumnList.COL_FP,
             ColumnList.COL_FP_LIB,
-            ColumnList.COL_SHEETPATH
             # User can add custom grouping columns in bom.ini
         ]
 

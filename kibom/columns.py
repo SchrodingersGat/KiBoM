@@ -51,7 +51,8 @@ class ColumnList:
         COL_DESCRIPTION,
         COL_DATASHEET,
         COL_FP,
-        COL_FP_LIB
+        COL_FP_LIB,
+        COL_SHEETPATH
     ]
 
     def __str__(self):
