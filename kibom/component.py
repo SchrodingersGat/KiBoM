@@ -188,7 +188,12 @@ class Component():
             ret = self.element.get("field", "name", "description")
 
         if ret == "":
-            ret = self.libpart.getDescription()
+            try:
+                ret = self.libpart.getDescription()
+            except AttributeError:
+                # Raise a good error description here, so the user knows what the culprit component is.
+                # (sometimes libpart is None)
+                raise AttributeError(f'Could not get description for part {self.getPrefix()}{self.getSuffix()}.')
 
         return ret
 
