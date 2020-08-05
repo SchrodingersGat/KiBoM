@@ -60,6 +60,9 @@ def WriteXML(filename, groups, net, headings, prefs):
 
     with open(filename, "w") as output:
         out = ElementTree.tostring(xml, encoding="utf-8")
-        output.write(minidom.parseString(out).toprettyxml(indent="\t"))
+        # There is probably a better way to write the data to file (without so many encoding/decoding steps),
+        # but toprettyxml() without specifying UTF-8 will chew up non-ASCII chars. Perhaps revisit if performance here
+        # is ever a concern
+        output.write(minidom.parseString(out).toprettyxml(indent="\t", encoding="utf-8").decode("utf-8"))
 
     return True
