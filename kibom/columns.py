@@ -11,6 +11,7 @@ class ColumnList:
     COL_FP_LIB = 'Footprint Lib'
     COL_PART = 'Part'
     COL_PART_LIB = 'Part Lib'
+    COL_SHEETPATH = 'Sheetpath'
     COL_DATASHEET = 'Datasheet'
 
     # Default columns for groups
@@ -33,6 +34,7 @@ class ColumnList:
         COL_VALUE,
         COL_FP,
         COL_FP_LIB,
+        COL_SHEETPATH,
         COL_GRP_QUANTITY,
         COL_GRP_BUILD_QUANTITY,
         COL_DATASHEET
@@ -49,7 +51,8 @@ class ColumnList:
         COL_DESCRIPTION,
         COL_DATASHEET,
         COL_FP,
-        COL_FP_LIB
+        COL_FP_LIB,
+        COL_SHEETPATH
     ]
 
     def __str__(self):

@@ -49,6 +49,7 @@ class BomPref:
         self.ignore = [
             ColumnList.COL_PART_LIB,
             ColumnList.COL_FP_LIB,
+            ColumnList.COL_SHEETPATH,
         ]
 
         self.corder = ColumnList._COLUMNS_DEFAULT
@@ -122,6 +123,12 @@ class BomPref:
         else:
             return default
 
+    def checkStr(self, opt, default=False):
+        if self.parser.has_option(self.SECTION_GENERAL, opt):
+            return self.parser.get(self.SECTION_GENERAL, opt)
+        else:
+            return default
+
     # Read KiBOM preferences from file
     def Read(self, file, verbose=False):
         file = os.path.abspath(file)
@@ -130,6 +137,7 @@ class BomPref:
             return
 
         cf = ConfigParser.RawConfigParser(allow_no_value=True)
+        self.parser = cf
         cf.optionxform = str
 
         cf.read(file)
@@ -143,10 +151,9 @@ class BomPref:
             self.groupConnectors = self.checkOption(cf, self.OPT_GROUP_CONN, default=True)
             self.useRegex = self.checkOption(cf, self.OPT_USE_REGEX, default=True)
             self.mergeBlankFields = self.checkOption(cf, self.OPT_MERGE_BLANK, default=True)
-            self.outputFileName = cf.get(self.SECTION_GENERAL, self.OPT_OUTPUT_FILE_NAME,
-                                         fallback=self.outputFileName)
-            self.variantFileNameFormat = cf.get(self.SECTION_GENERAL, self.OPT_VARIANT_FILE_NAME_FORMAT,
-                                                fallback=self.variantFileNameFormat)
+            self.outputFileName = self.checkStr(self.OPT_OUTPUT_FILE_NAME, default=self.outputFileName)
+            self.variantFileNameFormat = self.checkStr(self.OPT_VARIANT_FILE_NAME_FORMAT,
+                                                       default=self.variantFileNameFormat)
 
         if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
             self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)

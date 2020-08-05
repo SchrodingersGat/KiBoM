@@ -180,6 +180,9 @@ class Component():
     def getLibName(self):
         return self.element.get("libsource", "lib")
 
+    def getSheetpathNames(self):
+        return self.element.get("sheetpath", "names")
+
     def getDescription(self):
         try:
             ret = self.element.get("libsource", "description")
@@ -188,7 +191,13 @@ class Component():
             ret = self.element.get("field", "name", "description")
 
         if ret == "":
-            ret = self.libpart.getDescription()
+            try:
+                ret = self.libpart.getDescription()
+            except AttributeError:
+                # Raise a good error description here, so the user knows what the culprit component is.
+                # (sometimes libpart is None)
+                raise AttributeError('Could not get description for part {}{}.'.format(self.getPrefix()),
+                                     self.getSuffix())
 
         return ret
 
@@ -264,6 +273,9 @@ class Component():
 
         elif name.lower() == ColumnList.COL_PART_LIB.lower():
             return self.getLibName().strip()
+
+        elif name.lower() == ColumnList.COL_SHEETPATH.lower():
+            return self.getSheetpathNames().strip()
 
         # Other fields (case insensitive)
         for f in self.getFieldNames():
@@ -601,6 +613,7 @@ class ComponentGroup():
         self.fields[ColumnList.COL_PART_LIB] = self.components[0].getLibName()
         self.fields[ColumnList.COL_DESCRIPTION] = self.components[0].getDescription()
         self.fields[ColumnList.COL_DATASHEET] = self.components[0].getDatasheet()
+        self.fields[ColumnList.COL_SHEETPATH] = self.components[0].getSheetpathNames()
 
         # Footprint field requires special attention
         fp = self.components[0].getFootprint().split(":")
