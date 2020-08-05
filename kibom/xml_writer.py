@@ -58,7 +58,7 @@ def WriteXML(filename, groups, net, headings, prefs):
 
         ElementTree.SubElement(xml, "group", attrib=attrib)
 
-    with open(filename, "w") as output:
+    with open(filename, "w", encoding="utf-8") as output:
         out = ElementTree.tostring(xml, encoding="utf-8")
         # There is probably a better way to write the data to file (without so many encoding/decoding steps),
         # but toprettyxml() without specifying UTF-8 will chew up non-ASCII chars. Perhaps revisit if performance here
