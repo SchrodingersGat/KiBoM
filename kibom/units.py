@@ -13,7 +13,7 @@ from __future__ import unicode_literals
 import re
 import locale
 
-PREFIX_MICRO = [u"μ", "u", "micro"]
+PREFIX_MICRO = [u"μ", u"µ", "u", "micro"]
 PREFIX_MILLI = ["milli", "m"]
 PREFIX_NANO = ["nano", "n"]
 PREFIX_PICO = ["pico", "p"]
@@ -25,7 +25,8 @@ PREFIX_GIGA = ["giga", "g"]
 PREFIX_ALL = PREFIX_PICO + PREFIX_NANO + PREFIX_MICRO + PREFIX_MILLI + PREFIX_KILO + PREFIX_MEGA + PREFIX_GIGA
 
 # Common methods of expressing component units
-UNIT_R = ["r", "ohms", "ohm", u"Ω"]
+# Note: we match lowercase string, so both: Ω and Ω become the lowercase omega
+UNIT_R = ["r", "ohms", "ohm", u'\u03c9']
 UNIT_C = ["farad", "f"]
 UNIT_L = ["henry", "h"]
 
@@ -65,6 +66,7 @@ def getPrefix(prefix):
     if not prefix:
         return 1
 
+    # 'M' is mega, 'm' is milli
     if prefix != 'M':
         prefix = prefix.lower()
 
@@ -111,6 +113,7 @@ def compMatch(component):
     # Remove any commas
     component = component.strip().replace(",", "")
 
+    # Get the compiled regex
     global match
     if not match:
         match = re.compile(matchString(), flags=re.IGNORECASE)
@@ -144,6 +147,7 @@ def compMatch(component):
     except:
         return None
 
+    # Return all the data, let the caller join it
     return (val, getPrefix(prefix), getUnit(units))
 
 
@@ -171,6 +175,7 @@ def compareValues(c1, c2):
     if not r1 or not r2:
         return False
 
+    # Join the data to compare
     (v1, p1, u1) = r1
     (v2, p2, u2) = r2
 
