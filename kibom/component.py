@@ -108,7 +108,7 @@ class Component():
         """
         Equivalency operator is used to determine if two parts are 'equal'
         """
-        
+
         # 'fitted' value must be the same for both parts
         if self.isFitted() != other.isFitted():
             return False
@@ -144,7 +144,7 @@ class Component():
         Get the reference prefix
         e.g. if this component has a reference U12, will return "U"
         """
-        
+
         prefix = ""
 
         for c in self.getRef():
@@ -160,7 +160,7 @@ class Component():
         Return the reference suffix #
         e.g. if this component has a reference U12, will return "12"
         """
-        
+
         suffix = ""
 
         for c in self.getRef():
@@ -298,13 +298,13 @@ class Component():
         """
 
         fieldNames = []
-        
+
         fields = self.element.getChild('fields')
-        
+
         if fields:
             for f in fields.getChildren():
                 fieldNames.append(f.get('field', 'name'))
-        
+
         return fieldNames
 
     def getRef(self):
@@ -328,21 +328,26 @@ class Component():
             if opt.lower() in DNF:
                 return False
 
-        # Variants logic
-        opts = check.split(",")
+        # Variants logic (comma-separated list)
+        opts = [s.strip() for s in check.split(",")]
+
+        # Negative decisions
         for opt in opts:
-            opt = opt.strip()
             # Any option containing a DNF is not fitted
             if opt in DNF:
                 return False
             # Options that start with '-' are explicitly removed from certain configurations
-            if opt.startswith("-") and str(opt[1:]) in self.prefs.pcbConfig:
-                return False
-            # Options that start with '+' are fitted only for certain configurations
-            if opt.startswith("+") and opt[1:] not in self.prefs.pcbConfig:
+            if opt.startswith("-") and opt[1:] in self.prefs.pcbConfig:
                 return False
 
-        return True
+        # Positive decisions
+        for opt in opts:
+            # Options that start with '+' are fitted only for certain configurations
+            if opt.startswith("+") and opt[1:] in self.prefs.pcbConfig:
+                return True
+
+        # If no decision has been made, component is not fitted
+        return False
 
     def isFixed(self):
         """ Determine if a component is FIXED or not.
@@ -455,7 +460,7 @@ class joiner:
             self.stack.append(((P, N), (P, N)))
 
     def flush(self, sep, N=None, dash='-'):
-        
+
         refstr = u''
         c = 0
 
@@ -499,10 +504,10 @@ class ComponentGroup():
 
         if field not in self.fields.keys():
             return ""
-        
+
         if not self.fields[field]:
             return ""
-        
+
         return u''.join((self.fields[field]))
 
     def getCount(self):
