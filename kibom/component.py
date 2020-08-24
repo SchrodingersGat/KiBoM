@@ -108,7 +108,7 @@ class Component():
         """
         Equivalency operator is used to determine if two parts are 'equal'
         """
-
+        
         # 'fitted' value must be the same for both parts
         if self.isFitted() != other.isFitted():
             return False
@@ -144,7 +144,7 @@ class Component():
         Get the reference prefix
         e.g. if this component has a reference U12, will return "U"
         """
-
+        
         prefix = ""
 
         for c in self.getRef():
@@ -160,7 +160,7 @@ class Component():
         Return the reference suffix #
         e.g. if this component has a reference U12, will return "12"
         """
-
+        
         suffix = ""
 
         for c in self.getRef():
@@ -298,13 +298,13 @@ class Component():
         """
 
         fieldNames = []
-
+        
         fields = self.element.getChild('fields')
-
+        
         if fields:
             for f in fields.getChildren():
                 fieldNames.append(f.get('field', 'name'))
-
+        
         return fieldNames
 
     def getRef(self):
@@ -460,7 +460,7 @@ class joiner:
             self.stack.append(((P, N), (P, N)))
 
     def flush(self, sep, N=None, dash='-'):
-
+        
         refstr = u''
         c = 0
 
@@ -504,10 +504,10 @@ class ComponentGroup():
 
         if field not in self.fields.keys():
             return ""
-
+        
         if not self.fields[field]:
             return ""
-
+        
         return u''.join((self.fields[field]))
 
     def getCount(self):
