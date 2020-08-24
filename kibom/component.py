@@ -330,24 +330,26 @@ class Component():
 
         # Variants logic (comma-separated list)
         opts = [s.strip() for s in check.split(",")]
+        included_configs = set(opt[1:] for opt in opts if opt.startswith("+"))
+        excluded_configs = set(opt[1:] for opt in opts if opt.startswith("-"))
+        
+        # Logic here:
+        # - If pcbConfig specifies variant from excluded_configs, component
+        #   is excluded.
+        # - Otherwise, if included_configs is empty, component is included.
+        # - Otherwise, component is included only if pcbConfig specifies
+        #   variant which is a member of included_configs.
 
-        # Negative decisions
-        for opt in opts:
-            # Any option containing a DNF is not fitted
-            if opt in DNF:
+        included = True
+        if included_configs:
+            included = False
+        for config in self.prefs.pcbConfig:
+            if config in excluded_configs:
                 return False
-            # Options that start with '-' are explicitly removed from certain configurations
-            if opt.startswith("-") and opt[1:] in self.prefs.pcbConfig:
-                return False
-
-        # Positive decisions
-        for opt in opts:
-            # Options that start with '+' are fitted only for certain configurations
-            if opt.startswith("+") and opt[1:] in self.prefs.pcbConfig:
-                return True
-
-        # If no decision has been made, component is not fitted
-        return False
+            if config in included_configs:
+                included = True
+        
+        return included
 
     def isFixed(self):
         """ Determine if a component is FIXED or not.
