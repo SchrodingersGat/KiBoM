@@ -9,30 +9,21 @@ long_description = "KiBoM is a configurable BOM (Bill of Materials) generation t
 
 setuptools.setup(
     name="kibom",
-
     version=KIBOM_VERSION,
-
     author="Oliver Walters",
-
     author_email="oliver.henry.walters@gmail.com",
-
     description="Bill of Materials generation tool for KiCad EDA",
-
     long_description=long_description,
-
     keywords="kicad, bom, electronics, schematic, bill of materials",
-
     url="https://github.com/SchrodingersGat/KiBom",
-
     license="MIT",
-
     packages=setuptools.find_packages(),
- 
     scripts=['KiBOM_CLI.py'],
-
+    entry_points={
+        'console_scripts': ['kibom = kibom.__main__:main']
+    },
     install_requires=[
         "xlsxwriter",
     ],
-
     python_requires=">=2.7"
 )
