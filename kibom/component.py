@@ -546,7 +546,13 @@ class ComponentGroup():
 
     def getRefs(self):
         # Return a list of the components
-        return " ".join([c.getRef() for c in self.components])
+        separator = self.prefs.refSeparator
+        # separator = separator[0]
+        # if len(separator) > 1:
+            # separator = separator[1]
+        # else:
+            # separator = separator[0]
+        return separator.join([c.getRef() for c in self.components])
 
     def getAltRefs(self):
         S = joiner()

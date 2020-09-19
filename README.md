@@ -275,6 +275,7 @@ BoM generation options can be configured (on a per-project basis) by editing the
 * `group_connectors` : If this option is set, connector comparison based on the 'Value' field is ignored. This allows multiple connectors which are named for their function (e.g. "Power", "ICP" etc) can be grouped together.
 * `test_regex` : If this option is set, each component group row is test against a list of (user configurable) regular expressions. If any matches are found, that row is excluded from the output BoM file.
 * `merge_blank_field` : If this option is set, blank fields are able to be merged with non-blank fields (and do not count as a 'conflict')
+* `ref_separator` : This is the character used to separate reference designators in the output, when grouped. Defaults to " ".
 * `fit_field` : This is the name of the part field used to determine if the component is fitted, or not.
 * `output_file_name` : A string that allows arbitrary specification of the output file name with field replacements. Fields available:
     - `%O` : The base output file name (pulled from kicad, or specified on command line when calling script).
