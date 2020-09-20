@@ -330,9 +330,15 @@ class Component():
 
         # Variants logic (comma-separated list)
         opts = [s.strip() for s in check.split(",")]
+
+        # Exclude this component if any form of "DNF" keyword is listed in options
+        for opt in opts:
+            if opt.lower() in DNF:
+                return False
+
         included_configs = set(opt[1:] for opt in opts if opt.startswith("+"))
         excluded_configs = set(opt[1:] for opt in opts if opt.startswith("-"))
-        
+
         # Logic here:
         # - If pcbConfig specifies variant from excluded_configs, component
         #   is excluded.
