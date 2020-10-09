@@ -339,9 +339,9 @@ class Component():
             # Options that start with '-' are explicitly removed from certain configurations
             if opt.startswith("-") and opt[1:] in self.prefs.pcbConfig:
                 return False
-       # Include components that match +VARIANT
-       exclusive = False
-       for opt in opts:
+        # Include components that match +VARIANT
+        exclusive = False
+        for opt in opts:
             # Options that start with '+' are fitted only for certain configurations
             if opt.startswith("+"):
                 exclusive = True
