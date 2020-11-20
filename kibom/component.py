@@ -196,8 +196,8 @@ class Component():
             except AttributeError:
                 # Raise a good error description here, so the user knows what the culprit component is.
                 # (sometimes libpart is None)
-                raise AttributeError('Could not get description for part {}{}.'.format(self.getPrefix()),
-                                     self.getSuffix())
+                raise AttributeError('Could not get description for part {}{}.'.format(self.getPrefix(),
+                                     self.getSuffix()))
 
         return ret
 
