@@ -165,7 +165,11 @@ class BomPref:
             self.boards = self.checkInt(cf, self.OPT_DEFAULT_BOARDS, default=None)
 
         if cf.has_option(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG):
-            self.pcbConfig = cf.get(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG).strip().split(",")
+            char_remove = [' ', '[', ']', '\'', '"']
+            self.pcbConfig = cf.get(self.SECTION_GENERAL, self.OPT_DEFAULT_PCBCONFIG)
+            for char in char_remove:
+                self.pcbConfig = self.pcbConfig.replace(char, '')
+            self.pcbConfig = self.pcbConfig.split(",")
 
         if cf.has_option(self.SECTION_GENERAL, self.OPT_BACKUP):
             self.backup = cf.get(self.SECTION_GENERAL, self.OPT_BACKUP)

@@ -30,6 +30,7 @@ from .bom_writer import WriteBoM
 from .preferences import BomPref
 from .version import KIBOM_VERSION
 from . import debug
+from .component import DNF
 
 
 def writeVariant(input_file, output_dir, output_file, variant, preferences):
@@ -50,6 +51,28 @@ def writeVariant(input_file, output_dir, output_file, variant, preferences):
 
     # Extract the components
     components = net.getInterestingComponents()
+
+    # Process the variant fields
+    component_remove = []
+    for idx, component in enumerate(components):
+        fields = component.getFieldNames()
+        for field in fields:
+            if field in preferences.pcbConfig:
+                # Variant exist for component
+                variant_value = component.getField(variant)
+
+                # Process no loaded option
+                if variant_value in DNF:
+                    component_remove.append(idx)
+                    break
+
+                # Process different value
+                component.setValue(variant_value)
+                break
+
+    # Process component removal for specified variant
+    for idx in component_remove:
+        del components[idx]
 
     # Group the components
     groups = net.groupComponents(components)
@@ -187,7 +210,11 @@ def main():
     if args.variant is not None:
         variants = args.variant.split(';')
     else:
-        variants = [None]
+        # Check if variants were defined in configuration
+        try:
+            variants = pref.pcbConfig
+        except:
+            variants = [None]
 
     # Generate BOMs for each specified variant
     for variant in variants:
