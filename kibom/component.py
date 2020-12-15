@@ -132,7 +132,7 @@ class Component():
 
             # Generic match
             elif not self.compareField(other, c):
-                    return False
+                return False
 
         return True
 
