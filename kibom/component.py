@@ -226,6 +226,33 @@ class Component():
                 return value
         return self.element.get("value")
 
+    def setField(self, name, value):
+        """ Set the value of the specified field """
+
+        # Description field
+        doc = self.element.getChild('libsource')
+        if doc:
+            for att_name, att_value in doc.attributes.items():
+                if att_name.lower() == name.lower():
+                    doc.attributes[att_name] = value
+                    return value
+
+        # Common fields
+        field = self.element.getChild(name.lower())
+        if field:
+            field.setChars(value)
+            return value
+
+        # Other fields
+        fields = self.element.getChild('fields')
+        if fields:
+            for field in fields.getChildren():
+                if field.get('field', 'name') == name:
+                    field.setChars(value)
+                    return value
+
+        return None
+
     def getField(self, name, ignoreCase=True, libraryToo=True):
         """Return the value of a field named name. The component is first
         checked for the field, and then the components library part is checked

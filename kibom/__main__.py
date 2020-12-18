@@ -32,6 +32,8 @@ from .version import KIBOM_VERSION
 from . import debug
 from .component import DNF
 
+VARIANT_FIELD_SEPARATOR = ':'
+
 
 def writeVariant(input_file, output_dir, output_file, variant, preferences):
     
@@ -53,26 +55,52 @@ def writeVariant(input_file, output_dir, output_file, variant, preferences):
     components = net.getInterestingComponents()
 
     # Process the variant fields
-    component_remove = []
-    for idx, component in enumerate(components):
+    do_not_populate = []
+    for component in components:
         fields = component.getFieldNames()
         for field in fields:
-            if field in preferences.pcbConfig:
+            try:
+                # Find fields used for variant
+                [variant_name, field_name] = field.split(VARIANT_FIELD_SEPARATOR)
+            except ValueError:
+                [variant_name, field_name] = [field, '']
+
+            if variant_name.lower() in preferences.pcbConfig:
                 # Variant exist for component
-                variant_value = component.getField(variant)
+                variant_field_value = component.getField(field)
 
                 # Process no loaded option
-                if variant_value in DNF:
-                    component_remove.append(idx)
+                if variant_field_value in DNF:
+                    do_not_populate.append(component)
                     break
 
-                # Process different value
-                component.setValue(variant_value)
+                # Write variant value to target field
+                component.setField(field_name, variant_field_value)
+
+    # Process component dnp for specified variant
+    if do_not_populate:
+        updated_components = []
+        for component in components:
+            # Check if dnp list is empty
+            if not do_not_populate:
                 break
 
-    # Process component removal for specified variant
-    for idx in component_remove:
-        del components[idx]
+            keep = True
+            for dnp in do_not_populate:
+                # If component reference if found in dnp list: set for removal
+                if component.getRef() == dnp.getRef():
+                    keep = False
+                    break
+
+            if keep:
+                # Component not in dnp list
+                updated_components.append(component)
+            else:
+                # Component found in dnp list
+                do_not_populate.remove(component)
+
+        # Finally update components list
+        components = updated_components
 
     # Group the components
     groups = net.groupComponents(components)
