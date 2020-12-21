@@ -70,7 +70,7 @@ def writeVariant(input_file, output_dir, output_file, variant, preferences):
                 variant_field_value = component.getField(field)
 
                 # Process no loaded option
-                if variant_field_value.lower() in DNF:
+                if variant_field_value.lower() in DNF and not field_name:
                     do_not_populate.append(component)
                     break
 
