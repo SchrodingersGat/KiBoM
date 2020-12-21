@@ -70,7 +70,7 @@ def writeVariant(input_file, output_dir, output_file, variant, preferences):
                 variant_field_value = component.getField(field)
 
                 # Process no loaded option
-                if variant_field_value in DNF:
+                if variant_field_value.lower() in DNF:
                     do_not_populate.append(component)
                     break
 
@@ -81,10 +81,6 @@ def writeVariant(input_file, output_dir, output_file, variant, preferences):
     if do_not_populate:
         updated_components = []
         for component in components:
-            # Check if dnp list is empty
-            if not do_not_populate:
-                break
-
             keep = True
             for dnp in do_not_populate:
                 # If component reference if found in dnp list: set for removal
