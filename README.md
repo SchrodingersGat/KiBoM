@@ -277,6 +277,7 @@ BoM generation options can be configured (on a per-project basis) by editing the
 * `merge_blank_field` : If this option is set, blank fields are able to be merged with non-blank fields (and do not count as a 'conflict')
 * `ref_separator` : This is the character used to separate reference designators in the output, when grouped. Defaults to " ".
 * `fit_field` : This is the name of the part field used to determine if the component is fitted, or not.
+* `complex_variant` : This enable a more complex processing of variant fields using the `VARIANT:FIELD` format for the name of symbol properties
 * `output_file_name` : A string that allows arbitrary specification of the output file name with field replacements. Fields available:
     - `%O` : The base output file name (pulled from kicad, or specified on command line when calling script).
     - `%v` : version number.
@@ -322,6 +323,8 @@ make_backup = %O.tmp
 number_boards = 1
 ; Default PCB variant if none given on CLI with -r
 board_variant = "default"
+; Complex variant field processing (disabled by default)
+complex_variant = 0
 ; When set to 1, suppresses table/column headers and legends in the output file.
 ; May be useful for testing purposes.
 hide_headers = 0
