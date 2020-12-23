@@ -41,6 +41,7 @@ class BomPref:
     OPT_DEFAULT_BOARDS = "number_boards"
     OPT_DEFAULT_PCBCONFIG = "board_variant"
     OPT_CONFIG_FIELD = "fit_field"
+    OPT_COMPLEX_VARIANT = "complex_variant"
     OPT_HIDE_HEADERS = "hide_headers"
     OPT_HIDE_PCB_INFO = "hide_pcb_info"
     OPT_REF_SEPARATOR = "ref_separator"
@@ -68,6 +69,7 @@ class BomPref:
         self.hidePcbInfo = False
         self.configField = "Config"  # Default field used for part fitting config
         self.pcbConfig = ["default"]
+        self.complexVariant = False # To enable complex variant processing
         self.refSeparator = " "
 
         self.backup = "%O.tmp"
@@ -160,6 +162,9 @@ class BomPref:
 
         if cf.has_option(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD):
             self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
+
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_COMPLEX_VARIANT):
+            self.complexVariant = self.checkOption(cf, self.OPT_COMPLEX_VARIANT, False)
 
         if cf.has_option(self.SECTION_GENERAL, self.OPT_DEFAULT_BOARDS):
             self.boards = self.checkInt(cf, self.OPT_DEFAULT_BOARDS, default=None)
