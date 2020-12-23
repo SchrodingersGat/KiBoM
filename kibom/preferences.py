@@ -69,7 +69,7 @@ class BomPref:
         self.hidePcbInfo = False
         self.configField = "Config"  # Default field used for part fitting config
         self.pcbConfig = ["default"]
-        self.complexVariant = False # To enable complex variant processing
+        self.complexVariant = False  # To enable complex variant processing
         self.refSeparator = " "
 
         self.backup = "%O.tmp"
