@@ -164,7 +164,7 @@ class BomPref:
             self.configField = cf.get(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD)
 
         if cf.has_option(self.SECTION_GENERAL, self.OPT_COMPLEX_VARIANT):
-            self.complexVariant = self.checkOption(cf, self.OPT_COMPLEX_VARIANT, False)
+            self.complexVariant = self.checkOption(cf, self.OPT_COMPLEX_VARIANT, default=False)
 
         if cf.has_option(self.SECTION_GENERAL, self.OPT_DEFAULT_BOARDS):
             self.boards = self.checkInt(cf, self.OPT_DEFAULT_BOARDS, default=None)
@@ -257,6 +257,9 @@ class BomPref:
 
         cf.set(self.SECTION_GENERAL, '; Field name used to determine if a particular part is to be fitted')
         cf.set(self.SECTION_GENERAL, self.OPT_CONFIG_FIELD, self.configField)
+
+        cf.set(self.SECTION_GENERAL, '; Complex variant processing (disabled by default)')
+        cf.set(self.SECTION_GENERAL, self.OPT_COMPLEX_VARIANT, self.complexVariant)
 
         cf.set(self.SECTION_GENERAL, '; Character used to separate reference designators in output')
         cf.set(self.SECTION_GENERAL, self.OPT_REF_SEPARATOR, "'" + self.refSeparator + "'")
