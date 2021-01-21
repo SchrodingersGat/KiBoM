@@ -357,19 +357,25 @@ class Component():
 
         # Variants logic
         opts = check.split(",")
+        # Exclude components that match a -VARIANT
         for opt in opts:
             opt = opt.strip()
             # Any option containing a DNF is not fitted
             if opt in DNF:
                 return False
             # Options that start with '-' are explicitly removed from certain configurations
-            if opt.startswith("-") and str(opt[1:]) in self.prefs.pcbConfig:
+            if opt.startswith("-") and opt[1:] in self.prefs.pcbConfig:
                 return False
+        # Include components that match +VARIANT
+        exclusive = False
+        for opt in opts:
             # Options that start with '+' are fitted only for certain configurations
-            if opt.startswith("+") and opt[1:] not in self.prefs.pcbConfig:
-                return False
-
-        return True
+            if opt.startswith("+"):
+                exclusive = True
+                if opt[1:] in self.prefs.pcbConfig:
+                    return True
+        # No match
+        return not exclusive
 
     def isFixed(self):
         """ Determine if a component is FIXED or not.
