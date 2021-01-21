@@ -30,6 +30,9 @@ from .bom_writer import WriteBoM
 from .preferences import BomPref
 from .version import KIBOM_VERSION
 from . import debug
+from .component import DNF
+
+VARIANT_FIELD_SEPARATOR = ':'
 
 
 def writeVariant(input_file, output_dir, output_file, variant, preferences):
@@ -50,6 +53,52 @@ def writeVariant(input_file, output_dir, output_file, variant, preferences):
 
     # Extract the components
     components = net.getInterestingComponents()
+
+    # Check if complex variant processing is enabled
+    if preferences.complexVariant:
+        # Process the variant fields
+        do_not_populate = []
+        for component in components:
+            fields = component.getFieldNames()
+            for field in fields:
+                try:
+                    # Find fields used for variant
+                    [variant_name, field_name] = field.split(VARIANT_FIELD_SEPARATOR)
+                except ValueError:
+                    [variant_name, field_name] = [field, '']
+
+                if variant_name.lower() in preferences.pcbConfig:
+                    # Variant exist for component
+                    variant_field_value = component.getField(field)
+
+                    # Process no loaded option
+                    if variant_field_value.lower() in DNF and not field_name:
+                        do_not_populate.append(component)
+                        break
+
+                    # Write variant value to target field
+                    component.setField(field_name, variant_field_value)
+
+        # Process component dnp for specified variant
+        if do_not_populate:
+            updated_components = []
+            for component in components:
+                keep = True
+                for dnp in do_not_populate:
+                    # If component reference if found in dnp list: set for removal
+                    if component.getRef() == dnp.getRef():
+                        keep = False
+                        break
+
+                if keep:
+                    # Component not in dnp list
+                    updated_components.append(component)
+                else:
+                    # Component found in dnp list
+                    do_not_populate.remove(component)
+
+            # Finally update components list
+            components = updated_components
 
     # Group the components
     groups = net.groupComponents(components)
@@ -187,7 +236,11 @@ def main():
     if args.variant is not None:
         variants = args.variant.split(';')
     else:
-        variants = [None]
+        # Check if variants were defined in configuration
+        if pref.pcbConfig != ['default']:
+            variants = pref.pcbConfig
+        else:
+            variants = [None]
 
     # Generate BOMs for each specified variant
     for variant in variants:
