@@ -496,7 +496,7 @@ class joiner:
             if bool(N) and c != 0 and c % N == 0:
                 refstr += u'\n'
             elif c != 0:
-                refstr += sep+" "
+                refstr += sep + " "
 
             S, E = Q
 
