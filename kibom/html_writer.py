@@ -32,13 +32,14 @@ def link(text):
     return text
 
 
-def WriteHTML(filename, groups, net, headings, prefs):
+def WriteHTML(filename, groups, net, headings, head_names, prefs):
     """
     Write BoM out to a HTML file
     filename = path to output file (must be a .htm or .html file)
     groups = [list of ComponentGroup groups]
     net = netlist object
-    headings = [list of headings to display in the BoM file]
+    headings = [list of headings to search for data in the BoM file]
+    head_names = [list of headings to display in the BoM file]
     prefs = BomPref object
     """
 
@@ -99,9 +100,9 @@ def WriteHTML(filename, groups, net, headings, prefs):
         if prefs.numberRows:
             html.write("\t<th></th>\n")
 
-        for i, h in enumerate(headings):
+        for i, h in enumerate(head_names):
             # Cell background color
-            bg = bgColor(h)
+            bg = bgColor(headings[i])
             html.write('\t<th align="center"{bg}>{h}</th>\n'.format(
                 h=h,
                 bg=' bgcolor="{c}"'.format(c=bg) if bg else '')
@@ -151,9 +152,9 @@ def WriteHTML(filename, groups, net, headings, prefs):
             html.write("<tr>\n")
             if prefs.numberRows:
                 html.write("\t<th></th>\n")
-            for i, h in enumerate(headings):
+            for i, h in enumerate(head_names):
                 # Cell background color
-                bg = bgColor(h)
+                bg = bgColor(headings[i])
                 html.write('\t<th align="center"{bg}>{h}</th>\n'.format(h=h, bg=' bgcolor="{c}"'.format(c=bg) if bg else ''))
             html.write("</tr>\n")
  

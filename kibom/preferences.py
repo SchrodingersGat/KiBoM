@@ -25,6 +25,7 @@ class BomPref:
     SECTION_REGEXCLUDES = "REGEX_EXCLUDE"
     SECTION_REGINCLUDES = "REGEX_INCLUDE"
     SECTION_JOIN = "JOIN"  # (#81)
+    SECTION_COLUMN_RENAME = "COLUMN_RENAME"
 
     OPT_DIGIKEY_LINK = "digikey_link"
     OPT_PCB_CONFIG = "pcb_configuration"
@@ -49,9 +50,9 @@ class BomPref:
     def __init__(self):
         # List of headings to ignore in BoM generation
         self.ignore = [
-            ColumnList.COL_PART_LIB,
-            ColumnList.COL_FP_LIB,
-            ColumnList.COL_SHEETPATH,
+            ColumnList.COL_PART_LIB.lower(),
+            ColumnList.COL_FP_LIB.lower(),
+            ColumnList.COL_SHEETPATH.lower(),
         ]
 
         self.corder = ColumnList._COLUMNS_DEFAULT
@@ -87,6 +88,8 @@ class BomPref:
             ColumnList.COL_FP_LIB,
             # User can add custom grouping columns in bom.ini
         ]
+
+        self.colRename = {}  # None by default
 
         self.regIncludes = []  # None by default
 
@@ -198,7 +201,7 @@ class BomPref:
 
         # Read out ignored-rows
         if self.SECTION_IGNORE in cf.sections():
-            self.ignore = [i for i in cf.options(self.SECTION_IGNORE)]
+            self.ignore = [i.lower() for i in cf.options(self.SECTION_IGNORE)]
 
         # Read out column order
         if self.SECTION_COLUMN_ORDER in cf.sections():
@@ -223,6 +226,13 @@ class BomPref:
             for pair in cf.options(self.SECTION_REGINCLUDES):
                 if len(re.split('[ \t]+', pair)) == 2:
                     self.regIncludes.append(re.split('[ \t]+', pair))
+
+        if self.SECTION_COLUMN_RENAME in cf.sections():
+            self.colRename = {}
+            for pair in cf.options(self.SECTION_COLUMN_RENAME):
+                pair = re.split('\t', pair)
+                if len(pair) == 2:
+                    self.colRename[pair[0].lower()] = pair[1]
 
     # Add an option to the SECTION_GENRAL group
     def addOption(self, parser, opt, value, comment=None):
@@ -335,6 +345,13 @@ class BomPref:
             if not len(i) == 2:
                 continue
             cf.set(self.SECTION_REGINCLUDES, i[0] + "\t" + i[1])
+
+        cf.add_section(self.SECTION_COLUMN_RENAME)
+        cf.set(self.SECTION_COLUMN_RENAME, '; A list of columns to be renamed')
+        cf.set(self.SECTION_COLUMN_RENAME, '; Format is: "[ColumName] [NewName]" (white-space separated)')
+
+        for k, v in self.colRename.items():
+            cf.set(self.SECTION_COLUMN_RENAME, k + "\t" + v)
 
         cf.add_section(self.SECTION_REGEXCLUDES)
         cf.set(self.SECTION_REGEXCLUDES, '; A series of regular expressions used to exclude parts from the BoM')

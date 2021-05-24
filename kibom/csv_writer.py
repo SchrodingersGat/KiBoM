@@ -5,13 +5,14 @@ import os
 import sys
 
 
-def WriteCSV(filename, groups, net, headings, prefs):
+def WriteCSV(filename, groups, net, headings, head_names, prefs):
     """
     Write BoM out to a CSV file
     filename = path to output file (must be a .csv, .txt or .tsv file)
     groups = [list of ComponentGroup groups]
     net = netlist object
-    headings = [list of headings to display in the BoM file]
+    headings = [list of headings to search for data in the BoM file]
+    head_names = [list of headings to display in the BoM file]
     prefs = BomPref object
     """
 
@@ -43,9 +44,12 @@ def WriteCSV(filename, groups, net, headings, prefs):
 
     if not prefs.hideHeaders:
         if prefs.numberRows:
-            writer.writerow(["Component"] + headings)
+            comp = "Component"
+            if comp.lower() in prefs.colRename:
+                comp = prefs.colRename[comp.lower()]
+            writer.writerow([comp] + head_names)
         else:
-            writer.writerow(headings)
+            writer.writerow(head_names)
 
     count = 0
     rowCount = 1
