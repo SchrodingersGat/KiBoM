@@ -317,8 +317,8 @@ class BomPref:
 
         cf.add_section(self.SECTION_ALIASES)
         cf.set(self.SECTION_ALIASES, "; A series of values which are considered to be equivalent for the part name")
-        cf.set(self.SECTION_ALIASES, "; Each line represents a list of equivalent component name values separated by white space")
-        cf.set(self.SECTION_ALIASES, "; e.g. 'c c_small cap' will ensure the equivalent capacitor symbols can be grouped together")
+        cf.set(self.SECTION_ALIASES, "; Each line represents a list of equivalent component name values separated by a tab character")
+        cf.set(self.SECTION_ALIASES, "; e.g. 'c\tc_small\tcap' will ensure the equivalent capacitor symbols can be grouped together")
         cf.set(self.SECTION_ALIASES, '; Aliases are case-insensitive')
 
         for a in self.aliases:
@@ -339,7 +339,7 @@ class BomPref:
         cf.set(self.SECTION_REGINCLUDES, '; A series of regular expressions used to include parts in the BoM')
         cf.set(self.SECTION_REGINCLUDES, '; If there are any regex defined here, only components that match against ANY of them will be included in the BOM')
         cf.set(self.SECTION_REGINCLUDES, '; Column names are case-insensitive')
-        cf.set(self.SECTION_REGINCLUDES, '; Format is: "[ColumName] [Regex]" (white-space separated)')
+        cf.set(self.SECTION_REGINCLUDES, '; Format is: "[ColumName] [Regex]" (separated by a tab)')
 
         for i in self.regIncludes:
             if not len(i) == 2:
@@ -348,7 +348,7 @@ class BomPref:
 
         cf.add_section(self.SECTION_COLUMN_RENAME)
         cf.set(self.SECTION_COLUMN_RENAME, '; A list of columns to be renamed')
-        cf.set(self.SECTION_COLUMN_RENAME, '; Format is: "[ColumName] [NewName]" (white-space separated)')
+        cf.set(self.SECTION_COLUMN_RENAME, '; Format is: "[ColumName] [NewName]" (separated by a tab)')
 
         for k, v in self.colRename.items():
             cf.set(self.SECTION_COLUMN_RENAME, k + "\t" + v)
@@ -357,7 +357,7 @@ class BomPref:
         cf.set(self.SECTION_REGEXCLUDES, '; A series of regular expressions used to exclude parts from the BoM')
         cf.set(self.SECTION_REGEXCLUDES, '; If a component matches ANY of these, it will be excluded from the BoM')
         cf.set(self.SECTION_REGEXCLUDES, '; Column names are case-insensitive')
-        cf.set(self.SECTION_REGEXCLUDES, '; Format is: "[ColumName] [Regex]" (white-space separated)')
+        cf.set(self.SECTION_REGEXCLUDES, '; Format is: "[ColumName] [Regex]" (separated by a tab')
 
         for i in self.regExcludes:
             if not len(i) == 2:
