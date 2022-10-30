@@ -28,6 +28,7 @@ class BomPref:
     SECTION_COLUMN_RENAME = "COLUMN_RENAME"
 
     OPT_DIGIKEY_LINK = "digikey_link"
+    OPT_MOUSER_LINK = "mouser_link"
     OPT_PCB_CONFIG = "pcb_configuration"
     OPT_NUMBER_ROWS = "number_rows"
     OPT_GROUP_CONN = "group_connectors"
@@ -64,6 +65,7 @@ class BomPref:
         self.useRegex = True  # Test various columns with regex
 
         self.digikey_link = False  # Columns to link to Digi-Key
+        self.mouser_link = False  # Columns to link to Mouser (requires Mouser-PartNO)
         self.boards = 1  # Quantity of boards to be made
         self.mergeBlankFields = True  # Blanks fields will be merged when possible
         self.hideHeaders = False
@@ -194,6 +196,11 @@ class BomPref:
             self.digikey_link = cf.get(self.SECTION_GENERAL, self.OPT_DIGIKEY_LINK)
         else:
             self.digikey_link = False
+        
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_MOUSER_LINK):
+            self.mouser_link = cf.get(self.SECTION_GENERAL, self.OPT_MOUSER_LINK)
+        else:
+            self.mouser_link = False
 
         # Read out grouping colums
         if self.SECTION_GROUPING_FIELDS in cf.sections():
@@ -291,6 +298,9 @@ class BomPref:
 
         cf.set(self.SECTION_GENERAL, '; Interpret as a Digikey P/N and link the following field')
         cf.set(self.SECTION_GENERAL, self.OPT_DIGIKEY_LINK, self.digikey_link)
+        
+        cf.set(self.SECTION_GENERAL, '; Interpret as a MOUSER P/N and link the following field')
+        cf.set(self.SECTION_GENERAL, self.OPT_MOUSER_LINK, self.mouser_link)
 
         cf.add_section(self.SECTION_IGNORE)
         cf.set(self.SECTION_IGNORE, "; Any column heading that appears here will be excluded from the Generated BoM")
