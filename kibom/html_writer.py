@@ -132,7 +132,7 @@ def WriteHTML(filename, groups, net, headings, head_names, prefs):
 
             for n, r in enumerate(row):
                 if link_digikey and headings[n] in link_digikey:
-                    r = '<a href="http://search.digikey.com/scripts/DkSearch/dksus.dll?Detail&name=' + r + '">' + r + '</a>'
+                    r = '<a href="https://www.digikey.com/en/products?mpart=' + r + '">' + r + '</a>'
 
                 if link_mouser and headings[n] in link_mouser:
                     r = '<a href="https://www.mouser.com/ProductDetail/' + r + '">' + r + '</a>'
@@ -181,7 +181,7 @@ def WriteHTML(filename, groups, net, headings, head_names, prefs):
  
                 for n, r in enumerate(row):
                     if link_digikey and headings[n] in link_digikey:
-                        r = '<a href="http://search.digikey.com/scripts/DkSearch/dksus.dll?Detail&name=' + r + '">' + r + '</a>'
+                        r = '<a href="https://www.digikey.com/en/products?mpart=' + r + '">' + r + '</a>'
 
                     if link_mouser and headings[n] in link_mouser:
                         r = '<a href="https://www.mouser.com/ProductDetail/' + r + '">' + r + '</a>'
