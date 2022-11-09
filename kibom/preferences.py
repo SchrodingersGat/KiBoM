@@ -47,6 +47,7 @@ class BomPref:
     OPT_HIDE_HEADERS = "hide_headers"
     OPT_HIDE_PCB_INFO = "hide_pcb_info"
     OPT_REF_SEPARATOR = "ref_separator"
+    OPT_DATASHEET_AS_LINK = "datasheet_as_link"
 
     def __init__(self):
         # List of headings to ignore in BoM generation
@@ -76,6 +77,7 @@ class BomPref:
         self.refSeparator = " "
 
         self.backup = "%O.tmp"
+        self.as_link = False
 
         self.separatorCSV = None
         self.outputFileName = "%O_bom_%v%V"
@@ -186,6 +188,11 @@ class BomPref:
         else:
             self.backup = False
 
+        if cf.has_option(self.SECTION_GENERAL, self.OPT_DATASHEET_AS_LINK):
+            self.as_link = cf.get(self.SECTION_GENERAL, self.OPT_DATASHEET_AS_LINK)
+        else:
+            self.as_link = False
+
         if cf.has_option(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS):
             self.hideHeaders = cf.get(self.SECTION_GENERAL, self.OPT_HIDE_HEADERS) == '1'
 
@@ -283,6 +290,9 @@ class BomPref:
 
         cf.set(self.SECTION_GENERAL, '; Make a backup of the bom before generating the new one, using the following template')
         cf.set(self.SECTION_GENERAL, self.OPT_BACKUP, self.backup)
+
+        cf.set(self.SECTION_GENERAL, '; Put the datasheet as a link for the following field')
+        cf.set(self.SECTION_GENERAL, self.OPT_DATASHEET_AS_LINK, self.as_link)
 
         cf.set(self.SECTION_GENERAL, '; Default number of boards to produce if none given on CLI with -n')
         cf.set(self.SECTION_GENERAL, self.OPT_DEFAULT_BOARDS, self.boards)
