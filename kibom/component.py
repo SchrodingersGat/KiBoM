@@ -184,6 +184,13 @@ class Component():
         return self.element.get("sheetpath", "names")
 
     def getDescription(self):
+        """Extract the 'description' field for this component"""
+
+        # Give priority to a user "description" field
+        ret = self.element.get("field", "name", "description")
+        if ret:
+            return ret
+
         try:
             ret = self.element.get("libsource", "description")
         except:
