@@ -191,6 +191,10 @@ class Component():
         if ret:
             return ret
 
+        ret = self.element.get("field", "name", "Description")
+        if ret:
+            return ret
+
         try:
             ret = self.element.get("libsource", "description")
         except:
