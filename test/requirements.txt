@@ -1,6 +1,6 @@
 # Python packages required for unit testing
 
 flake8>=6.0.0                   # PEP checking
-coverage>=7.0.0                 # Unit test coverage
+coverage                        # Unit test coverage
 coveralls>=3.3.0                # Coveralls.io linking
 xlsxwriter>=3.0.0               # Excel file writing
