@@ -1,0 +1,35 @@
+# Publish to PyPi package index
+
+name: PIP Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+
+  publish:
+    name: Publish to PyPi
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install Dependencies
+        run: |
+          pip install -U -r test/requirements.txt
+          pip install -U wheel setuptools twine
+      - name: Build Release
+        run: |
+          python setup.py sdist bdist_wheel --universal
+      - name: Publish
+        run: |
+          python -m twine upload dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+          TWINE_REPOSITORY: pypi
