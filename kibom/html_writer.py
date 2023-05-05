@@ -178,7 +178,7 @@ def WriteHTML(filename, groups, net, headings, head_names, prefs):
  
             for i, group in enumerate(groups):
  
-                if not(prefs.ignoreDNF and not group.isFitted()):
+                if not (prefs.ignoreDNF and not group.isFitted()):
                     continue
  
                 row = group.getRow(headings)
