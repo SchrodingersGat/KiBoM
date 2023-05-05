@@ -1,0 +1,32 @@
+# .github/release.yml
+
+changelog:
+  exclude:
+    labels:
+      - translation
+      - documentation
+  categories:
+    - title: Breaking Changes
+      labels:
+        - Semver-Major
+        - breaking
+    - title: Security Patches
+      labels:
+        - security
+    - title: New Features
+      labels:
+        - Semver-Minor
+        - enhancement
+    - title: Bug Fixes
+      labels:
+        - Semver-Patch
+        - bug
+    - title: Devops / Setup Changes
+      labels:
+        - docker
+        - setup
+        - demo
+        - CI
+    - title: Other Changes
+      labels:
+        - "*"
