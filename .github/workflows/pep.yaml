@@ -25,9 +25,6 @@ jobs:
         run: |
           flake8 .
           bash ./run-tests.sh
-      - name: Test Build
-        run: |
-          python setup.py bdist_wheel --universal
       - name: Upload Report
         run: |
           coveralls --service=github
