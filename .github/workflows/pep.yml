@@ -20,8 +20,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install Deps
         run: |
-          pip install coverage
-          pip install xlsxwriter
+          pip install -U -r test/requirements.txt
       - name: Style Checks
         run: |
           flake8 .
