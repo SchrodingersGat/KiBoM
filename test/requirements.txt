@@ -1,5 +1,6 @@
 # Python packages required for unit testing
 
-flake8==3.3.0                   # PEP checking
-coverage==4.0.3                 # Unit test coverage
-python-coveralls==2.9.1         # Coveralls linking (for Travis)
+flake8>=6.0.0                   # PEP checking
+coverage                        # Unit test coverage
+coveralls>=3.3.0                # Coveralls.io linking
+xlsxwriter>=3.0.0               # Excel file writing

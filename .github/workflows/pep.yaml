@@ -1,0 +1,33 @@
+name: PEP Style Checks
+
+on: ["push", "pull_request"]
+
+jobs:
+  style:
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.8]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Deps
+        run: |
+          pip install -U -r test/requirements.txt
+      - name: Style Checks
+        run: |
+          flake8 .
+          bash ./run-tests.sh
+      - name: Upload Report
+        run: |
+          coveralls --service=github
