@@ -1,7 +1,7 @@
 # KiBoM
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PyPI](https://img.shields.io/pypi/v/inventree)](https://pypi.org/project/inventree/)
+[![PyPI](https://img.shields.io/pypi/v/kibom)](https://pypi.org/project/kibom/)
 [![Coverage Status](https://coveralls.io/repos/github/SchrodingersGat/KiBoM/badge.svg?branch=master)](https://coveralls.io/github/SchrodingersGat/KiBoM?branch=master)
 
 Configurable BoM generation tool for KiCad EDA (http://kicad.org/)
