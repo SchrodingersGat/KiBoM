@@ -61,6 +61,9 @@ def WriteHTML(filename, groups, net, headings, head_names, prefs):
     if prefs.mouser_link:
         link_mouser = prefs.mouser_link.split("\t")
 
+    link_lcsc = None
+    if prefs.lcsc_link:
+        link_lcsc = prefs.lcsc_link.split("\t")
     with open(filename, "w") as html:
 
         # HTML Header
@@ -138,6 +141,9 @@ def WriteHTML(filename, groups, net, headings, head_names, prefs):
                 if link_mouser and headings[n] in link_mouser:
                     r = '<a href="https://www.mouser.com/ProductDetail/' + r + '">' + r + '</a>'
 
+                if link_lcsc and headings[n] in link_lcsc:
+                    r = '<a href="https://www.lcsc.com/product-detail/' + r + '.html">' + r + '</a>'
+
                 # Link this column to the datasheet?
                 if link_datasheet and headings[n] == link_datasheet:
                     r = '<a href="' + group.getField(ColumnList.COL_DATASHEET) + '">' + r + '</a>'
@@ -199,6 +205,9 @@ def WriteHTML(filename, groups, net, headings, head_names, prefs):
 
                     if link_mouser and headings[n] in link_mouser:
                         r = '<a href="https://www.mouser.com/ProductDetail/' + r + '">' + r + '</a>'
+
+                    if link_lcsc and headings[n] in link_lcsc:
+                        r = '<a href="https://www.lcsc.com/product-detail/' + r + '.html">' + r + '</a>'
 
                     if (len(r) == 0) or (r.strip() == "~"):
                         bg = BG_EMPTY
