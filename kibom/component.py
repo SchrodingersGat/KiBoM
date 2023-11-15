@@ -424,7 +424,7 @@ class Component():
 
         for reg in self.prefs.regExcludes:
 
-            if type(reg) == list and len(reg) == 2:
+            if type(reg) is list and len(reg) == 2:
                 field_name, regex = reg
                 field_value = self.getField(field_name)
 
@@ -456,7 +456,7 @@ class Component():
 
         for reg in self.prefs.regIncludes:
 
-            if type(reg) == list and len(reg) == 2:
+            if type(reg) is list and len(reg) == 2:
                 field_name, regex = reg
                 field_value = self.getField(field_name)
 
