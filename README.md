@@ -294,7 +294,8 @@ BoM generation options can be configured (on a per-project basis) by editing the
 * `GROUP_FIELDS` : A list of component fields used to group components together.
 * `COMPONENT_ALIASES` : A list of space-separated values which allows multiple schematic symbol visualisations to be consolidated.
 * `REGEX_INCLUDE` : A list of regular expressions used to explicitly include components. If there are no regex here, all components pass this test. If there are regex here, then a component must match at least one of them to be included in the BoM.
-* `REGEX_EXCLUDE` : If a component matches any of these regular expressions, it will *not* be included in the BoM.
+* `REGEX_EXCLUDE` : If a component matches any of these regular expressions, it will *not* be included in the BoM. Important: the `REGEX_INCLUDE` section has more precedence.
+
 
 Example configuration file (.ini format) *default values shown*
 
