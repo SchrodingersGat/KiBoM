@@ -386,6 +386,7 @@ class BomPref:
         cf.add_section(self.SECTION_REGEXCLUDES)
         cf.set(self.SECTION_REGEXCLUDES, '; A series of regular expressions used to exclude parts from the BoM')
         cf.set(self.SECTION_REGEXCLUDES, '; If a component matches ANY of these, it will be excluded from the BoM')
+        cf.set(self.SECTION_REGEXCLUDES, '; Important: the [' + self.SECTION_REGINCLUDES + '] section has more precedence')
         cf.set(self.SECTION_REGEXCLUDES, '; Column names are case-insensitive')
         cf.set(self.SECTION_REGEXCLUDES, '; Format is: "[ColumName] [Regex]" (separated by a tab')
 
