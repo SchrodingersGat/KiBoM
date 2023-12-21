@@ -143,13 +143,13 @@ class BomPref:
             return default
 
     # Read KiBOM preferences from file
-    def Read(self, file, verbose=False):
+    def Read(self, file, verbose=False, no_colon_sep=False):
         file = os.path.abspath(file)
         if not os.path.exists(file) or not os.path.isfile(file):
             debug.error("{f} is not a valid file!".format(f=file))
             return
 
-        cf = ConfigParser.RawConfigParser(allow_no_value=True)
+        cf = ConfigParser.RawConfigParser(allow_no_value=True, delimiters=('=') if no_colon_sep else ('=', ':'))
         self.parser = cf
         cf.optionxform = str
 
