@@ -240,16 +240,17 @@ class Component():
     def setField(self, name, value):
         """ Set the value of the specified field """
 
+        name = name.lower()
         # Description field
         doc = self.element.getChild('libsource')
         if doc:
             for att_name, att_value in doc.attributes.items():
-                if att_name.lower() == name.lower():
+                if att_name.lower() == name:
                     doc.attributes[att_name] = value
                     return value
 
         # Common fields
-        field = self.element.getChild(name.lower())
+        field = self.element.getChild(name)
         if field:
             field.setChars(value)
             return value
@@ -258,7 +259,7 @@ class Component():
         fields = self.element.getChild('fields')
         if fields:
             for field in fields.getChildren():
-                if field.get('field', 'name') == name:
+                if field.get('field', 'name').lower() == name:
                     field.setChars(value)
                     return value
 
