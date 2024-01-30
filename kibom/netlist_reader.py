@@ -12,6 +12,7 @@ from __future__ import print_function
 import sys
 import os.path
 import xml.sax as sax
+from natsort import natsorted
 
 from .component import Component, ComponentGroup
 from .preferences import BomPref
@@ -358,7 +359,7 @@ class netlist():
 
         # Sort the groups
         # First priority is the Type of component (e.g. R?, U?, L?)
-        groups = sorted(groups, key=lambda g: [g.components[0].getPrefix(), g.components[0].getValueSort()])
+        groups = natsorted(groups, key=lambda g: [g.components[0].getRef(), g.components[0].getValueSort()])
 
         return groups
 
