@@ -165,6 +165,7 @@ def main():
     parser.add_argument("-d", "--subdirectory", help="Subdirectory within which to store the generated BoM files.", type=str, default=None)
     parser.add_argument("--cfg", help="BoM config file (script will try to use 'bom.ini' if not specified here)")
     parser.add_argument("-s", "--separator", help="CSV Separator (default ',')", type=str, default=None)
+    parser.add_argument("-k", "--no-colon-sep", help="Don't use : as delimiter in the config file", action='store_true')
     parser.add_argument('--version', action='version', version="KiBOM Version: {v}".format(v=KIBOM_VERSION))
 
     args = parser.parse_args()
@@ -221,7 +222,7 @@ def main():
     have_cfile = os.path.exists(config_file)
 
     if have_cfile:
-        pref.Read(config_file)
+        pref.Read(config_file, no_colon_sep=args.no_colon_sep)
         debug.message("Configuration file:", config_file)
     else:
         pref.Write(config_file)

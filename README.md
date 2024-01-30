@@ -73,6 +73,8 @@ optional arguments:
                         not specified here)
   -s SEPARATOR, --separator SEPARATOR
                         CSV Separator (default ',')
+  -k, --no-colon-sep    Don't use : as delimiter in the config file
+  --version             show program's version number and exit
 
 
 ~~~~                        
@@ -97,6 +99,8 @@ optional arguments:
 **--cfg** If provided, this is the BoM config file that will be used. If not provided, options will be loaded from "bom.ini"
 
 **-s --separator** Override the delimiter for CSV or TSV generation
+
+**-k --no-colon-sep** Only accept `=` as a delimiter for KEY/VALUE pairs in the config file, enables the use of `:` in field names
 
 --------
 To run from KiCad, simply add the same command line in the *Bill of Materials* script window. e.g. to generate a HTML output:
