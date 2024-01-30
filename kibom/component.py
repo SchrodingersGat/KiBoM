@@ -355,7 +355,8 @@ class Component():
         # First, check for the 'dnp' attribute (added in KiCad 7.0)
         for child in self.element.getChildren():
             if child.name == 'property':
-                if child.attributes.get('name', '').lower() == 'dnp':
+                name = child.attributes.get('name', '').lower()
+                if name == 'dnp' or name == 'exclude_from_bom':
                     return False
 
         # Check the value field first
