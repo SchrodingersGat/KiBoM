@@ -148,10 +148,6 @@ def WriteHTML(filename, groups, net, headings, head_names, prefs):
                 if link_datasheet and headings[n] == link_datasheet:
                     r = '<a href="' + group.getField(ColumnList.COL_DATASHEET) + '">' + r + '</a>'
 
-                # Link this column to the datasheet?
-                if link_datasheet and headings[n] == link_datasheet:
-                    r = '<a href="' + group.getField(ColumnList.COL_DATASHEET) + '">' + r + '</a>'
-
                 if (len(r) == 0) or (r.strip() == "~"):
                     bg = BG_EMPTY
                 else:
