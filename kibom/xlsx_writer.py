@@ -41,6 +41,11 @@ else:
         else:
             row_headings = head_names
 
+        link_datasheet = prefs.as_link
+        link_digikey = None
+        if prefs.digikey_link:
+            link_digikey = prefs.digikey_link.split("\t")
+
         cellformats = {}
         column_widths = {}
         for i in range(len(row_headings)):
@@ -65,9 +70,14 @@ else:
             for columnCount in range(len(row)):
                 
                 cell = row[columnCount]
-                
-                worksheet.write_string(rowCount, columnCount, cell, cellformats[columnCount])
-                        
+                if link_datasheet and headings[columnCount - 1] == link_datasheet:
+                    worksheet.write_url(rowCount, columnCount, cell, cellformats[columnCount])
+                elif link_digikey and headings[columnCount - 1] in link_digikey:
+                    url = "https://www.digikey.com/en/products?mpart=" + cell
+                    worksheet.write_url(rowCount, columnCount, url, cellformats[columnCount], cell)
+                else:
+                    worksheet.write_string(rowCount, columnCount, cell, cellformats[columnCount])
+
                 if len(cell) > column_widths[columnCount] - 5:
                     column_widths[columnCount] = len(cell) + 5
 
