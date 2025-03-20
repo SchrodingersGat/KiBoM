@@ -49,7 +49,7 @@ else:
         cellformats = {}
         column_widths = {}
         for i in range(len(row_headings)):
-            cellformats[i] = workbook.add_format({'align': 'center_across'})
+            cellformats[i] = workbook.add_format({'align': 'left'})
             column_widths[i] = len(row_headings[i]) + 10
 
             if not prefs.hideHeaders:
@@ -59,6 +59,7 @@ else:
         rowCount = 1
 
         for i, group in enumerate(groups):
+
             if prefs.ignoreDNF and not group.isFitted():
                 continue
 
@@ -68,18 +69,17 @@ else:
                 row = [str(rowCount)] + row
 
             for columnCount in range(len(row)):
-                
                 cell = row[columnCount]
-                if link_datasheet and headings[columnCount - 1] == link_datasheet:
+                if link_datasheet and row_headings[columnCount] == link_datasheet:
                     worksheet.write_url(rowCount, columnCount, cell, cellformats[columnCount])
-                elif link_digikey and headings[columnCount - 1] in link_digikey:
+                elif link_digikey and row_headings[columnCount] in link_digikey:
                     url = "https://www.digikey.com/en/products?mpart=" + cell
                     worksheet.write_url(rowCount, columnCount, url, cellformats[columnCount], cell)
                 else:
                     worksheet.write_string(rowCount, columnCount, cell, cellformats[columnCount])
 
-                if len(cell) > column_widths[columnCount] - 5:
-                    column_widths[columnCount] = len(cell) + 5
+                # if len(cell) > column_widths[columnCount] - 5:
+                #     column_widths[columnCount] = len(cell) + 5
 
             try:
                 count += group.getCount()
